@@ -8,7 +8,7 @@ const highlights = [
   {
     icon: Sparkles,
     title: "Frontier Innovation",
-    desc: "AI agents, web3 infrastructure, zero-knowledge security, and deep tech solutions.",
+    desc: "Explainable threat intelligence, vulnerability triage, and computer vision medical imaging.",
   },
   {
     icon: Globe,
@@ -18,7 +18,7 @@ const highlights = [
   {
     icon: Trophy,
     title: "₹30K Prize Pool & Perks",
-    desc: "Cash prizes, direct internship offers from partners, and exclusive access to Hedera Blockchain Certification and mentoring.",
+    desc: "Cash prizes, direct internship offers from industry partners, and professional mentoring.",
   },
   {
     icon: Layers,
@@ -38,10 +38,10 @@ export default function MobileAboutSection() {
             <span>ABOUT THE HACKATHON</span>
           </div>
           <h2 className="text-2xl font-display font-extrabold text-white">
-            THE BIRTH OF THE <span className="text-cyan-400">NEXT ERA</span>
+            DEEP TECH & <span className="text-cyan-400">INTELLIGENCE</span>
           </h2>
           <p className="text-xs text-gray-300 leading-relaxed pt-1">
-            NEXORA is a flagship 24-hour innovation marathon bringing together high-impact builders, engineers, and visionaries.
+            QUANTEXA is a flagship 24-hour innovation marathon bringing together high-impact builders, engineers, and deep tech visionaries.
           </p>
         </div>
 

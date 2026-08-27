@@ -140,14 +140,14 @@ export default function FinalPortalPage() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("nexora_auth");
+    localStorage.removeItem("quantexa_auth");
     setActiveTab("team");
     setIsAdminLoggedIn(false);
     setCurrentTeam(null);
   };
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem("nexora_auth");
+    const storedAuth = localStorage.getItem("quantexa_auth");
     if (storedAuth) {
       try {
         const parsed = JSON.parse(storedAuth);
@@ -169,13 +169,13 @@ export default function FinalPortalPage() {
                 populateTeamState(data.team);
                 setActiveTab("team");
               } else {
-                localStorage.removeItem("nexora_auth");
+                localStorage.removeItem("quantexa_auth");
               }
             })
             .finally(() => setIsLoading(false));
         }
       } catch (e) {
-        localStorage.removeItem("nexora_auth");
+        localStorage.removeItem("quantexa_auth");
       }
     }
   }, []);
@@ -266,7 +266,7 @@ export default function FinalPortalPage() {
           setTeamsList(data.teams);
           setActiveTab("admin");
           setSuccessMsg(`Master Admin Authenticated! Managing ${data.teams.length} team accounts.`);
-          localStorage.setItem("nexora_auth", JSON.stringify({ type: "admin", passkey: passkeyToUse }));
+          localStorage.setItem("quantexa_auth", JSON.stringify({ type: "admin", passkey: passkeyToUse }));
           setIsLoading(false);
           return;
         }
@@ -290,7 +290,7 @@ export default function FinalPortalPage() {
         setActiveTab("team");
         setErrorMsg("");
         setSuccessMsg("");
-        localStorage.setItem("nexora_auth", JSON.stringify({ type: "team", teamId: teamInput, passcode: teamPassword }));
+        localStorage.setItem("quantexa_auth", JSON.stringify({ type: "team", teamId: teamInput, passcode: teamPassword }));
       } else {
         setErrorMsg(data.message || "Invalid Team ID or Passcode.");
       }
@@ -568,13 +568,13 @@ export default function FinalPortalPage() {
           className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-cyan-500/30 hover:border-cyan-400 text-xs font-mono text-cyan-300 transition-all shadow-[0_0_15px_rgba(0,229,255,0.15)]"
         >
           <ArrowLeft className="w-4 h-4 text-cyan-400" />
-          <span>Back to Nexora</span>
+          <span>Back to Quantexa</span>
         </Link>
 
         {(isAdminLoggedIn || currentTeam) && (
           <button
             onClick={() => {
-              localStorage.removeItem("nexora_auth");
+              localStorage.removeItem("quantexa_auth");
               setIsAdminLoggedIn(false);
               setCurrentTeam(null);
               setSuccessMsg("");
@@ -641,7 +641,7 @@ export default function FinalPortalPage() {
                         required
                         value={teamInput}
                         onChange={(e) => setTeamInput(e.target.value)}
-                        placeholder="e.g. NEX0001 or Team Name"
+                        placeholder="e.g. QTX0001 or Team Name"
                         className="w-full bg-black/60 border border-white/10 focus:border-cyan-400 rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
                       />
                     </div>
@@ -687,7 +687,7 @@ export default function FinalPortalPage() {
                   <span>🔑 LOGIN CREDENTIALS INFO:</span>
                 </div>
                 <div className="space-y-1.5 text-[11px] text-gray-300">
-                  <div>• <strong className="text-emerald-400">Team Login:</strong> ID: <code className="text-cyan-300 font-bold">TEAM ID</code> (e.g. NEX0001) | Password: <code className="text-cyan-300 font-bold">TEAM LEAD NUMBER</code></div>
+                  <div>• <strong className="text-emerald-400">Team Login:</strong> ID: <code className="text-cyan-300 font-bold">TEAM ID</code> (e.g. QTX0001) | Password: <code className="text-cyan-300 font-bold">TEAM LEAD NUMBER</code></div>
                 </div>
               </div>
             </motion.div>
@@ -869,7 +869,7 @@ export default function FinalPortalPage() {
                       required
                       value={gitRepoUrl}
                       onChange={(e) => setGitRepoUrl(e.target.value)}
-                      placeholder="https://github.com/your-team-name/nexora-project"
+                      placeholder="https://github.com/your-team-name/quantexa-project"
                       className="w-full bg-black/80 border border-white/10 focus:border-cyan-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none"
                     />
                   </div>
@@ -939,7 +939,7 @@ export default function FinalPortalPage() {
                     </span>
                   </div>
                   <h1 className="text-2xl font-display font-extrabold text-white">
-                    NEXORA <span className="text-crimson">200+ Team Database Control</span>
+                    QUANTEXA <span className="text-crimson">200+ Team Database Control</span>
                   </h1>
                   <p className="text-xs text-gray-400 font-sans">
                     Manage participant logins, inspect Git links & presentation files, and update jury scores.

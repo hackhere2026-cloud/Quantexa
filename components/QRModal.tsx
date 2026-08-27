@@ -50,18 +50,18 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
                 SCAN TO REGISTER
               </h3>
               <p className="text-sm text-gray-400 mt-1">
-                Point your mobile camera at the QR code to open the NEXORA registration portal.
+                Point your mobile camera at the QR code to open the QUANTEXA registration portal.
               </p>
             </div>
-
+ 
             {/* Event Poster / QR Image */}
             <div className="relative mx-auto w-full max-w-[280px] aspect-[994/1350] bg-black/80 p-2 rounded-2xl shadow-inner border-2 border-crimson/50 mb-6 overflow-hidden group">
               <div className="relative w-full h-full rounded-xl overflow-hidden">
                 <Image
-                  src="/qr/nexora-qr.png"
-                  alt="NEXORA Registration Event Poster"
+                  src="/qr.png"
+                  alt="Quantexa Registration Event Poster"
                   fill
-                  className="object-cover rounded-xl"
+                  className="object-contain rounded-xl"
                 />
               </div>
             </div>

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NEXORA — MASTER CINEMATIC HACKATHON STYLESHEET
+   QUANTEXA — MASTER CINEMATIC HACKATHON STYLESHEET
    Full Screen Intro Video + Infinitely Looping Home page.mp4 Video
    ========================================================================== */
 
@@ -230,7 +230,7 @@ body.loading-state {
 }
 
 .hero-title-spacer {
-  height: 220px; /* Leaves clear room for video NEXORA title artwork */
+  height: 220px; /* Leaves clear room for video QUANTEXA title artwork */
 }
 
 .hero-cta-group {

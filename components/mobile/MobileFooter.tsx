@@ -12,14 +12,14 @@ export default function MobileFooter() {
         <div className="flex flex-col items-center space-y-3">
           <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-cyan-400/50 bg-white/5 flex items-center justify-center">
             <Image
-              src="/logo.jpeg"
-              alt="Nexora Logo"
+              src="/images/hackhere-logo.jpeg"
+              alt="Quantexa Logo"
               fill
               className="object-contain"
             />
           </div>
           <span className="text-xl font-display font-extrabold metal-gradient">
-            NEXORA 2026
+            QUANTEXA 2026
           </span>
           <p className="text-[11px] text-gray-300 leading-relaxed max-w-xs">
             Presented by <strong className="text-white">{event.presentedBy}</strong>. 24-Hour hackathon building the next era of tech innovation.
@@ -64,7 +64,7 @@ export default function MobileFooter() {
 
         {/* Copyright */}
         <div className="pt-4 border-t border-white/10 text-[10px] font-mono text-gray-400">
-          © 2026 NEXORA • Presented by HackHere. All rights reserved.
+          © 2026 QUANTEXA • Presented by HackHere. All rights reserved.
         </div>
       </div>
     </footer>

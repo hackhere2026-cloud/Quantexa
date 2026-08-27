@@ -1,5 +1,5 @@
 /**
- * NEXORA — Master Cinematic Canvas & Frame Sequence Engine
+ * QUANTEXA — Master Cinematic Canvas & Frame Sequence Engine
  * Handles 40-frame sequence interpolation, 3D particles, volumetric lighting,
  * procedural electricity, interactive holographic HUD, and title assembly.
  */
@@ -103,7 +103,7 @@ class CinematicCanvas {
 
     // Scanned typography targets
     this.targets = {
-      nexora: [],
+      quantexa: [],
       nextEra: []
     };
 
@@ -162,8 +162,8 @@ class CinematicCanvas {
   }
 
   init(onProgress, onComplete) {
-    // 1. Scan NEXORA and Subtitle text target coordinates
-    this.scanTypography("NEXORA", 150, this.targets.nexora, 2.0);
+    // 1. Scan QUANTEXA and Subtitle text target coordinates
+    this.scanTypography("QUANTEXA", 150, this.targets.quantexa, 2.0);
     this.scanTypography("CODE THE NEXT ERA", 70, this.targets.nextEra, 1.6);
 
     // 2. Initialize Particles (Floating space & neural energy)
@@ -435,9 +435,9 @@ class CinematicCanvas {
     let currentTargets = null;
     let targetBlend = 0.0;
 
-    // At completion (progress > 0.95), particles form NEXORA title
+    // At completion (progress > 0.95), particles form QUANTEXA title
     if (progress >= 0.95) {
-      currentTargets = this.targets.nexora;
+      currentTargets = this.targets.quantexa;
       targetBlend = Math.min(1.0, (progress - 0.95) / 0.04);
     }
 
@@ -535,7 +535,7 @@ class CinematicCanvas {
     const frameIndex = Math.floor(progress * 39) + 1;
     const frameStr = String(frameIndex).padStart(2, '0');
     
-    this.ctx.fillText(`SYS.ID // NEX-2026`, cx - radius - 120, cy - radius);
+    this.ctx.fillText(`SYS.ID // QTX-2026`, cx - radius - 120, cy - radius);
     this.ctx.fillText(`TRANSFORMATION :: ${Math.floor(progress * 100)}%`, cx + radius + 20, cy - radius);
     this.ctx.fillText(`FRAME [${frameStr}/40]`, cx + radius + 20, cy - radius + 18);
     this.ctx.fillText(`NEURAL_SYNC :: 99.8% [ACTIVE]`, cx - radius - 120, cy + radius + 20);

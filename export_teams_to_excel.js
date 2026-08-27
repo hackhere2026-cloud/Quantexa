@@ -10,7 +10,7 @@ async function generateReport() {
   const uri = uriMatch[1].trim();
   const client = new MongoClient(uri);
   await client.connect();
-  const db = client.db("nexora_portal");
+  const db = client.db("quantexa_portal");
   const teams = await db.collection("teams").find({}).toArray();
   
   const reportData = [];
@@ -38,9 +38,9 @@ async function generateReport() {
 
   const wb = xlsx.utils.book_new();
   const ws = xlsx.utils.json_to_sheet(reportData);
-  xlsx.utils.book_append_sheet(wb, ws, "Nexora Teams");
+  xlsx.utils.book_append_sheet(wb, ws, "Quantexa Teams");
 
-  const outputName = "Nexora_Final_Teams_Report.xlsx";
+  const outputName = "Quantexa_Final_Teams_Report.xlsx";
   xlsx.writeFile(wb, outputName);
   
   console.log(`Successfully generated report: ${outputName} with ${reportData.length} teams.`);

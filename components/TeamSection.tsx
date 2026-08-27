@@ -29,7 +29,7 @@ export default function TeamSection() {
             MEET TEAM <span className="metal-gradient">HACKHERE</span>
           </h2>
           <p className="text-gray-400 font-sans text-base sm:text-lg">
-            The visionary leads and operational orchestrators driving HackHere and NEXORA 2026.
+            The visionary leads and operational orchestrators driving HackHere and Quantexa 2026.
           </p>
         </motion.div>
 

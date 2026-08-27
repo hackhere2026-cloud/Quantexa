@@ -57,14 +57,14 @@ export interface FAQItem {
 }
 
 export const event: EventInfo = {
-  name: "NEXORA",
+  name: "QUANTEXA",
   presentedBy: "HackHere",
-  tagline: "Beyond Limits. Beyond Imagination",
+  tagline: "Decoding Risks. Engineering Solutions.",
   city: "Coimbatore",
   venue: "SNS IHUB",
   mapUrl: "https://maps.app.goo.gl/5Qv5T9LsVeL58uxd8",
-  dateRange: "August 22–23",
-  registerUrl: "https://unstop.com/hackathons/nexora-hackhere-1727929",
+  dateRange: "September 12–13",
+  registerUrl: "https://unstop.com/hackathons/quantexa-hackhere",
 };
 
 export const sponsors: Sponsor[] = [
@@ -78,32 +78,18 @@ export const sponsors: Sponsor[] = [
 
 export const tracks: Track[] = [
   { 
-    id: "ai", 
-    title: "Artificial Intelligence", 
-    description: "Build intelligent systems that learn, adapt, and transform industries", 
-    icon: "bot",
-    prize: "₹30K Pool + Bounties"
-  },
-  { 
-    id: "cyber", 
+    id: "cyber-security", 
     title: "Cyber Security", 
-    description: "Defend digital frontiers with innovative security solutions and threat detection", 
+    description: "Personalised Vulnerability Triage - Turn public CVE, KEV, and EPSS data into explainable, prioritised threat intelligence tailored to specific organizational profiles.", 
     icon: "shield",
-    prize: "Internship & Bounties"
+    prize: "₹15K Track Pool + Internships"
   },
   { 
-    id: "blockchain", 
-    title: "BlockChain", 
-    description: "Build decentralized applications and trustless systems for the future", 
-    icon: "link",
-    prize: "Hedera Certification & Mentoring"
-  },
-  { 
-    id: "devops", 
-    title: "DevOps", 
-    description: "Automate, integrate, and deploy — streamline the software lifecycle", 
-    icon: "settings",
-    prize: "Special Bounties"
+    id: "med-tech", 
+    title: "Med-Tech", 
+    description: "AI-Assisted Meniscus & Knee Implant Sizing - Segment knee structures, measure meniscus thickness for osteoarthritis assessment, and estimate patient-specific implant sizing.", 
+    icon: "activity",
+    prize: "₹15K Track Pool + Internships"
   },
 ];
 
@@ -117,20 +103,20 @@ export const phases: EventPhase[] = [
   {
     phase: "PHASE 2",
     title: "PREPARATION & IDEATION",
-    date: "August 13 – August 21",
+    date: "September 1 – September 11",
     description: "Explore challenge tracks, review technical documentation, refine your architecture, and prepare for the physical build sprint.",
   },
   {
     phase: "PHASE 3",
     title: "BUILD (24H OFFLINE SPRINT)",
-    date: "August 22 – August 23",
+    date: "September 12 – September 13",
     description: "Build your working prototype live at SNS IHUB, Coimbatore over a continuous 24-hour period. Problem statements will be provided on the spot.",
   },
   {
     phase: "PHASE 4",
     title: "PITCH & GRAND FINALE AWARDS",
-    date: "August 23",
-    description: "Present your working prototype live to our jury panel and chief guests to compete for ₹30K cash prizes, internships & Hedera certifications.",
+    date: "September 13",
+    description: "Present your working prototype live to our jury panel and chief guests to compete for ₹30K cash prizes, internships & certifications.",
   },
 ];
 
@@ -167,11 +153,11 @@ export const juries: JuryMember[] = [
 ];
 
 export const faqs: FAQItem[] = [
-  { question: "Who can participate?", answer: "NEXORA is open to developers, designers, students, and tech enthusiasts. Both beginners and experienced hackers are welcome!" },
+  { question: "Who can participate?", answer: "QUANTEXA is open to developers, designers, students, and tech enthusiasts. Both beginners and experienced hackers are welcome!" },
   { question: "What is the team size?", answer: "Teams can range from 1 to 4 participants. Form your team prior to the event or connect with teammates during Day 1 networking." },
   { question: "Is there a registration fee?", answer: "The registration fee is ₹1,000 per team, which grants direct entry to the 24-hour offline hackathon grand finale at SNS IHUB, Coimbatore." },
-  { question: "Where is NEXORA held?", answer: "NEXORA takes place in person at SNS IHUB, Coimbatore (August 22–23)." },
-  { question: "What are the prizes and perks?", answer: "₹30,000 in cash prizes, direct internship offers from partner companies, Hedera Blockchain Certification, and hands-on technical bootcamp on blockchain for participants." },
+  { question: "Where is QUANTEXA held?", answer: "QUANTEXA takes place in person at SNS IHUB, Coimbatore (September 12–13)." },
+  { question: "What are the prizes and perks?", answer: "₹30,000 in cash prizes, direct internship offers from partner companies, and professional mentoring sessions for participants." },
   { question: "What should I bring?", answer: "Bring your laptop, charger, valid ID, and enthusiasm to build!" },
 ];
 
@@ -213,3 +199,4 @@ export const teamMembers: TeamMember[] = [
     linkedin: "https://www.linkedin.com/in/k-guru-prakash-9a4184337/",
   },
 ];
+

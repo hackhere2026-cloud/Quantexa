@@ -13,15 +13,15 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-crimson/40 bg-white/5 flex items-center justify-center">
                 <Image
-                  src="/logo.jpeg"
-                  alt="Nexora Logo"
+                  src="/images/hackhere-logo.jpeg"
+                  alt="Quantexa Logo"
                   fill
                   className="object-contain"
                 />
               </div>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Presented by <strong className="text-white">{event.presentedBy}</strong>. 24-Hour hackathon building the next era of artificial intelligence, autonomous agents, and deep tech.
+              Presented by <strong className="text-white">{event.presentedBy}</strong>. 24-Hour hackathon building the next era of Cyber Security threat intelligence and medical tech innovation.
             </p>
             <div className="flex items-center space-x-3 text-gray-400">
               <a href="#" className="hover:text-crimson-glow transition-colors p-2 bg-white/5 rounded-full hover:bg-white/10">
@@ -66,7 +66,7 @@ export default function Footer() {
               </li>
               <li>
                 <span className="text-gray-500">Prizes & Perks:</span>{" "}
-                <span className="text-gray-300 font-semibold">₹30K Pool, Internships & Hedera Certification & Mentoring</span>
+                <span className="text-gray-300 font-semibold">₹30K Pool, Internships & Mentoring</span>
               </li>
             </ul>
           </div>

@@ -33,8 +33,8 @@ export async function POST(request: Request) {
 
     const db = await getDbAsync();
     const nextNum = db.teams.length + 101;
-    const id = `NX-${nextNum}`;
-    const dbName = `nexora_db_${name.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+    const id = `QTX-${nextNum}`;
+    const dbName = `quantexa_db_${name.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
 
     const newTeam = await createTeam({
       id,
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       dbName,
       dbStatus: "Connected",
       dbStorage: "10 GB SSD",
-      dbHost: `db.nexora.internal:${5430 + db.teams.length}`,
+      dbHost: `db.quantexa.internal:${5430 + db.teams.length}`,
       submissionUrl: "",
     });
 

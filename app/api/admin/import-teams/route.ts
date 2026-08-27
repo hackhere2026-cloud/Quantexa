@@ -38,8 +38,8 @@ export async function POST(request: Request) {
         (t) => t.id.toLowerCase() === id.toString().toLowerCase() || (name && t.name.toLowerCase() === name.toString().toLowerCase())
       );
 
-      const dbName = `nexora_db_${name.toString().toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
-      const dbHost = item.dbHost || `db.nexora.internal:${5430 + (existingIndex !== -1 ? existingIndex : currentTeamsList.length)}`;
+      const dbName = `quantexa_db_${name.toString().toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+      const dbHost = item.dbHost || `db.quantexa.internal:${5430 + (existingIndex !== -1 ? existingIndex : currentTeamsList.length)}`;
 
       const formattedRecord: TeamRecord = {
         id: id.toString().toUpperCase(),

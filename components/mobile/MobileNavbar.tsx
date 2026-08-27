@@ -36,8 +36,8 @@ export default function MobileNavbar({ onRegisterClick }: MobileNavbarProps) {
         <a href="#" className="flex items-center gap-2">
           <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-cyan-400/50 bg-black/40 flex items-center justify-center">
             <Image
-              src="/logo.jpeg"
-              alt="Nexora Logo"
+              src="/images/hackhere-logo.jpeg"
+              alt="Quantexa Logo"
               fill
               className="object-contain"
               priority
@@ -45,7 +45,7 @@ export default function MobileNavbar({ onRegisterClick }: MobileNavbarProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-display font-extrabold tracking-wider metal-gradient">
-              NEXORA
+              QUANTEXA
             </span>
             <span className="text-[9px] font-mono text-cyan-400 -mt-1 tracking-widest uppercase">
               HACKHERE 2026

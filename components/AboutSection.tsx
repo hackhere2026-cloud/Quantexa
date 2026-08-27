@@ -36,7 +36,7 @@ export default function AboutSection() {
             >
               {event.venue}, {event.city} ↗
             </a>
-            , NEXORA is a 24-hour hackathon crucible. Build self-evolving AI systems, decentralized protocols, and biomorphic models that redefine what is possible.
+            , QUANTEXA is a 24-hour hackathon crucible. Build next-generation solutions in Cyber Security (Personalised Vulnerability Triage) and Med-Tech (AI-Assisted Meniscus & Knee Implant Sizing) that address real-world deep tech challenges.
           </p>
         </motion.div>
 
@@ -56,7 +56,7 @@ export default function AboutSection() {
             {
               icon: Trophy,
               title: "₹30K Prize Pool & Perks",
-              desc: "Cash prizes, direct internship offers from partners, and exclusive access to Hedera Blockchain Certification and mentoring.",
+              desc: "Cash prizes, direct internship offers from partner companies, and professional mentoring.",
             },
             {
               icon: Layers,

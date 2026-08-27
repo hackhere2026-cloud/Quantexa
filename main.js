@@ -1,5 +1,5 @@
 /**
- * NEXORA — Master Orchestrator & User Interface Controller
+ * QUANTEXA — Master Orchestrator & User Interface Controller
  * Zero-gap transition from intro video to infinitely looping video.mp4 background in ultra slow motion.
  */
 

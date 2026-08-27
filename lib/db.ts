@@ -54,7 +54,7 @@ async function getMongoCollection() {
       mongoClient = new MongoClient(MONGODB_URI);
       await mongoClient.connect();
     }
-    const db = mongoClient.db("nexora_portal");
+    const db = mongoClient.db("quantexa_portal");
     return db.collection<TeamRecord>("teams");
   } catch (err) {
     console.error("MongoDB Atlas Connection Error:", err);
@@ -80,10 +80,10 @@ const INITIAL_DB_DATA: DatabaseSchema = {
       problemStatement: "Assigned on Spot (Phase 03)",
       score: 0,
       status: "In Progress",
-      dbName: "nexora_db_astranova",
+      dbName: "quantexa_db_astranova",
       dbStatus: "Connected",
       dbStorage: "10 GB SSD",
-      dbHost: "db.nexora.internal:5430",
+      dbHost: "db.quantexa.internal:5430",
       gitRepoUrl: "",
       projectFileUrl: "",
       projectFileName: "",
@@ -167,7 +167,7 @@ export async function getDbAsync(): Promise<DatabaseSchema> {
   return getDb();
 }
 
-// Helper: Normalize Team ID Queries (Handles NEX001 -> NEX0001, NEX-0001, etc.)
+// Helper: Normalize Team ID Queries (Handles QTX0001, NEX0001, QTX001, etc.)
 export function normalizeTeamIdCandidates(query: string): string[] {
   const q = query.trim();
   const qLower = q.toLowerCase();
@@ -177,12 +177,16 @@ export function normalizeTeamIdCandidates(query: string): string[] {
   const clean = qLower.replace(/[\s\-_]/g, "");
   candidates.add(clean);
 
-  const match = clean.match(/^(nex)?(\d+)$/);
+  const match = clean.match(/^(nex|qtx)?(\d+)$/);
   if (match) {
     const num = parseInt(match[2], 10);
     if (!isNaN(num)) {
-      const padded4 = "nex" + String(num).padStart(4, "0");
-      candidates.add(padded4);
+      const padded4Qtx = "qtx" + String(num).padStart(4, "0");
+      candidates.add(padded4Qtx);
+      const plainQtx = "qtx" + String(num);
+      candidates.add(plainQtx);
+      const padded4Nex = "nex" + String(num).padStart(4, "0");
+      candidates.add(padded4Nex);
       const plainNex = "nex" + String(num);
       candidates.add(plainNex);
     }

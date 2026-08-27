@@ -20,7 +20,7 @@ export default function MobileTeamSection() {
             MEET TEAM <span className="text-cyan-400">HACKHERE</span>
           </h2>
           <p className="text-xs text-gray-300">
-            The core leads driving HackHere and NEXORA 2026.
+            The core leads driving HackHere and Quantexa 2026.
           </p>
         </div>
 

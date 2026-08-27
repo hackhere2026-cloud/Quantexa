@@ -126,25 +126,53 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
         className="absolute inset-0 z-10 pointer-events-none opacity-80"
       />
 
-      {/* Interactive Clickable Hotspots overlay matching video's native buttons */}
-      <div className="relative z-20 max-w-5xl mx-auto px-4 text-center flex flex-col items-center justify-center pt-64 sm:pt-72">
-        <div className="flex flex-col sm:flex-row items-center gap-6 mt-16 sm:mt-24">
-          {/* Hotspot over CLAIM ACCESS PASS */}
-          <a
-            href={event.registerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Claim Access Pass"
-            className="w-56 sm:w-60 h-14 rounded-full cursor-pointer bg-white/0 hover:bg-cyan-500/20 border border-transparent hover:border-cyan-400/50 transition-all duration-300 shadow-[0_0_20px_rgba(0,229,255,0)] hover:shadow-[0_0_30px_rgba(0,229,255,0.6)] flex items-center justify-center"
-          />
+      {/* Centered Dashboard Interface */}
+      <div className="relative z-20 max-w-3xl mx-auto px-4 text-center flex flex-col items-center justify-center mt-12">
+        {/* Glassmorphic console container */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="glass-panel p-8 sm:p-12 rounded-3xl border border-cyan-500/30 bg-ink/80 backdrop-blur-xl shadow-[0_0_60px_rgba(0,229,255,0.2)] flex flex-col items-center"
+        >
+          {/* Status badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/80 border border-cyan-400/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-6">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span>Registration Open • {event.dateRange}</span>
+          </div>
 
-          {/* Hotspot over EXPLORE TRACKS */}
-          <a
-            href="#tracks"
-            aria-label="Explore Tracks"
-            className="w-56 sm:w-60 h-14 rounded-full cursor-pointer bg-white/0 hover:bg-white/10 border border-transparent hover:border-white/40 transition-all duration-300"
-          />
-        </div>
+          {/* Title */}
+          <h1 className="text-4xl sm:text-6xl font-display font-black tracking-widest text-white uppercase drop-shadow-[0_0_30px_rgba(0,229,255,0.6)] mb-4">
+            QUANTEXA <span className="text-cyan-400">2026</span>
+          </h1>
+
+          {/* Tagline / presentedBy */}
+          <p className="text-sm sm:text-base font-mono text-cyan-300/80 uppercase tracking-widest mb-6">
+            presented by {event.presentedBy}
+          </p>
+
+          <p className="text-xs sm:text-sm text-gray-300 leading-relaxed font-sans max-w-lg mb-8">
+            The decision intelligence & deep tech hackathon. Build explainable triage pipelines and medical imaging systems at SNS IHUB, Coimbatore.
+          </p>
+
+          {/* Real interactive buttons */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
+            <a
+              href={event.registerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-52 py-3.5 rounded-full bg-cyan-400 hover:bg-cyan-350 text-black font-display text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:shadow-[0_0_30px_rgba(0,229,255,0.8)] transition-all duration-300 text-center"
+            >
+              Claim Access Pass
+            </a>
+            <a
+              href="#tracks"
+              className="w-full sm:w-52 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/40 text-white font-display text-xs font-bold uppercase tracking-wider transition-all duration-300 text-center"
+            >
+              Explore Domains
+            </a>
+          </div>
+        </motion.div>
       </div>
 
       {/* Scroll Down Indicator */}

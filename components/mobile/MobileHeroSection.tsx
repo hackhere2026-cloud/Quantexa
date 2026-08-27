@@ -45,13 +45,13 @@ export default function MobileHeroSection({ onRegisterClick }: MobileHeroSection
           className="space-y-2"
         >
           <h1 className="text-4xl font-display font-black tracking-tight text-white drop-shadow-[0_0_25px_rgba(0,229,255,0.7)]">
-            NEXORA <span className="text-cyan-400">2026</span>
+            QUANTEXA <span className="text-cyan-400">2026</span>
           </h1>
           <p className="text-xs font-mono text-cyan-300 tracking-widest uppercase">
-            BEYOND LIMITS • BEYOND IMAGINATION
+            DECODING RISKS • ENGINEERING SOLUTIONS
           </p>
           <p className="text-xs text-gray-300 pt-1 leading-relaxed">
-            24-Hour Premier Hackathon presented by{" "}
+            24-Hour Premier Hackathon presented by{"  "}
             <span className="text-cyan-400 font-bold">{event.presentedBy}</span>
           </p>
         </motion.div>
@@ -60,7 +60,7 @@ export default function MobileHeroSection({ onRegisterClick }: MobileHeroSection
         <div className="w-full grid grid-cols-2 gap-2 text-[11px] font-mono text-gray-200">
           <div className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white/5 border border-cyan-500/30">
             <Calendar className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            <span>Aug 22–23</span>
+            <span>Sept 12–13</span>
           </div>
           <div className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white/5 border border-cyan-500/30">
             <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
@@ -71,7 +71,7 @@ export default function MobileHeroSection({ onRegisterClick }: MobileHeroSection
         {/* Prize Alert Banner */}
         <div className="w-full py-2.5 px-4 rounded-xl bg-cyan-950/70 border border-cyan-400/50 flex items-center justify-center gap-2 text-xs font-mono text-cyan-300">
           <Trophy className="w-4 h-4 text-cyan-400 shrink-0" />
-          <span>₹30K Cash Pool + Hedera Certification</span>
+          <span>₹30K Cash Pool + Internships</span>
         </div>
 
         {/* Mobile CTA Buttons */}

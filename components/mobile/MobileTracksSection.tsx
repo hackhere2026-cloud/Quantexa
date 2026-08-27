@@ -2,15 +2,12 @@
 
 import { motion } from "framer-motion";
 import { tracks } from "@/data/event";
-import { Cpu, Shield, Link, Settings, Code, Sparkles, Layers } from "lucide-react";
+import { Shield, Activity, Sparkles, Layers } from "lucide-react";
 
 const getIconComponent = (iconName: string) => {
   switch (iconName) {
-    case "cpu": return Cpu;
     case "shield": return Shield;
-    case "link": return Link;
-    case "settings": return Settings;
-    case "code": return Code;
+    case "activity": return Activity;
     default: return Sparkles;
   }
 };

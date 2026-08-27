@@ -10,7 +10,7 @@ interface IntroLoaderProps {
 export default function IntroLoader({ onComplete }: IntroLoaderProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [displayText, setDisplayText] = useState("NEXORA");
+  const [displayText, setDisplayText] = useState("QUANTEXA");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const handleFinish = () => {
@@ -20,9 +20,9 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
     }, 600); // smooth cinematic fade exit
   };
 
-  // Matrix / Cyber Glitch Decoding effect for NEXORA
+  // Matrix / Cyber Glitch Decoding effect for QUANTEXA
   useEffect(() => {
-    const targetText = "NEXORA";
+    const targetText = "QUANTEXA";
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%-+&*";
     let iteration = 0;
     
@@ -224,16 +224,10 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
             {/* Telemetry Domain Chips */}
             <div className="flex flex-wrap items-center justify-center gap-3 mb-8 text-[11px] font-mono">
               <span className="px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]">
-                AI / ML
-              </span>
-              <span className="px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]">
                 CYBER SECURITY
               </span>
               <span className="px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]">
-                BLOCKCHAIN
-              </span>
-              <span className="px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]">
-                DEVOPS
+                MED-TECH
               </span>
             </div>
 
@@ -248,7 +242,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
             {/* Status Footer Readout */}
             <div className="flex items-center justify-between w-full max-w-md text-[11px] font-mono text-gray-400 uppercase tracking-wider">
               <span>SNS IHUB COIMBATORE</span>
-              <span className="text-[#00E5FF]">AUG 22–23, 2026</span>
+              <span className="text-[#00E5FF]">SEPT 12–13, 2026</span>
             </div>
 
             {/* Skip hint */}

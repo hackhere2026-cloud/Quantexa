@@ -35,8 +35,8 @@ export default function Navbar({ onRegisterClick }: NavbarProps) {
         <a href="#" className="flex items-center gap-3 group">
           <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-crimson/40 bg-white/5 flex items-center justify-center group-hover:scale-105 transition-transform">
             <Image
-              src="/logo.jpeg"
-              alt="Nexora Logo"
+              src="/images/hackhere-logo.jpeg"
+              alt="Quantexa Logo"
               fill
               className="object-contain"
               priority

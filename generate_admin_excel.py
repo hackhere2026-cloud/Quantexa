@@ -6,13 +6,14 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 
 def get_floor_name(team_id):
-    if team_id.startswith("NEX0"):
+    tid = team_id.upper()
+    if tid.startswith("NEX0") or tid.startswith("QTX0"):
         return "Ground Floor"
-    elif team_id.startswith("NEX1"):
+    elif tid.startswith("NEX1") or tid.startswith("QTX1"):
         return "First Floor"
-    elif team_id.startswith("NEX2"):
+    elif tid.startswith("NEX2") or tid.startswith("QTX2"):
         return "Second Floor"
-    elif team_id.startswith("NEX3"):
+    elif tid.startswith("NEX3") or tid.startswith("QTX3"):
         return "Online / Virtual"
     return "Main Venue"
 
@@ -49,7 +50,7 @@ def generate_excel_report(db_path, output_excel_path):
         # Title Block
         ws.merge_cells('A1:I1')
         title_cell = ws['A1']
-        title_cell.value = f"NEXORA 2026 — {sheet_title.upper()} ({len(team_list)} TEAMS)"
+        title_cell.value = f"QUANTEXA 2026 — {sheet_title.upper()} ({len(team_list)} TEAMS)"
         title_cell.font = Font(name="Calibri", size=14, bold=True, color="FFFFFF")
         title_cell.fill = PatternFill(start_color=header_color, end_color=header_color, fill_type="solid")
         title_cell.alignment = Alignment(horizontal="center", vertical="center")
@@ -165,7 +166,7 @@ def generate_excel_report(db_path, output_excel_path):
     
     ws_summary.merge_cells('A1:F1')
     t_cell = ws_summary['A1']
-    t_cell.value = "NEXORA 2026 — MASTER TRACK & VENUE SUMMARY"
+    t_cell.value = "QUANTEXA 2026 — MASTER TRACK & VENUE SUMMARY"
     t_cell.font = Font(name="Calibri", size=14, bold=True, color="FFFFFF")
     t_cell.fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid")
     t_cell.alignment = Alignment(horizontal="center", vertical="center")
@@ -193,10 +194,10 @@ def generate_excel_report(db_path, output_excel_path):
             floors[fl]["med"] += 1
 
     prefix_map = {
-        "Ground Floor": "NEX0001 - NEX0046",
-        "First Floor": "NEX1001 - NEX1047",
-        "Second Floor": "NEX2001 - NEX2058",
-        "Online / Virtual": "NEX3001 - NEX3023",
+        "Ground Floor": "QTX0001 / NEX0001 - QTX0046 / NEX0046",
+        "First Floor": "QTX1001 / NEX1001 - QTX1047 / NEX1047",
+        "Second Floor": "QTX2001 / NEX2001 - QTX2058 / NEX2058",
+        "Online / Virtual": "QTX3001 / NEX3001 - QTX3023 / NEX3023",
     }
 
     r_idx = 4
@@ -255,7 +256,7 @@ def generate_excel_report(db_path, output_excel_path):
         zebra_color="ECFDF5", 
         is_cyber=False
     )
-    med_path = output_excel_path.replace("Nexora_Admin_Track_Report.xlsx", "Nexora_MedTech_Teams.xlsx")
+    med_path = output_excel_path.replace("Quantexa_Admin_Track_Report.xlsx", "Quantexa_MedTech_Teams.xlsx")
     wb_med_only.save(med_path)
     print(f"Standalone Med-Tech Excel report saved to: {med_path}")
 
@@ -271,15 +272,15 @@ def generate_excel_report(db_path, output_excel_path):
         zebra_color="F3E8FF", 
         is_cyber=True
     )
-    cyber_path = output_excel_path.replace("Nexora_Admin_Track_Report.xlsx", "Nexora_CyberSecurity_Teams.xlsx")
+    cyber_path = output_excel_path.replace("Quantexa_Admin_Track_Report.xlsx", "Quantexa_CyberSecurity_Teams.xlsx")
     wb_cyber_only.save(cyber_path)
     print(f"Standalone Cyber Security Excel report saved to: {cyber_path}")
 
 if __name__ == "__main__":
     db_file = "./data/final_db.json"
-    out_excel = "./public/uploads/Nexora_Admin_Track_Report.xlsx"
+    out_excel = "./public/uploads/Quantexa_Admin_Track_Report.xlsx"
     os.makedirs(os.path.dirname(out_excel), exist_ok=True)
     generate_excel_report(db_file, out_excel)
 
     # Copy to root directory as well
-    generate_excel_report(db_file, "./Nexora_Admin_Track_Report.xlsx")
+    generate_excel_report(db_file, "./Quantexa_Admin_Track_Report.xlsx")

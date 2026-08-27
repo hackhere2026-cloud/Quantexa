@@ -34,12 +34,12 @@ export default function RegisterCTASection({ onRegisterClick }: RegisterCTASecti
             {/* Left Content */}
             <div className="lg:col-span-7">
               <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-white leading-tight mb-4">
-                READY TO SHAPE THE <span className="metal-gradient">NEXT ERA?</span>
+                READY TO BUILD THE <span className="metal-gradient">FUTURE?</span>
               </h2>
               <p className="text-gray-300 font-sans text-base sm:text-lg mb-8 leading-relaxed">
                 Join top builders and innovators at {event.city} on {event.dateRange}. Claim your access pass for the 24-hour hackathon sprint.
               </p>
-
+ 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <a
                   href={event.registerUrl}
@@ -53,7 +53,7 @@ export default function RegisterCTASection({ onRegisterClick }: RegisterCTASecti
                 </a>
               </div>
             </div>
-
+ 
             {/* Right Poster Visual */}
             <div className="lg:col-span-5 flex flex-col items-center justify-center">
               <a
@@ -64,10 +64,10 @@ export default function RegisterCTASection({ onRegisterClick }: RegisterCTASecti
               >
                 <div className="relative w-56 h-[290px] rounded-xl overflow-hidden">
                   <Image
-                    src="/qr/nexora-qr.png"
-                    alt="NEXORA Registration Event Poster"
+                    src="/qr.png"
+                    alt="Quantexa Registration Event Poster"
                     fill
-                    className="object-cover rounded-xl"
+                    className="object-contain rounded-xl"
                   />
                 </div>
                 <div className="absolute inset-0 bg-crimson/85 backdrop-blur-xs rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center text-black font-display text-xs font-bold uppercase tracking-wider transition-opacity duration-300 p-4 text-center">

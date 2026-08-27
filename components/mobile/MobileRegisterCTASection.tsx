@@ -20,7 +20,7 @@ export default function MobileRegisterCTASection({ onRegisterClick }: MobileRegi
         {/* Title */}
         <div className="space-y-2">
           <h2 className="text-2xl font-display font-extrabold text-white">
-            READY TO SHAPE THE <span className="text-cyan-400">NEXT ERA?</span>
+            READY TO SHAPE THE <span className="text-cyan-400">FUTURE?</span>
           </h2>
           <p className="text-xs text-gray-300 leading-relaxed">
             Join top builders at {event.city} on {event.dateRange}. Claim your pass for the 24-hour hackathon.
@@ -37,10 +37,10 @@ export default function MobileRegisterCTASection({ onRegisterClick }: MobileRegi
           >
             <div className="relative w-48 h-[250px] rounded-xl overflow-hidden">
               <Image
-                src="/qr/nexora-qr.png"
-                alt="NEXORA Registration Poster"
+                src="/qr.png"
+                alt="Quantexa Registration Poster"
                 fill
-                className="object-cover rounded-xl"
+                className="object-contain rounded-xl"
               />
             </div>
           </a>

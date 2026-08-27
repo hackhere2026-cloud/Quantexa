@@ -35,7 +35,7 @@ class NumberedCanvas(canvas.Canvas):
         
         self.setFont("Helvetica-Bold", 8)
         self.setFillColor(colors.HexColor("#0284c7"))
-        self.drawString(36, A4[1] - 28, "NEXORA 2026 HACKATHON")
+        self.drawString(36, A4[1] - 28, "QUANTEXA 2026 HACKATHON")
         self.setFont("Helvetica", 8)
         self.setFillColor(colors.HexColor("#64748b"))
         self.drawRightString(A4[0] - 36, A4[1] - 28, "ADMIN TRACK REPORT")
@@ -44,18 +44,19 @@ class NumberedCanvas(canvas.Canvas):
         self.line(36, 45, A4[0] - 36, 45)
         self.setFont("Helvetica", 8)
         self.setFillColor(colors.HexColor("#64748b"))
-        self.drawString(36, 32, "Confidential • Nexora Organizing Committee")
+        self.drawString(36, 32, "Confidential • Quantexa Organizing Committee")
         self.drawRightString(A4[0] - 36, 32, f"Page {self._pageNumber} of {page_count}")
         self.restoreState()
 
 def get_floor_name(team_id):
-    if team_id.startswith("NEX0"):
+    tid = team_id.upper()
+    if tid.startswith("NEX0") or tid.startswith("QTX0"):
         return "Ground Floor"
-    elif team_id.startswith("NEX1"):
+    elif tid.startswith("NEX1") or tid.startswith("QTX1"):
         return "First Floor"
-    elif team_id.startswith("NEX2"):
+    elif tid.startswith("NEX2") or tid.startswith("QTX2"):
         return "Second Floor"
-    elif team_id.startswith("NEX3"):
+    elif tid.startswith("NEX3") or tid.startswith("QTX3"):
         return "Online / Virtual"
     return "Main Venue"
 
@@ -176,7 +177,7 @@ def build_pdf(db_path, output_pdf_path, filter_track=None):
     story = []
 
     # Title Banner Block
-    doc_title = f"NEXORA 2026 — {filter_track.upper() if filter_track else 'TRACK DISTRIBUTION'} ADMIN REPORT"
+    doc_title = f"QUANTEXA 2026 — {filter_track.upper() if filter_track else 'TRACK DISTRIBUTION'} ADMIN REPORT"
     story.append(Paragraph(doc_title, title_style))
     story.append(Spacer(1, 4))
     now_str = datetime.now().strftime("%B %d, %Y • %I:%M %p")
@@ -268,10 +269,10 @@ def build_pdf(db_path, output_pdf_path, filter_track=None):
         ]
 
         prefix_map = {
-            "Ground Floor": "NEX0001 - NEX0046",
-            "First Floor": "NEX1001 - NEX1047",
-            "Second Floor": "NEX2001 - NEX2058",
-            "Online / Virtual": "NEX3001 - NEX3023",
+            "Ground Floor": "QTX0001 / NEX0001 - QTX0046 / NEX0046",
+            "First Floor": "QTX1001 / NEX1001 - QTX1047 / NEX1047",
+            "Second Floor": "QTX2001 / NEX2001 - QTX2058 / NEX2058",
+            "Online / Virtual": "QTX3001 / NEX3001 - QTX3023 / NEX3023",
         }
 
         for fl_name, counts in floors.items():
@@ -319,13 +320,13 @@ if __name__ == "__main__":
     db_file = "./data/final_db.json"
     
     # Combined PDF
-    build_pdf(db_file, "./public/uploads/Nexora_Admin_Track_Report.pdf")
-    build_pdf(db_file, "./Nexora_Admin_Track_Report.pdf")
+    build_pdf(db_file, "./public/uploads/Quantexa_Admin_Track_Report.pdf")
+    build_pdf(db_file, "./Quantexa_Admin_Track_Report.pdf")
 
     # Med-Tech PDF
-    build_pdf(db_file, "./public/uploads/Nexora_MedTech_Track_Report.pdf", filter_track="Med-Tech")
-    build_pdf(db_file, "./Nexora_MedTech_Track_Report.pdf", filter_track="Med-Tech")
+    build_pdf(db_file, "./public/uploads/Quantexa_MedTech_Track_Report.pdf", filter_track="Med-Tech")
+    build_pdf(db_file, "./Quantexa_MedTech_Track_Report.pdf", filter_track="Med-Tech")
 
     # Cyber Security PDF
-    build_pdf(db_file, "./public/uploads/Nexora_CyberSecurity_Track_Report.pdf", filter_track="Cyber Security")
-    build_pdf(db_file, "./Nexora_CyberSecurity_Track_Report.pdf", filter_track="Cyber Security")
+    build_pdf(db_file, "./public/uploads/Quantexa_CyberSecurity_Track_Report.pdf", filter_track="Cyber Security")
+    build_pdf(db_file, "./Quantexa_CyberSecurity_Track_Report.pdf", filter_track="Cyber Security")

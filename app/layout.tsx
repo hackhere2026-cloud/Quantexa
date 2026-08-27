@@ -25,12 +25,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://nexora-hackhere.vercel.app"),
-  title: "NEXORA 2026 | Beyond Limits. Beyond Imagination — by HackHere",
-  description: "NEXORA is a premier hackathon presented by HackHere in Coimbatore. Join builders, compete across frontier tracks, and solve real-world challenges.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://quantexa-hackhere.vercel.app"),
+  title: "Quantexa 2026 | Personalised Vulnerability Triage — by HackHere",
+  description: "Quantexa is a premier 24-hour vulnerability triage challenge presented by HackHere. Join builders, compete across frontier tracks, and solve real-world security challenges.",
   openGraph: {
-    title: "NEXORA 2026 | Beyond Limits. Beyond Imagination",
-    description: "Presented by HackHere. August 22–23 in Coimbatore.",
+    title: "Quantexa 2026 | Personalised Vulnerability Triage",
+    description: "Presented by HackHere. September 12–13 in Coimbatore.",
     images: ["/fin.png"],
   },
 };
