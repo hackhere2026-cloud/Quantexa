@@ -5,8 +5,6 @@ import { motion } from "framer-motion";
 
 import EventHighlightsSection from "@/components/EventHighlightsSection";
 import MobileEventHighlightsSection from "@/components/mobile/MobileEventHighlightsSection";
-import LocationTimelineSection from "@/components/LocationTimelineSection";
-import MobileLocationTimelineSection from "@/components/mobile/MobileLocationTimelineSection";
 
 // Desktop Components
 import IntroLoader from "@/components/IntroLoader";
@@ -115,14 +113,14 @@ export default function Home() {
             <TracksSection />
           </motion.div>
 
-          {/* Location & Timeline Command Hub */}
+          {/* Schedule Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
           >
-            <LocationTimelineSection onRegisterClick={handleOpenQRModal} />
+            <ScheduleSection />
           </motion.div>
 
           {/* Rewards Section */}
@@ -189,7 +187,7 @@ export default function Home() {
           <MobileAboutSection />
           <MobileJuriesSection />
           <MobileTracksSection />
-          <MobileLocationTimelineSection onRegisterClick={handleOpenQRModal} />
+          <MobileScheduleSection />
           <MobileRewardsSection />
           <MobileSponsorsMarquee />
           <MobileTeamSection />

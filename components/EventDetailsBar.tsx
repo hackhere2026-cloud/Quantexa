@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Calendar, QrCode, Timer, ExternalLink } from "lucide-react";
+import { MapPin, Calendar, QrCode, Timer, ExternalLink, Compass } from "lucide-react";
 import { event } from "@/data/event";
 
 interface EventDetailsBarProps {
@@ -49,8 +49,8 @@ export default function EventDetailsBar({ onRegisterClick }: EventDetailsBarProp
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show sticky bar once scrolled past 300px
-      setShowBar(window.scrollY > 300);
+      // Show sticky bar once scrolled past 250px
+      setShowBar(window.scrollY > 250);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -60,85 +60,91 @@ export default function EventDetailsBar({ onRegisterClick }: EventDetailsBarProp
     <AnimatePresence>
       {showBar && (
         <motion.div
-          initial={{ y: 60, opacity: 0 }}
+          initial={{ y: 70, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 60, opacity: 0 }}
+          exit={{ y: 70, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[95%] max-w-5xl glass-panel rounded-full px-5 sm:px-8 py-3 shadow-[0_10px_35px_rgba(0,0,0,0.9)] border border-crimson/40"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[95%] max-w-5xl glass-panel rounded-2xl px-5 sm:px-7 py-3 shadow-[0_12px_45px_rgba(0,0,0,0.95)] border border-[#D4A843]/40 bg-[#0A0E1A]/95 backdrop-blur-2xl relative overflow-hidden"
         >
+          {/* Subtle Ambient Gold Line */}
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A843]/60 to-transparent" />
+
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-mono text-gray-200">
-            {/* Left Side: Animated Event Launch Countdown Timer */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-crimson-glow animate-ping shrink-0" />
-                <Timer className="w-4 h-4 text-crimson-glow shrink-0" />
-                <span className="hidden sm:inline-block text-[11px] font-mono uppercase tracking-widest text-gray-400">
+            {/* Left Side: Quantum Telemetry Countdown Timer */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D4A843] animate-ping shrink-0" />
+                <Timer className="w-4 h-4 text-[#F0C755] shrink-0" />
+                <span className="hidden sm:inline-block text-[11px] font-mono font-bold uppercase tracking-widest text-[#D4A843]">
                   LAUNCH IN
                 </span>
               </div>
 
-              {/* Ticking Digit Counters */}
+              {/* Ticking Digital Blocks */}
               <div className="flex items-center gap-1 font-mono font-bold text-xs sm:text-sm">
-                <div className="bg-black/80 border border-crimson/50 px-2 py-1 rounded-md text-crimson-glow shadow-[0_0_10px_rgba(0,229,255,0.4)]">
+                <div className="bg-black/90 border border-[#D4A843]/50 px-2.5 py-1 rounded-lg text-[#F0C755] shadow-[0_0_12px_rgba(212,168,67,0.25)]">
                   {String(timeLeft.days).padStart(2, "0")}
                   <span className="text-[9px] text-gray-400 ml-0.5">d</span>
                 </div>
-                <span className="text-crimson-glow animate-pulse font-extrabold">:</span>
+                <span className="text-[#D4A843] animate-pulse font-extrabold">:</span>
 
-                <div className="bg-black/80 border border-crimson/50 px-2 py-1 rounded-md text-crimson-glow shadow-[0_0_10px_rgba(0,229,255,0.4)]">
+                <div className="bg-black/90 border border-[#D4A843]/50 px-2.5 py-1 rounded-lg text-[#F0C755] shadow-[0_0_12px_rgba(212,168,67,0.25)]">
                   {String(timeLeft.hours).padStart(2, "0")}
                   <span className="text-[9px] text-gray-400 ml-0.5">h</span>
                 </div>
-                <span className="text-crimson-glow animate-pulse font-extrabold">:</span>
+                <span className="text-[#D4A843] animate-pulse font-extrabold">:</span>
 
-                <div className="bg-black/80 border border-crimson/50 px-2 py-1 rounded-md text-crimson-glow shadow-[0_0_10px_rgba(0,229,255,0.4)]">
+                <div className="bg-black/90 border border-[#D4A843]/50 px-2.5 py-1 rounded-lg text-[#F0C755] shadow-[0_0_12px_rgba(212,168,67,0.25)]">
                   {String(timeLeft.minutes).padStart(2, "0")}
                   <span className="text-[9px] text-gray-400 ml-0.5">m</span>
                 </div>
-                <span className="text-crimson-glow animate-pulse font-extrabold">:</span>
+                <span className="text-[#D4A843] animate-pulse font-extrabold">:</span>
 
                 <motion.div
                   key={timeLeft.seconds}
-                  initial={{ scale: 1.15, opacity: 0.8 }}
+                  initial={{ scale: 1.12, opacity: 0.8 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.2 }}
-                  className="bg-black/80 border border-crimson/60 px-2 py-1 rounded-md text-white bg-gradient-to-r from-crimson/30 to-crimson/10 shadow-[0_0_15px_rgba(0,240,255,0.7)]"
+                  className="bg-black/90 border border-[#F0C755] px-2.5 py-1 rounded-lg text-black bg-gradient-to-r from-[#F0C755] to-[#D4A843] font-black shadow-[0_0_15px_rgba(240,199,85,0.6)]"
                 >
                   {String(timeLeft.seconds).padStart(2, "0")}
-                  <span className="text-[9px] text-gray-300 ml-0.5">s</span>
+                  <span className="text-[9px] text-black/80 ml-0.5">s</span>
                 </motion.div>
               </div>
             </div>
 
-            {/* Right Side: Venue (Clickable Google Maps link), Date & Register Button */}
+            {/* Right Side: Interactive Venue Coordinates & Register CTA */}
             <div className="flex items-center gap-3 sm:gap-6">
-              {/* Location Link */}
+              {/* Location Badge (Clickable Google Maps link) */}
               <a
                 href={event.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Open SNS IHUB Location in Google Maps"
-                className="hidden lg:flex items-center gap-2 border-l border-white/10 pl-4 text-gray-200 hover:text-crimson-glow transition-colors group"
+                className="hidden lg:flex items-center gap-2 border-l border-white/10 pl-4 text-gray-200 hover:text-[#F0C755] transition-colors group"
               >
-                <MapPin className="w-4 h-4 text-crimson-glow group-hover:scale-110 transition-transform shrink-0" />
-                <span className="group-hover:underline underline-offset-4 flex items-center gap-1">
-                  <strong className="text-white font-sans">{event.venue}</strong> • {event.city}
-                  <ExternalLink className="w-3 h-3 text-gray-400 group-hover:text-crimson-glow" />
+                <div className="p-1 rounded-md bg-[#D4A843]/10 border border-[#D4A843]/30 text-[#D4A843] group-hover:scale-110 transition-transform">
+                  <MapPin className="w-3.5 h-3.5" />
+                </div>
+                <span className="group-hover:underline underline-offset-4 flex items-center gap-1.5 text-xs">
+                  <strong className="text-white font-sans font-bold">{event.venue}</strong>
+                  <span className="text-gray-400">• {event.city}</span>
+                  <ExternalLink className="w-3 h-3 text-[#D4A843] group-hover:text-white" />
                 </span>
               </a>
 
-              {/* Dates */}
-              <div className="hidden sm:flex items-center gap-2 border-l border-white/10 pl-4">
-                <Calendar className="w-4 h-4 text-crimson-glow shrink-0" />
-                <span className="text-white font-sans font-semibold">{event.dateRange}</span>
+              {/* Event Dates Chip */}
+              <div className="hidden sm:flex items-center gap-2 border-l border-white/10 pl-4 text-xs">
+                <Calendar className="w-3.5 h-3.5 text-[#D4A843] shrink-0" />
+                <span className="text-gray-200 font-sans font-semibold">Sept 19–20, 2026</span>
               </div>
 
-              {/* Pill Register Button */}
+              {/* Gold Register Button */}
               <a
                 href={event.registerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-crimson hover:bg-crimson-glow text-black font-display text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,229,255,0.6)] hover:shadow-[0_0_30px_rgba(0,240,255,0.9)] hover:scale-105"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#D4A843] hover:bg-[#F0C755] text-black font-display text-xs font-black uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(212,168,67,0.4)] hover:shadow-[0_0_30px_rgba(240,199,85,0.7)] hover:scale-105"
               >
                 <QrCode className="w-3.5 h-3.5" />
                 <span>Register</span>
