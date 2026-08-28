@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Calendar, QrCode, Timer, ExternalLink } from "lucide-react";
+import { MapPin, Timer, ExternalLink } from "lucide-react";
 import { event } from "@/data/event";
 
 interface EventDetailsBarProps {
@@ -64,11 +64,11 @@ export default function EventDetailsBar({ onRegisterClick }: EventDetailsBarProp
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 60, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="fixed bottom-6 left-6 sm:left-8 z-40 max-w-5xl glass-panel rounded-full px-4 sm:px-6 py-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.9)] border border-amber-500/40 bg-ink/95 backdrop-blur-xl"
+          className="fixed bottom-6 left-6 sm:left-8 z-40 max-w-fit glass-panel rounded-full px-4 sm:px-6 py-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.9)] border border-amber-500/40 bg-ink/95 backdrop-blur-xl"
         >
-          <div className="flex items-center gap-3 sm:gap-5 text-xs sm:text-sm font-mono text-gray-200 flex-wrap sm:flex-nowrap">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm font-mono text-gray-200">
             
-            {/* 1. Location Link (Far Left) */}
+            {/* 1. Location Link */}
             <a
               href={event.mapUrl}
               target="_blank"
@@ -87,7 +87,7 @@ export default function EventDetailsBar({ onRegisterClick }: EventDetailsBarProp
             {/* Vertical Divider */}
             <div className="h-4 w-px bg-white/20 shrink-0" />
 
-            {/* 2. Days Left Countdown (Next on Left) */}
+            {/* 2. Days Left Countdown */}
             <div className="flex items-center gap-2 shrink-0">
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0" />
@@ -130,28 +130,6 @@ export default function EventDetailsBar({ onRegisterClick }: EventDetailsBarProp
               </div>
             </div>
 
-            {/* Vertical Divider */}
-            <div className="hidden lg:block h-4 w-px bg-white/20 shrink-0" />
-
-            {/* 3. Event Dates (Optional display on larger screens) */}
-            <div className="hidden lg:flex items-center gap-1.5 shrink-0">
-              <Calendar className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span className="text-white font-sans text-xs font-semibold">{event.dateRange}</span>
-            </div>
-
-            {/* Vertical Divider */}
-            <div className="h-4 w-px bg-white/20 shrink-0" />
-
-            {/* 4. Register Button */}
-            <a
-              href={event.registerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-display text-[11px] font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(212,168,67,0.6)] hover:shadow-[0_0_30px_rgba(240,199,85,0.9)] hover:scale-105 shrink-0"
-            >
-              <QrCode className="w-3.5 h-3.5" />
-              <span>Register</span>
-            </a>
           </div>
         </motion.div>
       )}
