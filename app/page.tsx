@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-// Desktop Components (100% UNTOUCHED)
+import EventHighlightsSection from "@/components/EventHighlightsSection";
+import MobileEventHighlightsSection from "@/components/mobile/MobileEventHighlightsSection";
+
+// Desktop Components
 import IntroLoader from "@/components/IntroLoader";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -69,6 +72,16 @@ export default function Home() {
 
           {/* Sticky Details Bar */}
           <EventDetailsBar onRegisterClick={handleOpenQRModal} />
+
+          {/* Event Highlights Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+          >
+            <EventHighlightsSection />
+          </motion.div>
 
           {/* About Section */}
           <motion.div
@@ -170,6 +183,7 @@ export default function Home() {
         <div className="block md:hidden">
           <MobileNavbar onRegisterClick={handleOpenQRModal} />
           <MobileHeroSection onRegisterClick={handleOpenQRModal} />
+          <MobileEventHighlightsSection />
           <MobileAboutSection />
           <MobileJuriesSection />
           <MobileTracksSection />

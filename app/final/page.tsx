@@ -558,16 +558,16 @@ export default function FinalPortalPage() {
   return (
     <main className="min-h-screen bg-ink text-white relative overflow-hidden flex flex-col font-sans">
       {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#00E5FF]/10 rounded-full blur-[180px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#D4A843]/10 rounded-full blur-[180px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-crimson/10 rounded-full blur-[180px] pointer-events-none" />
 
       {/* Top Header Bar */}
-      <header className="sticky top-0 z-50 bg-ink/90 backdrop-blur-xl border-b border-cyan-500/30 px-4 sm:px-8 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-ink/90 backdrop-blur-xl border-b border-amber-500/30 px-4 sm:px-8 py-4 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-cyan-500/30 hover:border-cyan-400 text-xs font-mono text-cyan-300 transition-all shadow-[0_0_15px_rgba(0,229,255,0.15)]"
+          className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-amber-500/30 hover:border-amber-400 text-xs font-mono text-amber-300 transition-all shadow-[0_0_15px_rgba(0,229,255,0.15)]"
         >
-          <ArrowLeft className="w-4 h-4 text-cyan-400" />
+          <ArrowLeft className="w-4 h-4 text-amber-400" />
           <span>Back to Quantexa</span>
         </Link>
 
@@ -616,13 +616,13 @@ export default function FinalPortalPage() {
               exit={{ opacity: 0, y: -15 }}
               className="max-w-md mx-auto space-y-4"
             >
-              <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/40 bg-gradient-to-b from-cyan-950/20 via-ink to-black space-y-6 shadow-[0_0_30px_rgba(0,229,255,0.15)]">
+              <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/40 bg-gradient-to-b from-amber-950/20 via-ink to-black space-y-6 shadow-[0_0_30px_rgba(0,229,255,0.15)]">
                 <div className="text-center space-y-2">
-                  <div className="w-12 h-12 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 mx-auto flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-950/80 border border-amber-500/40 mx-auto flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
                     <Key className="w-6 h-6" />
                   </div>
                   <h2 className="text-xl font-display font-extrabold text-white tracking-wide">
-                    TEAM <span className="text-cyan-400">AUTHENTICATION</span>
+                    TEAM <span className="text-amber-400">AUTHENTICATION</span>
                   </h2>
                   <p className="text-xs text-gray-400 font-sans">
                     Connect to your team account, manage members, and submit your project files.
@@ -631,7 +631,7 @@ export default function FinalPortalPage() {
 
                 <form onSubmit={handleLogin} className="space-y-4 font-mono text-xs">
                   <div className="space-y-1.5">
-                    <label className="text-cyan-400 uppercase tracking-widest text-[10px]">
+                    <label className="text-amber-400 uppercase tracking-widest text-[10px]">
                       Team ID / Name
                     </label>
                     <div className="relative">
@@ -642,13 +642,13 @@ export default function FinalPortalPage() {
                         value={teamInput}
                         onChange={(e) => setTeamInput(e.target.value)}
                         placeholder="e.g. QTX0001 or Team Name"
-                        className="w-full bg-black/60 border border-white/10 focus:border-cyan-400 rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
+                        className="w-full bg-black/60 border border-white/10 focus:border-amber-400 rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-cyan-400 uppercase tracking-widest text-[10px]">
+                    <label className="text-amber-400 uppercase tracking-widest text-[10px]">
                       Passcode / Password
                     </label>
                     <div className="relative">
@@ -659,12 +659,12 @@ export default function FinalPortalPage() {
                         value={teamPassword}
                         onChange={(e) => setTeamPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full bg-black/60 border border-white/10 focus:border-cyan-400 rounded-xl pl-10 pr-10 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
+                        className="w-full bg-black/60 border border-white/10 focus:border-amber-400 rounded-xl pl-10 pr-10 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-400 transition-colors p-1"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-400 transition-colors p-1"
                         title={showPassword ? "Hide Password" : "Show Password"}
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -675,7 +675,7 @@ export default function FinalPortalPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-3.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-display text-xs font-extrabold uppercase tracking-wider shadow-[0_0_20px_rgba(0,229,255,0.6)] transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-display text-xs font-extrabold uppercase tracking-wider shadow-[0_0_20px_rgba(0,229,255,0.6)] transition-all flex items-center justify-center gap-2"
                   >
                     {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Connect Team Portal"}
                   </button>
@@ -683,11 +683,11 @@ export default function FinalPortalPage() {
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs font-mono space-y-2">
-                <div className="flex justify-between items-center text-[10px] text-cyan-400 uppercase tracking-widest font-bold">
+                <div className="flex justify-between items-center text-[10px] text-amber-400 uppercase tracking-widest font-bold">
                   <span>🔑 LOGIN CREDENTIALS INFO:</span>
                 </div>
                 <div className="space-y-1.5 text-[11px] text-gray-300">
-                  <div>• <strong className="text-emerald-400">Team Login:</strong> ID: <code className="text-cyan-300 font-bold">TEAM ID</code> (e.g. QTX0001) | Password: <code className="text-cyan-300 font-bold">TEAM LEAD NUMBER</code></div>
+                  <div>• <strong className="text-emerald-400">Team Login:</strong> ID: <code className="text-amber-300 font-bold">TEAM ID</code> (e.g. QTX0001) | Password: <code className="text-amber-300 font-bold">TEAM LEAD NUMBER</code></div>
                 </div>
               </div>
             </motion.div>
@@ -701,11 +701,11 @@ export default function FinalPortalPage() {
               className="space-y-6"
             >
               {/* Team Header Banner */}
-              <div className="p-6 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-ink to-black border border-cyan-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-950/40 via-ink to-black border border-amber-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <span className="text-xs font-mono text-cyan-400 font-bold">// TEAM ID: {currentTeam.id}</span>
+                  <span className="text-xs font-mono text-amber-400 font-bold">// TEAM ID: {currentTeam.id}</span>
                   <h1 className="text-2xl font-display font-extrabold text-white">
-                    Welcome, <span className="text-cyan-400">{currentTeam.name}</span>
+                    Welcome, <span className="text-amber-400">{currentTeam.name}</span>
                   </h1>
                 </div>
 
@@ -729,10 +729,10 @@ export default function FinalPortalPage() {
               </div>
 
               {/* Team Members Details Section (One-Time Edit & Lock) */}
-              <div className="glass-panel p-6 rounded-3xl border border-cyan-500/30 bg-black/40 space-y-4">
+              <div className="glass-panel p-6 rounded-3xl border border-amber-500/30 bg-black/40 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-400">
+                    <div className="p-2 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400">
                       <Users className="w-5 h-5" />
                     </div>
                     <div>
@@ -748,7 +748,7 @@ export default function FinalPortalPage() {
                   {!currentTeam.isRosterLocked && (
                     <button
                       onClick={() => setEditingMembers(!editingMembers)}
-                      className="px-3.5 py-1.5 rounded-xl bg-cyan-950/80 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 text-xs font-mono flex items-center gap-1.5"
+                      className="px-3.5 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500/40 hover:border-amber-400 text-amber-300 text-xs font-mono flex items-center gap-1.5"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                       <span>{editingMembers ? "Cancel Edit" : "Add/Edit Team Members"}</span>
@@ -764,14 +764,14 @@ export default function FinalPortalPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <div className="text-[10px] text-cyan-400 uppercase tracking-widest font-bold">
+                      <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold">
                         Team Roster ({currentTeam.membersCount || 4} Total Members Allowed)
                       </div>
 
                       {memberList.map((m, idx) => (
                         <div key={idx} className="flex flex-col sm:flex-row items-center gap-3 p-3 rounded-xl bg-black/60 border border-white/10">
-                          <div className="w-full sm:w-1/3 text-cyan-400 font-bold flex items-center gap-2">
-                            <User className="w-4 h-4 text-cyan-400 shrink-0" />
+                          <div className="w-full sm:w-1/3 text-amber-400 font-bold flex items-center gap-2">
+                            <User className="w-4 h-4 text-amber-400 shrink-0" />
                             <span>{idx === 0 ? "1. Team Leader" : `${idx + 1}. Member ${idx + 1}`}</span>
                           </div>
 
@@ -784,8 +784,8 @@ export default function FinalPortalPage() {
                             onChange={(e) => handleUpdateMember(idx, "name", e.target.value)}
                             className={`w-full sm:w-2/3 border rounded-xl px-3.5 py-2.5 text-white transition-all ${
                               idx === 0
-                                ? "bg-cyan-950/40 border-cyan-500/40 text-cyan-200 cursor-not-allowed font-semibold"
-                                : "bg-black/80 border-white/10 focus:border-cyan-400"
+                                ? "bg-amber-950/40 border-amber-500/40 text-amber-200 cursor-not-allowed font-semibold"
+                                : "bg-black/80 border-white/10 focus:border-amber-400"
                             }`}
                           />
                         </div>
@@ -795,7 +795,7 @@ export default function FinalPortalPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="px-6 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-display font-extrabold text-xs uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all"
+                      className="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-display font-extrabold text-xs uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all"
                     >
                       {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Save Team Members"}
                     </button>
@@ -809,10 +809,10 @@ export default function FinalPortalPage() {
                         className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between space-y-1"
                       >
                         <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-cyan-400 shrink-0" />
+                          <User className="w-4 h-4 text-amber-400 shrink-0" />
                           <span className="font-bold text-white truncate">{m.name}</span>
                         </div>
-                        <span className="text-[10px] text-cyan-300/80 uppercase tracking-wider">
+                        <span className="text-[10px] text-amber-300/80 uppercase tracking-wider">
                           {m.role || (idx === 0 ? "Team Lead" : "Member")}
                         </span>
                       </div>
@@ -823,16 +823,16 @@ export default function FinalPortalPage() {
 
               {/* Interactive Spin Wheel Domain Track & Problem Statement Card */}
               <TrackSpinWheel
-                track={currentTeam.track || "Cyber Security"}
+                track={currentTeam.track || "Quantum Technology"}
                 problemStatement={currentTeam.problemStatement}
                 problemStatementFileUrl={currentTeam.problemStatementFileUrl}
                 teamId={currentTeam.id}
               />
 
               {/* Submissions Section: Git Link + Presentation File Upload */}
-              <div className="glass-panel p-6 rounded-3xl border border-cyan-500/40 bg-gradient-to-r from-cyan-950/20 via-ink to-black space-y-6">
+              <div className="glass-panel p-6 rounded-3xl border border-amber-500/40 bg-gradient-to-r from-amber-950/20 via-ink to-black space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-400">
+                  <div className="p-2 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400">
                     <Upload className="w-5 h-5" />
                   </div>
                   <div>
@@ -847,7 +847,7 @@ export default function FinalPortalPage() {
                   {/* 1. Git Link Asking */}
                   <div className="p-5 rounded-2xl bg-black/60 border border-white/10 space-y-3">
                     <div className="flex items-center justify-between">
-                      <label className="text-cyan-400 font-bold uppercase text-[11px] flex items-center gap-2">
+                      <label className="text-amber-400 font-bold uppercase text-[11px] flex items-center gap-2">
                         <Github className="w-4 h-4 text-white" />
                         1. GitHub / Git Repository Link (Required)
                       </label>
@@ -856,7 +856,7 @@ export default function FinalPortalPage() {
                           href={gitRepoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-cyan-300 hover:underline flex items-center gap-1"
+                          className="text-xs text-amber-300 hover:underline flex items-center gap-1"
                         >
                           <span>Open Repository</span>
                           <ExternalLink className="w-3 h-3" />
@@ -870,14 +870,14 @@ export default function FinalPortalPage() {
                       value={gitRepoUrl}
                       onChange={(e) => setGitRepoUrl(e.target.value)}
                       placeholder="https://github.com/your-team-name/quantexa-project"
-                      className="w-full bg-black/80 border border-white/10 focus:border-cyan-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none"
+                      className="w-full bg-black/80 border border-white/10 focus:border-amber-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none"
                     />
                   </div>
 
                   {/* 2. Presentation Drive Link */}
                   <div className="p-5 rounded-2xl bg-black/60 border border-white/10 space-y-3">
                     <div className="flex items-center justify-between">
-                      <label className="text-cyan-400 font-bold uppercase text-[11px] flex items-center gap-2">
+                      <label className="text-amber-400 font-bold uppercase text-[11px] flex items-center gap-2">
                         <FileText className="w-4 h-4 text-emerald-400" />
                         2. Project Presentation Drive Link (Required)
                       </label>
@@ -903,7 +903,7 @@ export default function FinalPortalPage() {
                         setProjectFileName("Drive Link");
                       }}
                       placeholder="https://docs.google.com/presentation/d/... or Google Drive URL"
-                      className="w-full bg-black/80 border border-white/10 focus:border-cyan-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none"
+                      className="w-full bg-black/80 border border-white/10 focus:border-amber-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none"
                     />
                   </div>
 
@@ -911,7 +911,7 @@ export default function FinalPortalPage() {
                   <button
                     type="submit"
                     disabled={isLoading || isUploading}
-                    className="w-full py-4 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-display text-sm font-extrabold uppercase tracking-wider shrink-0 transition-all shadow-[0_0_25px_rgba(0,229,255,0.5)] flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-display text-sm font-extrabold uppercase tracking-wider shrink-0 transition-all shadow-[0_0_25px_rgba(0,229,255,0.5)] flex items-center justify-center gap-2"
                   >
                     {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Save All Submissions & Details"}
                   </button>
@@ -957,7 +957,7 @@ export default function FinalPortalPage() {
 
                   <button
                     onClick={() => setShowAddTeam(!showAddTeam)}
-                    className="px-4 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-display font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,255,0.4)]"
+                    className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-xs font-display font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,255,0.4)]"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Single Team DB</span>
@@ -1029,10 +1029,10 @@ export default function FinalPortalPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-6 rounded-3xl bg-cyan-950/30 border border-cyan-500/40 space-y-4"
+                  className="p-6 rounded-3xl bg-amber-950/30 border border-amber-500/40 space-y-4"
                 >
-                  <h3 className="font-display font-bold text-sm text-cyan-300 uppercase tracking-wider flex items-center gap-2">
-                    <Server className="w-4 h-4 text-cyan-400" />
+                  <h3 className="font-display font-bold text-sm text-amber-300 uppercase tracking-wider flex items-center gap-2">
+                    <Server className="w-4 h-4 text-amber-400" />
                     Provision Single Team & Account
                   </h3>
 
@@ -1043,7 +1043,7 @@ export default function FinalPortalPage() {
                       value={newTeamName}
                       onChange={(e) => setNewTeamName(e.target.value)}
                       placeholder="Team Name (e.g. ApexDevs)"
-                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-cyan-400"
+                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-amber-400"
                     />
                     <input
                       type="text"
@@ -1051,7 +1051,7 @@ export default function FinalPortalPage() {
                       value={newTeamLeader}
                       onChange={(e) => setNewTeamLeader(e.target.value)}
                       placeholder="Team Leader Name"
-                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-cyan-400"
+                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-amber-400"
                     />
                     <input
                       type="text"
@@ -1059,12 +1059,12 @@ export default function FinalPortalPage() {
                       value={newTeamPhone}
                       onChange={(e) => setNewTeamPhone(e.target.value)}
                       placeholder="Leader Phone / Passcode"
-                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-cyan-400"
+                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-amber-400"
                     />
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="bg-cyan-400 text-black font-display text-xs font-bold uppercase py-2.5 rounded-xl hover:bg-cyan-300 transition-all flex items-center justify-center gap-2"
+                      className="bg-amber-400 text-black font-display text-xs font-bold uppercase py-2.5 rounded-xl hover:bg-amber-300 transition-all flex items-center justify-center gap-2"
                     >
                       {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Create Team"}
                     </button>
@@ -1081,7 +1081,7 @@ export default function FinalPortalPage() {
                     onClick={() => setAdminView("database")}
                     className={`px-4 py-2 rounded-lg transition-all ${
                       adminView === "database"
-                        ? "bg-cyan-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
+                        ? "bg-amber-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
@@ -1091,7 +1091,7 @@ export default function FinalPortalPage() {
                     onClick={() => setAdminView("rosters")}
                     className={`px-4 py-2 rounded-lg transition-all ${
                       adminView === "rosters"
-                        ? "bg-cyan-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
+                        ? "bg-amber-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
@@ -1101,7 +1101,7 @@ export default function FinalPortalPage() {
                     onClick={() => setAdminView("submissions")}
                     className={`px-4 py-2 rounded-lg transition-all ${
                       adminView === "submissions"
-                        ? "bg-cyan-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
+                        ? "bg-amber-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
@@ -1121,7 +1121,7 @@ export default function FinalPortalPage() {
                         setCurrentPage(1);
                       }}
                       placeholder="Search teams by ID, Name, Leader, Phone..."
-                      className="w-full bg-black/60 border border-white/10 focus:border-cyan-400 rounded-xl pl-10 pr-4 py-2.5 text-white placeholder:text-gray-500 focus:outline-none"
+                      className="w-full bg-black/60 border border-white/10 focus:border-amber-400 rounded-xl pl-10 pr-4 py-2.5 text-white placeholder:text-gray-500 focus:outline-none"
                     />
                   </div>
 
@@ -1133,7 +1133,7 @@ export default function FinalPortalPage() {
                         setPageSize(Number(e.target.value));
                         setCurrentPage(1);
                       }}
-                      className="bg-black border border-white/10 rounded-lg px-2 py-1.5 text-white focus:outline-none focus:border-cyan-400 text-xs"
+                      className="bg-black border border-white/10 rounded-lg px-2 py-1.5 text-white focus:outline-none focus:border-amber-400 text-xs"
                     >
                       <option value={10}>10</option>
                       <option value={25}>25</option>
@@ -1163,7 +1163,7 @@ export default function FinalPortalPage() {
                             const members = t.memberList || [{ name: t.leaderName, role: "Team Lead", phone: t.leaderPhone }];
                             return (
                               <tr key={t.id} className="hover:bg-white/5 transition-colors">
-                                <td className="py-3.5 px-4 font-bold text-cyan-400">{t.id}</td>
+                                <td className="py-3.5 px-4 font-bold text-amber-400">{t.id}</td>
                                 <td className="py-3.5 px-4 font-sans font-semibold text-white">{t.name}</td>
                                 <td className="py-3.5 px-4">
                                   <div className="font-sans font-semibold text-emerald-300">{members[0]?.name || t.leaderName || "-"}</div>
@@ -1199,11 +1199,11 @@ export default function FinalPortalPage() {
                         {paginatedTeams.length > 0 ? (
                           paginatedTeams.map((t) => (
                             <tr key={t.id} className="hover:bg-white/5 transition-colors">
-                              <td className="py-3.5 px-4 font-bold text-cyan-400">{t.id}</td>
+                              <td className="py-3.5 px-4 font-bold text-amber-400">{t.id}</td>
                               <td className="py-3.5 px-4 font-sans font-semibold text-white">{t.name}</td>
                               <td className="py-3.5 px-4">
                                 <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
-                                  t.track === "Cyber Security"
+                                  t.track === "Quantum Technology"
                                     ? "bg-purple-950/80 border-purple-500/40 text-purple-300"
                                     : "bg-emerald-950/80 border-emerald-500/40 text-emerald-300"
                                 }`}>
@@ -1216,7 +1216,7 @@ export default function FinalPortalPage() {
                                     href={t.gitRepoUrl || t.submissionUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-cyan-400 underline hover:text-cyan-300 text-xs flex items-center gap-1"
+                                    className="text-amber-400 underline hover:text-amber-300 text-xs flex items-center gap-1"
                                   >
                                     <Github className="w-4 h-4" />
                                     <span className="truncate max-w-[200px] block">{t.gitRepoUrl || t.submissionUrl}</span>
@@ -1271,7 +1271,7 @@ export default function FinalPortalPage() {
                       {paginatedTeams.length > 0 ? (
                         paginatedTeams.map((t) => (
                           <tr key={t.id} className="hover:bg-white/5 transition-colors">
-                            <td className="py-3.5 px-4 font-bold text-cyan-400">{t.id}</td>
+                            <td className="py-3.5 px-4 font-bold text-amber-400">{t.id}</td>
                             <td className="py-3.5 px-4 font-sans font-semibold text-white">{t.name}</td>
                             <td className="py-3.5 px-4">
                               <div className="font-sans font-semibold text-white">{t.leaderName || "Leader N/A"}</div>
@@ -1280,7 +1280,7 @@ export default function FinalPortalPage() {
                             <td className="py-3.5 px-4 text-amber-300 font-mono">{t.passcode}</td>
                             <td className="py-3.5 px-4">
                               <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
-                                t.track === "Cyber Security"
+                                t.track === "Quantum Technology"
                                   ? "bg-purple-950/80 border-purple-500/40 text-purple-300"
                                   : "bg-emerald-950/80 border-emerald-500/40 text-emerald-300"
                               }`}>
@@ -1304,7 +1304,7 @@ export default function FinalPortalPage() {
                                   href={t.gitRepoUrl || t.submissionUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-cyan-400 underline hover:text-cyan-300 text-[11px] flex items-center gap-1"
+                                  className="text-amber-400 underline hover:text-amber-300 text-[11px] flex items-center gap-1"
                                 >
                                   <Github className="w-3 h-3" />
                                   <span>Git Repo ↗</span>
@@ -1377,7 +1377,7 @@ export default function FinalPortalPage() {
                                   setEditingScoreId(t.id);
                                   setTempScore(t.score);
                                 }}
-                                className="px-2.5 py-1 rounded bg-white/5 hover:bg-cyan-950/80 border border-white/10 hover:border-cyan-500/40 text-[10px] text-gray-300 hover:text-cyan-300 transition-all"
+                                className="px-2.5 py-1 rounded bg-white/5 hover:bg-amber-950/80 border border-white/10 hover:border-amber-500/40 text-[10px] text-gray-300 hover:text-amber-300 transition-all"
                               >
                                 Score
                               </button>
@@ -1401,7 +1401,7 @@ export default function FinalPortalPage() {
                   <div className="text-gray-400 text-[11px]">
                     Showing <strong className="text-white">{filteredTeams.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}</strong> to{" "}
                     <strong className="text-white">{Math.min(currentPage * pageSize, filteredTeams.length)}</strong> of{" "}
-                    <strong className="text-cyan-400">{filteredTeams.length}</strong> teams
+                    <strong className="text-amber-400">{filteredTeams.length}</strong> teams
                   </div>
 
                   <div className="flex items-center gap-2">

@@ -39,6 +39,7 @@ export interface JuryMember {
   image: string;
   linkedin?: string;
   twitter?: string;
+  isLocked?: boolean;
 }
 
 export interface TeamMember {
@@ -68,27 +69,26 @@ export const event: EventInfo = {
 };
 
 export const sponsors: Sponsor[] = [
-  { name: "Sponsor 1", logoPath: "/sponsors/wp_sponsor_1.jpeg" },
-  { name: "Sponsor 2", logoPath: "/sponsors/wp_sponsor_2.jpeg" },
-  { name: "Sponsor 3", logoPath: "/sponsors/wp_sponsor_3.jpeg" },
-  { name: "Sponsor 4", logoPath: "/sponsors/wp_sponsor_4.jpeg" },
-  { name: "Sponsor 5", logoPath: "/sponsors/wp_sponsor_5.jpeg" },
-  { name: "Sponsor 6", logoPath: "/sponsors/calendar_sponsor.png" },
+  { name: "Featherless", logoPath: "/sponsors/wp_sponsor_1.jpeg" },
+  { name: "ELRO Tech", logoPath: "/sponsors/wp_sponsor_2.jpeg" },
+  { name: "UptoSkills", logoPath: "/sponsors/wp_sponsor_3.jpeg" },
+  { name: "MeDo", logoPath: "/sponsors/wp_sponsor_4.jpeg" },
+  { name: "ELYON", logoPath: "/sponsors/wp_sponsor_5.jpeg" },
 ];
 
 export const tracks: Track[] = [
   { 
-    id: "cyber-security", 
-    title: "Cyber Security", 
-    description: "Personalised Vulnerability Triage - Turn public CVE, KEV, and EPSS data into explainable, prioritised threat intelligence tailored to specific organizational profiles.", 
-    icon: "shield",
+    id: "quantum-technology", 
+    title: "Quantum Technology", 
+    description: "Quantum Computing, Quantum Information Processing & Decision Intelligence - Build quantum-inspired algorithms, quantum cryptography, decision intelligence frameworks, and deep tech quantum simulations.", 
+    icon: "atom",
     prize: "₹15K Track Pool + Internships"
   },
   { 
-    id: "med-tech", 
-    title: "Med-Tech", 
-    description: "AI-Assisted Meniscus & Knee Implant Sizing - Segment knee structures, measure meniscus thickness for osteoarthritis assessment, and estimate patient-specific implant sizing.", 
-    icon: "activity",
+    id: "finance-technology", 
+    title: "Finance Technology", 
+    description: "FinTech Innovation & Risk Telemetry - Build automated financial risk scoring, fraud detection algorithms, algorithmic trading tools, and secure decentralized financial telemetry.", 
+    icon: "trending-up",
     prize: "₹15K Track Pool + Internships"
   },
 ];
@@ -122,14 +122,14 @@ export const phases: EventPhase[] = [
 
 export const juries: JuryMember[] = [
   {
-    id: "jury-5",
-    name: "Dr. Kaushik Hatti, PhD",
-    role: "CISO & Chief Data Scientist",
-    company: "Rezilyens LLC",
+    id: "jury-1",
+    name: "Position Locked",
+    role: "Senior CISO & Chief Evaluator",
+    company: "To Be Revealed Soon",
     category: "Jury Member",
-    bio: "CISO & Chief Data Scientist at Rezilyens LLC with 18+ years in AI & Cybersecurity. GAISA 4.0 'Best Use of AI' & BW 40 Under 40 awardee.",
-    image: "/juries/kaushik.jpeg",
-    linkedin: "https://www.linkedin.com/in/kaushik-hatti/",
+    bio: "Distinguished industry leader and decision intelligence evaluator. Profile details will be revealed shortly.",
+    image: "/images/hackhere-logo.jpeg",
+    isLocked: true,
   },
   {
     id: "jury-3",
@@ -141,14 +141,14 @@ export const juries: JuryMember[] = [
     image: "/juries/jury_3.jpeg",
   },
   {
-    id: "jury-4",
-    name: "Subhashini S",
-    role: "HR and Insurance Trainer",
-    company: "Pronoia IMF",
+    id: "jury-2",
+    name: "Position Locked",
+    role: "HR & Talent Evaluator",
+    company: "To Be Revealed Soon",
     category: "Jury Member",
-    bio: "HR and Insurance Trainer at Pronoia IMF, empowering talent and professional excellence.",
-    image: "/juries/jury_4.jpeg",
-    linkedin: "https://www.linkedin.com/in/s-subhashini-625794230?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+    bio: "Senior corporate mentor and talent evaluator. Official profile details will be revealed shortly.",
+    image: "/images/hackhere-logo.jpeg",
+    isLocked: true,
   },
 ];
 

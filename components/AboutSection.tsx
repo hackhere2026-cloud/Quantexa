@@ -36,7 +36,7 @@ export default function AboutSection() {
             >
               {event.venue}, {event.city} ↗
             </a>
-            , QUANTEXA is a 24-hour hackathon crucible. Build next-generation solutions in Cyber Security (Personalised Vulnerability Triage) and Med-Tech (AI-Assisted Meniscus & Knee Implant Sizing) that address real-world deep tech challenges.
+            , QUANTEXA is a 24-hour hackathon crucible. Build next-generation solutions in Quantum Technology and Finance Technology that address real-world deep tech challenges.
           </p>
         </motion.div>
 

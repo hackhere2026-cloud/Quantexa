@@ -21,7 +21,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Presented by <strong className="text-white">{event.presentedBy}</strong>. 24-Hour hackathon building the next era of Cyber Security threat intelligence and medical tech innovation.
+              Presented by <strong className="text-white">{event.presentedBy}</strong>. 24-Hour hackathon building the next era of Quantum Technology algorithms and Finance Technology telemetry.
             </p>
             <div className="flex items-center space-x-3 text-gray-400">
               <a href="#" className="hover:text-crimson-glow transition-colors p-2 bg-white/5 rounded-full hover:bg-white/10">

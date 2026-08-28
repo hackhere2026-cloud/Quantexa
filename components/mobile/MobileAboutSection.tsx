@@ -8,7 +8,7 @@ const highlights = [
   {
     icon: Sparkles,
     title: "Frontier Innovation",
-    desc: "Explainable threat intelligence, vulnerability triage, and computer vision medical imaging.",
+    desc: "Quantum information processing, quantum algorithms, and financial tech telemetry.",
   },
   {
     icon: Globe,
@@ -29,16 +29,16 @@ const highlights = [
 
 export default function MobileAboutSection() {
   return (
-    <section id="about" className="py-16 px-4 bg-ink relative z-10 border-t border-cyan-500/20">
+    <section id="about" className="py-16 px-4 bg-ink relative z-10 border-t border-amber-500/20">
       <div className="max-w-md mx-auto space-y-8">
         {/* Section Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono uppercase tracking-widest">
-            <Shield className="w-3 h-3 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/30 text-amber-400 text-[10px] font-mono uppercase tracking-widest">
+            <Shield className="w-3 h-3 text-amber-400" />
             <span>ABOUT THE HACKATHON</span>
           </div>
           <h2 className="text-2xl font-display font-extrabold text-white">
-            DEEP TECH & <span className="text-cyan-400">INTELLIGENCE</span>
+            DEEP TECH & <span className="text-amber-400">INTELLIGENCE</span>
           </h2>
           <p className="text-xs text-gray-300 leading-relaxed pt-1">
             QUANTEXA is a flagship 24-hour innovation marathon bringing together high-impact builders, engineers, and deep tech visionaries.
@@ -56,10 +56,10 @@ export default function MobileAboutSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="p-5 rounded-2xl bg-white/5 border border-cyan-500/20 space-y-2 backdrop-blur-sm"
+                className="p-5 rounded-2xl bg-white/5 border border-amber-500/20 space-y-2 backdrop-blur-sm"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-cyan-950/90 border border-cyan-400/40 text-cyan-400 shrink-0">
+                  <div className="p-2.5 rounded-xl bg-amber-950/90 border border-amber-400/40 text-amber-400 shrink-0">
                     <Icon className="w-5 h-5" />
                   </div>
                   <h3 className="text-sm font-display font-bold text-white">

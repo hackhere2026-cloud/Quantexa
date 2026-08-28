@@ -11,7 +11,7 @@ export default function ScheduleSection() {
     <section id="schedule" className="py-24 relative bg-ink border-t border-white/5 overflow-hidden">
       
       {/* Background Ambient Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#00E5FF]/5 rounded-full blur-[180px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#D4A843]/5 rounded-full blur-[180px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -54,7 +54,7 @@ export default function ScheduleSection() {
               >
                 {/* Glowing Node Dot */}
                 <div className="absolute top-7 right-7 flex items-center justify-center">
-                  <span className="w-3.5 h-3.5 rounded-full bg-crimson-glow shadow-[0_0_15px_#00E5FF] group-hover:scale-125 transition-transform" />
+                  <span className="w-3.5 h-3.5 rounded-full bg-crimson-glow shadow-[0_0_15px_#D4A843] group-hover:scale-125 transition-transform" />
                   <span className="absolute w-7 h-7 rounded-full border border-crimson-glow/40 animate-ping" />
                 </div>
 

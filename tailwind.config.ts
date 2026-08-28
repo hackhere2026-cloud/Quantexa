@@ -10,11 +10,11 @@ const config: Config = {
     extend: {
       colors: {
         crimson: {
-          DEFAULT: '#00E5FF', // Electric Neon Cyan
-          dark: '#0088FF',    // Deep Cyber Blue
-          glow: '#00F0FF',    // Neon Cyan Glow
+          DEFAULT: '#D4A843', // Gold Amber
+          dark: '#C9952E',    // Deep Gold
+          glow: '#F0C755',    // Bright Gold Glow
         },
-        ink: '#0A0A0A',
+        ink: '#0A0E1A',
       },
       fontFamily: {
         display: ['var(--font-orbitron)', 'sans-serif'],

@@ -72,7 +72,7 @@ export default function Navbar({ onRegisterClick }: NavbarProps) {
           </a>
           <Link
             href="/final"
-            className="px-2.5 py-1 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 hover:text-white transition-all text-xs font-mono font-bold tracking-wider uppercase flex items-center gap-1 shadow-[0_0_10px_rgba(0,229,255,0.2)]"
+            className="px-2.5 py-1 rounded-lg bg-amber-950/80 border border-amber-500/40 text-amber-300 hover:text-white transition-all text-xs font-mono font-bold tracking-wider uppercase flex items-center gap-1 shadow-[0_0_10px_rgba(0,229,255,0.2)]"
           >
             <span>FINAL PORTAL</span>
           </Link>

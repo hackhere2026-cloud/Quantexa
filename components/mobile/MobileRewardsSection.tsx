@@ -5,7 +5,7 @@ import { Trophy, Briefcase, ShieldCheck, Cpu, Sparkles, BookOpen, Award } from "
 
 export default function MobileRewardsSection() {
   return (
-    <section id="rewards" className="py-16 px-4 bg-ink relative z-10 border-t border-cyan-500/20">
+    <section id="rewards" className="py-16 px-4 bg-ink relative z-10 border-t border-amber-500/20">
       <div className="max-w-md mx-auto space-y-8">
         
         {/* Section Header */}
@@ -56,10 +56,10 @@ export default function MobileRewardsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
-            className="p-4 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 flex items-start gap-4"
+            className="p-4 rounded-2xl bg-amber-950/40 border border-amber-500/30 flex items-start gap-4"
           >
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <Briefcase className="w-5 h-5 text-cyan-400" />
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Briefcase className="w-5 h-5 text-amber-400" />
             </div>
             <div className="space-y-1">
               <h4 className="text-sm font-display font-bold text-white">

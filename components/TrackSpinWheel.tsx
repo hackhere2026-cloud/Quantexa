@@ -18,7 +18,7 @@ export default function TrackSpinWheel({
   const isCyberTrack = track.toLowerCase().includes("cyber");
 
   return (
-    <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/30 bg-black/60 relative overflow-hidden space-y-6">
+    <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/30 bg-black/60 relative overflow-hidden space-y-6">
       {/* Ambient background glow */}
       <div className={`absolute -top-24 -left-24 w-72 h-72 rounded-full blur-3xl pointer-events-none ${
         isCyberTrack ? "bg-purple-600/15" : "bg-emerald-600/15"
@@ -26,7 +26,7 @@ export default function TrackSpinWheel({
 
       <div className="flex items-center justify-between flex-wrap gap-4 border-b border-white/10 pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-400">
+          <div className="p-2.5 rounded-2xl bg-amber-950/80 border border-amber-500/40 text-amber-400">
             <Terminal className="w-5 h-5" />
           </div>
           <div>
@@ -89,7 +89,7 @@ export default function TrackSpinWheel({
         {/* Problem Statement Details */}
         <div className="p-5 rounded-2xl bg-white/5 border border-white/10 font-mono text-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] text-cyan-400 tracking-wider uppercase">// PROBLEM STATEMENT BRIEF</span>
+            <span className="text-[10px] text-amber-400 tracking-wider uppercase">// PROBLEM STATEMENT BRIEF</span>
             <span className="text-[10px] text-emerald-400 flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5" /> Track Assigned
             </span>

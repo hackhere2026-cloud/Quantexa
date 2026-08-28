@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 import { tracks } from "@/data/event";
-import { ShieldCheck, Sparkles, Activity } from "lucide-react";
+import { Atom, TrendingUp, Sparkles } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
-  shield: ShieldCheck,
-  activity: Activity,
+  atom: Atom,
+  "trending-up": TrendingUp,
 };
 
 export default function TracksSection() {

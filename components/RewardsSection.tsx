@@ -30,7 +30,7 @@ const rewardCards: RewardItem[] = [
     badge: "CAREER FAST-TRACK",
     highlight: "INTERNSHIPS",
     description: "Exclusive fast-track hiring pipelines and internship opportunities with leading partner tech firms.",
-    color: "from-cyan-500/20 via-blue-600/20 to-cyan-500/10 border-cyan-400/40 text-cyan-400",
+    color: "from-amber-500/20 via-blue-600/20 to-amber-500/10 border-amber-400/40 text-amber-400",
   },
   {
     id: "hedera-cert",

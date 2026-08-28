@@ -178,7 +178,7 @@ class CinematicCanvas {
         vz: (Math.random() - 0.5) * 0.4,
         size: Math.random() * 2.5 + 0.5,
         baseAlpha: Math.random() * 0.7 + 0.3,
-        color: i % 3 === 0 ? '#00f3ff' : (i % 3 === 1 ? '#0066ff' : '#ffffff')
+        color: i % 3 === 0 ? '#D4A843' : (i % 3 === 1 ? '#E8832A' : '#ffffff')
       });
     }
 
@@ -234,7 +234,7 @@ class CinematicCanvas {
     this.lightningArcs.push({
       startX, startY, endX, endY,
       life: 1.0,
-      color: Math.random() > 0.5 ? '#00f3ff' : '#0066ff'
+      color: Math.random() > 0.5 ? '#D4A843' : '#E8832A'
     });
   }
 
@@ -268,8 +268,8 @@ class CinematicCanvas {
       w / 2 + this.mouse.x * 2, h / 2 + this.mouse.y * 2, 50,
       w / 2, h / 2, Math.max(w, h) * 0.75
     );
-    bgGrad.addColorStop(0, 'rgba(0, 102, 255, 0.18)');
-    bgGrad.addColorStop(0.4, 'rgba(0, 243, 255, 0.06)');
+    bgGrad.addColorStop(0, 'rgba(212, 168, 67, 0.18)');
+    bgGrad.addColorStop(0.4, 'rgba(240, 199, 85, 0.06)');
     bgGrad.addColorStop(1, 'rgba(0, 0, 0, 1)');
     this.ctx.fillStyle = bgGrad;
     this.ctx.fillRect(0, 0, w, h);
@@ -367,8 +367,8 @@ class CinematicCanvas {
 
     const rayAngle = Math.sin(timeSec * 0.5) * 0.1;
     const grad = this.ctx.createLinearGradient(w * 0.3, 0, w * 0.7, h);
-    grad.addColorStop(0, 'rgba(0, 243, 255, 0.08)');
-    grad.addColorStop(0.5, 'rgba(0, 102, 255, 0.03)');
+    grad.addColorStop(0, 'rgba(240, 199, 85, 0.08)');
+    grad.addColorStop(0.5, 'rgba(212, 168, 67, 0.03)');
     grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
     this.ctx.fillStyle = grad;
@@ -453,7 +453,7 @@ class CinematicCanvas {
         if (proj) {
           p.x += (proj.x - p.x) * 0.1 * targetBlend;
           p.y += (proj.y - p.y) * 0.1 * targetBlend;
-          p.color = '#00f3ff';
+          p.color = '#D4A843';
         }
       } else {
         // Free orbital floating motion
@@ -479,7 +479,7 @@ class CinematicCanvas {
           const p2 = this.particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
           if (dist < 90) {
-            this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.12)';
+            this.ctx.strokeStyle = 'rgba(240, 199, 85, 0.12)';
             this.ctx.lineWidth = 0.5;
             this.ctx.beginPath();
             this.ctx.moveTo(p.x, p.y);
@@ -505,7 +505,7 @@ class CinematicCanvas {
 
     // Central Targeting Reticle
     const radius = 180 + Math.sin(timeSec * 2) * 8;
-    this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.25)';
+    this.ctx.strokeStyle = 'rgba(240, 199, 85, 0.25)';
     this.ctx.lineWidth = 1;
 
     // Reticle Outer Ring
@@ -530,7 +530,7 @@ class CinematicCanvas {
 
     // Telemetry Text
     this.ctx.font = '10px "Space Mono", "Montserrat", monospace';
-    this.ctx.fillStyle = 'rgba(0, 243, 255, 0.7)';
+    this.ctx.fillStyle = 'rgba(240, 199, 85, 0.7)';
     
     const frameIndex = Math.floor(progress * 39) + 1;
     const frameStr = String(frameIndex).padStart(2, '0');
@@ -542,7 +542,7 @@ class CinematicCanvas {
 
     // Scanning Laser Line
     this.scanlineY = (this.scanlineY + 2.5) % h;
-    this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.15)';
+    this.ctx.strokeStyle = 'rgba(240, 199, 85, 0.15)';
     this.ctx.lineWidth = 1;
     this.ctx.beginPath();
     this.ctx.moveTo(0, this.scanlineY);
@@ -565,7 +565,7 @@ class CinematicCanvas {
       }
 
       this.ctx.save();
-      this.ctx.strokeStyle = `rgba(0, 243, 255, ${wave.alpha * 0.6})`;
+      this.ctx.strokeStyle = `rgba(240, 199, 85, ${wave.alpha * 0.6})`;
       this.ctx.lineWidth = 2;
       this.ctx.beginPath();
       this.ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
@@ -585,8 +585,8 @@ class CinematicCanvas {
 
     // Glowing Radial Backdrop behind letters
     const grad = this.ctx.createRadialGradient(w/2, h/2, 20, w/2, h/2, 350);
-    grad.addColorStop(0, 'rgba(0, 243, 255, 0.25)');
-    grad.addColorStop(0.6, 'rgba(0, 102, 255, 0.08)');
+    grad.addColorStop(0, 'rgba(240, 199, 85, 0.25)');
+    grad.addColorStop(0.6, 'rgba(212, 168, 67, 0.08)');
     grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
     this.ctx.fillStyle = grad;

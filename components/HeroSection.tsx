@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Atom, TrendingUp, MapPin, Calendar, ExternalLink } from "lucide-react";
 import { event } from "@/data/event";
 
 interface HeroSectionProps {
@@ -12,7 +12,7 @@ interface HeroSectionProps {
 export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Ambient Canvas Circuit-Line Particle Effect (Neon Cyan / Blue Theme)
+  // Ambient Canvas Quantum Stream (Gold / Amber Theme)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -31,7 +31,6 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
     };
     window.addEventListener("resize", handleResize);
 
-    // Particle nodes for circuit network
     const particleCount = 45;
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
@@ -44,7 +43,6 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw circuit lines between close particles
       for (let i = 0; i < particleCount; i++) {
         const p1 = particles[i];
         p1.x += p1.vx;
@@ -53,10 +51,9 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
         if (p1.x < 0 || p1.x > width) p1.vx *= -1;
         if (p1.y < 0 || p1.y > height) p1.vy *= -1;
 
-        // Draw particle node (Neon Cyan)
         ctx.beginPath();
         ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0, 240, 255, 0.9)";
+        ctx.fillStyle = "rgba(240, 199, 85, 0.85)";
         ctx.fill();
 
         for (let j = i + 1; j < particleCount; j++) {
@@ -69,8 +66,8 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${0.45 * (1 - dist / 130)})`;
-            ctx.lineWidth = 0.9;
+            ctx.strokeStyle = `rgba(212, 168, 67, ${0.45 * (1 - dist / 130)})`;
+            ctx.lineWidth = 0.8;
             ctx.stroke();
           }
         }
@@ -88,67 +85,93 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
   }, []);
 
   return (
-    <section className="relative w-full h-screen min-h-[750px] flex items-center justify-center overflow-hidden bg-ink bg-white-checked">
-      {/* Top Header Shield Gradient */}
-      <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-ink via-ink/60 to-transparent z-10 pointer-events-none" />
+    <section className="relative w-full h-screen min-h-[800px] flex items-center justify-center overflow-hidden bg-[#050503] bg-white-checked">
+      {/* Top Shield Gradient */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#050503] via-[#050503]/80 to-transparent z-10 pointer-events-none" />
 
-      {/* Radial Ambient Backlight (Neon Blue Glow) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-500/20 rounded-full blur-[160px] pointer-events-none z-0" />
+      {/* Radial Ambient Core Glow (Warm Gold) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] bg-[#D4A843]/15 rounded-full blur-[170px] pointer-events-none z-0 animate-pulse" />
 
-      {/* Dark Radial Vignette */}
-      <div className="absolute inset-0 bg-radial from-transparent via-ink/50 to-ink z-0 pointer-events-none" />
+      {/* Dark Radial Overlay */}
+      <div className="absolute inset-0 bg-radial from-transparent via-[#050503]/60 to-[#050503] z-0 pointer-events-none" />
 
-      {/* Canvas Circuit Particle Layer */}
+      {/* Canvas Layer */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-10 pointer-events-none opacity-80"
+        className="absolute inset-0 z-10 pointer-events-none opacity-85"
       />
 
-      {/* Centered Dashboard Interface */}
-      <div className="relative z-20 max-w-3xl mx-auto px-4 text-center flex flex-col items-center justify-center mt-12">
-        {/* Glassmorphic console container */}
+      {/* Main Sci-Fi HUD Container */}
+      <div className="relative z-20 max-w-5xl mx-auto px-4 w-full flex flex-col items-center justify-center mt-12">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="glass-panel p-8 sm:p-12 rounded-3xl border border-cyan-500/30 bg-ink/80 backdrop-blur-xl shadow-[0_0_60px_rgba(0,229,255,0.2)] flex flex-col items-center"
+          className="w-full glass-panel p-8 sm:p-14 rounded-3xl border border-[#D4A843]/40 bg-[#0A0E1A]/90 backdrop-blur-2xl shadow-[0_0_80px_rgba(212,168,67,0.2)] flex flex-col items-center text-center relative overflow-hidden"
         >
-          {/* Status badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/80 border border-cyan-400/30 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-6">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span>Registration Open • {event.dateRange}</span>
+          {/* Decorative Corner Sci-Fi Reticles */}
+          <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#D4A843]" />
+          <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-[#D4A843]" />
+          <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[#D4A843]" />
+          <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#D4A843]" />
+
+          {/* Presenter Pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/40 text-[#D4A843] text-xs font-mono uppercase tracking-[0.25em] mb-6 shadow-[0_0_15px_rgba(212,168,67,0.15)]">
+            <span className="w-2 h-2 rounded-full bg-[#D4A843] animate-ping" />
+            <span>HACKHERE PRESENTS • 24 HOUR OFFLINE HACKATHON</span>
           </div>
 
-          {/* Title */}
-          <h1 className="text-4xl sm:text-6xl font-display font-black tracking-widest text-white uppercase drop-shadow-[0_0_30px_rgba(0,229,255,0.6)] mb-4">
-            QUANTEXA <span className="text-cyan-400">2026</span>
+          {/* Main Metallic Title */}
+          <h1 className="text-5xl sm:text-7xl font-display font-black tracking-widest text-white uppercase drop-shadow-[0_0_40px_rgba(212,168,67,0.6)] mb-3">
+            <span className="bg-gradient-to-r from-white via-[#F0C755] to-[#D4A843] bg-clip-text text-transparent">
+              QUANTEXA
+            </span>{" "}
+            <span className="text-[#D4A843]">2026</span>
           </h1>
 
-          {/* Tagline / presentedBy */}
-          <p className="text-sm sm:text-base font-mono text-cyan-300/80 uppercase tracking-widest mb-6">
-            presented by {event.presentedBy}
+          {/* Tagline */}
+          <p className="text-xs sm:text-sm font-mono text-[#F0C755] uppercase tracking-[0.3em] font-bold mb-6">
+            THINK QUANTUM • SHAPE THE FUTURE
           </p>
 
-          <p className="text-xs sm:text-sm text-gray-300 leading-relaxed font-sans max-w-lg mb-8">
-            The decision intelligence & deep tech hackathon. Build explainable triage pipelines and medical imaging systems at SNS IHUB, Coimbatore.
+          <p className="text-xs sm:text-sm text-gray-300 leading-relaxed font-sans max-w-xl mb-8">
+            The flagship national decision intelligence & deep-tech hackathon. Build quantum-inspired algorithms, financial risk telemetry systems, and decision intelligence models at SNS iHub, Coimbatore.
           </p>
 
-          {/* Real interactive buttons */}
+          {/* Domain Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-8 text-xs font-mono">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-[#D4A843]/30 text-gray-200">
+              <Atom className="w-4 h-4 text-[#D4A843]" />
+              <span>QUANTUM TECHNOLOGY</span>
+            </div>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-[#D4A843]/30 text-gray-200">
+              <TrendingUp className="w-4 h-4 text-[#D4A843]" />
+              <span>FINANCE TECHNOLOGY</span>
+            </div>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#D4A843]/10 border border-[#D4A843]/40 text-[#D4A843]">
+              <Calendar className="w-4 h-4" />
+              <span>SEPTEMBER 19–20, 2026</span>
+            </div>
+          </div>
+
+          {/* Action CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
             <a
               href={event.registerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-52 py-3.5 rounded-full bg-cyan-400 hover:bg-cyan-350 text-black font-display text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:shadow-[0_0_30px_rgba(0,229,255,0.8)] transition-all duration-300 text-center"
+              className="w-full sm:w-60 py-4 rounded-full bg-[#D4A843] hover:bg-[#F0C755] text-black font-display text-xs font-black uppercase tracking-widest shadow-[0_0_25px_rgba(212,168,67,0.5)] hover:shadow-[0_0_40px_rgba(240,199,85,0.8)] transition-all duration-300 text-center flex items-center justify-center gap-2"
             >
-              Claim Access Pass
+              <span>REGISTER ON UNSTOP</span>
+              <ExternalLink className="w-4 h-4" />
             </a>
-            <a
-              href="#tracks"
-              className="w-full sm:w-52 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/40 text-white font-display text-xs font-bold uppercase tracking-wider transition-all duration-300 text-center"
+
+            <button
+              onClick={onRegisterClick}
+              className="w-full sm:w-52 py-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 hover:border-[#D4A843]/60 text-white font-display text-xs font-bold uppercase tracking-wider transition-all duration-300"
             >
-              Explore Domains
-            </a>
+              SCAN QR CODE
+            </button>
           </div>
         </motion.div>
       </div>
@@ -159,16 +182,16 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center text-gray-300 hover:text-crimson-glow transition-colors cursor-pointer"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center text-gray-400 hover:text-[#D4A843] transition-colors cursor-pointer"
       >
         <span className="text-[10px] font-mono tracking-widest uppercase mb-1">
-          Scroll Down
+          EXPLORE QUANTEXA
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
         >
-          <ChevronDown className="w-5 h-5 text-cyan-400" />
+          <ChevronDown className="w-5 h-5 text-[#D4A843]" />
         </motion.div>
       </motion.a>
     </section>

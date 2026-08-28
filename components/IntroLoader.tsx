@@ -120,7 +120,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 229, 255, ${p.alpha})`;
+        ctx.fillStyle = `rgba(212, 168, 67, ${p.alpha})`;
         ctx.fill();
 
         // Connect nearby particles with laser threads
@@ -131,7 +131,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${0.15 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(212, 168, 67, ${0.15 * (1 - dist / 120)})`;
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }
@@ -161,13 +161,13 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
             transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
           }}
           onClick={handleFinish}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#03070d] overflow-hidden cursor-pointer select-none"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#050503] overflow-hidden cursor-pointer select-none"
         >
           {/* Background Canvas Particles */}
           <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
 
           {/* Radial Ambient Core Glow */}
-          <div className="absolute w-[600px] h-[600px] bg-gradient-to-r from-[#00E5FF]/20 via-[#0088FF]/10 to-transparent rounded-full blur-[160px] pointer-events-none animate-pulse" />
+          <div className="absolute w-[600px] h-[600px] bg-gradient-to-r from-[#D4A843]/20 via-[#C9952E]/10 to-transparent rounded-full blur-[160px] pointer-events-none animate-pulse" />
 
           {/* Main 5-Second Quantum Hologram Loader */}
           <div className="relative z-10 flex flex-col items-center justify-center max-w-xl w-full px-6 text-center">
@@ -178,21 +178,21 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 rounded-full border border-dashed border-[#00E5FF]/40"
+                className="absolute inset-0 rounded-full border border-dashed border-[#D4A843]/40"
               />
               
               {/* Inner Glowing Speed Ring */}
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-2 rounded-full border-2 border-t-[#00E5FF] border-r-transparent border-b-[#00E5FF]/30 border-l-transparent shadow-[0_0_20px_rgba(0,229,255,0.4)]"
+                className="absolute inset-2 rounded-full border-2 border-t-[#D4A843] border-r-transparent border-b-[#D4A843]/30 border-l-transparent shadow-[0_0_20px_rgba(212,168,67,0.4)]"
               />
 
               {/* Core Pulse Sphere */}
               <motion.div
                 animate={{ scale: [0.95, 1.1, 0.95] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#00E5FF] to-[#0088FF] flex items-center justify-center shadow-[0_0_30px_#00E5FF] font-mono font-black text-black text-sm"
+                className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#D4A843] to-[#C9952E] flex items-center justify-center shadow-[0_0_30px_#D4A843] font-mono font-black text-black text-sm"
               >
                 {progress}%
               </motion.div>
@@ -203,9 +203,9 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-center gap-2 text-xs font-mono tracking-[0.3em] text-[#00E5FF] uppercase mb-2"
+              className="flex items-center gap-2 text-xs font-mono tracking-[0.3em] text-[#D4A843] uppercase mb-2"
             >
-              <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-[#D4A843] animate-ping" />
               <span>HACKHERE PRESENTS</span>
             </motion.div>
 
@@ -214,27 +214,27 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="text-5xl sm:text-7xl font-display font-black tracking-widest text-white uppercase drop-shadow-[0_0_35px_rgba(0,229,255,0.8)] mb-6"
+              className="text-5xl sm:text-7xl font-display font-black tracking-widest text-white uppercase drop-shadow-[0_0_35px_rgba(212,168,67,0.8)] mb-6"
             >
-              <span className="bg-gradient-to-r from-white via-[#00E5FF] to-[#00E5FF] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-white via-[#D4A843] to-[#F0C755] bg-clip-text text-transparent">
                 {displayText}
               </span>
             </motion.h1>
 
             {/* Telemetry Domain Chips */}
             <div className="flex flex-wrap items-center justify-center gap-3 mb-8 text-[11px] font-mono">
-              <span className="px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]">
-                CYBER SECURITY
+              <span className="px-3 py-1 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/30 text-[#D4A843]">
+                QUANTUM TECHNOLOGY
               </span>
-              <span className="px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]">
-                MED-TECH
+              <span className="px-3 py-1 rounded-full bg-[#D4A843]/10 border border-[#D4A843]/30 text-[#D4A843]">
+                FINANCE TECHNOLOGY
               </span>
             </div>
 
             {/* Precision 5s Laser Energy Bar */}
-            <div className="w-full max-w-md h-2 bg-gray-950 rounded-full border border-[#00E5FF]/30 p-[1px] overflow-hidden shadow-[0_0_20px_rgba(0,229,255,0.2)] mb-6">
+            <div className="w-full max-w-md h-2 bg-gray-950 rounded-full border border-[#D4A843]/30 p-[1px] overflow-hidden shadow-[0_0_20px_rgba(212,168,67,0.2)] mb-6">
               <motion.div
-                className="h-full bg-gradient-to-r from-[#00E5FF] via-[#00E5FF] to-white shadow-[0_0_15px_#00E5FF] rounded-full"
+                className="h-full bg-gradient-to-r from-[#D4A843] via-[#D4A843] to-white shadow-[0_0_15px_#D4A843] rounded-full"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -242,7 +242,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
             {/* Status Footer Readout */}
             <div className="flex items-center justify-between w-full max-w-md text-[11px] font-mono text-gray-400 uppercase tracking-wider">
               <span>SNS IHUB COIMBATORE</span>
-              <span className="text-[#00E5FF]">SEPT 19–20, 2026</span>
+              <span className="text-[#D4A843]">SEPT 19–20, 2026</span>
             </div>
 
             {/* Skip hint */}
