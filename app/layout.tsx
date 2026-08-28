@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   title: "Quantexa 2026 | Personalised Vulnerability Triage — by HackHere",
   description: "Quantexa is a premier 24-hour vulnerability triage challenge presented by HackHere. Join builders, compete across frontier tracks, and solve real-world security challenges.",
   openGraph: {
-    title: "Quantexa 2026 | Personalised Vulnerability Triage",
-    description: "Presented by HackHere. September 12–13 in Coimbatore.",
+    title: "QUANTEXA 2026 | Decision Intelligence & Deep Tech Hackathon",
+    description: "Presented by HackHere. September 19–20 in Coimbatore.",
     images: ["/fin.png"],
   },
 };

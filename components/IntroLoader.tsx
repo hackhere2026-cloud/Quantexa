@@ -242,7 +242,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
             {/* Status Footer Readout */}
             <div className="flex items-center justify-between w-full max-w-md text-[11px] font-mono text-gray-400 uppercase tracking-wider">
               <span>SNS IHUB COIMBATORE</span>
-              <span className="text-[#00E5FF]">SEPT 12–13, 2026</span>
+              <span className="text-[#00E5FF]">SEPT 19–20, 2026</span>
             </div>
 
             {/* Skip hint */}

@@ -18,9 +18,9 @@ export default function EventDetailsBar({ onRegisterClick }: EventDetailsBarProp
     seconds: 0,
   });
 
-  // Calculate live countdown to hackathon launch (September 12, 2026)
+  // Calculate live countdown to hackathon launch (September 19, 2026)
   useEffect(() => {
-    const targetDate = new Date("2026-09-12T09:00:00+05:30").getTime();
+    const targetDate = new Date("2026-09-19T09:00:00+05:30").getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();

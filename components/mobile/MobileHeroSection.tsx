@@ -11,18 +11,6 @@ interface MobileHeroSectionProps {
 export default function MobileHeroSection({ onRegisterClick }: MobileHeroSectionProps) {
   return (
     <section className="relative w-full min-h-screen pt-24 pb-16 px-4 flex flex-col justify-center items-center text-center overflow-hidden bg-ink">
-      {/* Background Video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover opacity-50 z-0 pointer-events-none"
-      >
-        <source src="/glowing video.mp4" type="video/mp4" />
-      </video>
-
       {/* Radial Backlight */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-500/25 rounded-full blur-3xl pointer-events-none" />
 
@@ -60,7 +48,7 @@ export default function MobileHeroSection({ onRegisterClick }: MobileHeroSection
         <div className="w-full grid grid-cols-2 gap-2 text-[11px] font-mono text-gray-200">
           <div className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white/5 border border-cyan-500/30">
             <Calendar className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            <span>Sept 12–13</span>
+            <span>Sept 19–20</span>
           </div>
           <div className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white/5 border border-cyan-500/30">
             <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />

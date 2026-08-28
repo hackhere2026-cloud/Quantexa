@@ -17,7 +17,7 @@ export default function MobileEventDetailsBar({ onRegisterClick }: MobileEventDe
   });
 
   useEffect(() => {
-    const targetDate = new Date("2026-09-12T09:00:00+05:30").getTime();
+    const targetDate = new Date("2026-09-19T09:00:00+05:30").getTime();
 
     const updateTimer = () => {
       const now = new Date().getTime();

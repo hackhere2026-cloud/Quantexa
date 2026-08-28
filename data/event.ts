@@ -63,7 +63,7 @@ export const event: EventInfo = {
   city: "Coimbatore",
   venue: "SNS IHUB",
   mapUrl: "https://maps.app.goo.gl/5Qv5T9LsVeL58uxd8",
-  dateRange: "September 12–13",
+  dateRange: "September 19–20",
   registerUrl: "https://unstop.com/hackathons/quantexa-hackhere",
 };
 
@@ -103,19 +103,19 @@ export const phases: EventPhase[] = [
   {
     phase: "PHASE 2",
     title: "PREPARATION & IDEATION",
-    date: "September 1 – September 11",
+    date: "September 1 – September 18",
     description: "Explore challenge tracks, review technical documentation, refine your architecture, and prepare for the physical build sprint.",
   },
   {
     phase: "PHASE 3",
     title: "BUILD (24H OFFLINE SPRINT)",
-    date: "September 12 – September 13",
+    date: "September 19 – September 20",
     description: "Build your working prototype live at SNS IHUB, Coimbatore over a continuous 24-hour period. Problem statements will be provided on the spot.",
   },
   {
     phase: "PHASE 4",
     title: "PITCH & GRAND FINALE AWARDS",
-    date: "September 13",
+    date: "September 20",
     description: "Present your working prototype live to our jury panel and chief guests to compete for ₹30K cash prizes, internships & certifications.",
   },
 ];
@@ -156,7 +156,7 @@ export const faqs: FAQItem[] = [
   { question: "Who can participate?", answer: "QUANTEXA is open to developers, designers, students, and tech enthusiasts. Both beginners and experienced hackers are welcome!" },
   { question: "What is the team size?", answer: "Teams can range from 1 to 4 participants. Form your team prior to the event or connect with teammates during Day 1 networking." },
   { question: "Is there a registration fee?", answer: "The registration fee is ₹1,000 per team, which grants direct entry to the 24-hour offline hackathon grand finale at SNS IHUB, Coimbatore." },
-  { question: "Where is QUANTEXA held?", answer: "QUANTEXA takes place in person at SNS IHUB, Coimbatore (September 12–13)." },
+  { question: "Where is QUANTEXA held?", answer: "QUANTEXA takes place in person at SNS IHUB, Coimbatore (September 19–20)." },
   { question: "What are the prizes and perks?", answer: "₹30,000 in cash prizes, direct internship offers from partner companies, and professional mentoring sessions for participants." },
   { question: "What should I bring?", answer: "Bring your laptop, charger, valid ID, and enthusiasm to build!" },
 ];

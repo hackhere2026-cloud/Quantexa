@@ -11,14 +11,6 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  // Set slow-motion playback rate on background glowing video
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.45;
-    }
-  }, []);
 
   // Ambient Canvas Circuit-Line Particle Effect (Neon Cyan / Blue Theme)
   useEffect(() => {
@@ -97,20 +89,6 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
 
   return (
     <section className="relative w-full h-screen min-h-[750px] flex items-center justify-center overflow-hidden bg-ink bg-white-checked">
-      {/* Glowing Video Background Loop */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover opacity-90 z-0 pointer-events-none"
-      >
-        <source src="/glowing video.mp4" type="video/mp4" />
-        <source src="/hero/glowing-video.mp4" type="video/mp4" />
-      </video>
-
       {/* Top Header Shield Gradient */}
       <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-ink via-ink/60 to-transparent z-10 pointer-events-none" />
 
