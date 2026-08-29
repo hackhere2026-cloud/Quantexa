@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Atom, TrendingUp, Code2, Users, Lightbulb } from "lucide-react";
+import CodropsMagneticCard from "@/components/CodropsMagneticCard";
 
 export const eventHighlights = [
   {
@@ -75,7 +76,7 @@ export default function EventHighlightsSection() {
           </p>
         </div>
 
-        {/* 5-Column Grid Layout */}
+        {/* 5-Column Grid Layout with Codrops 3D Magnetic Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {eventHighlights.map((item, index) => {
             const Icon = item.icon;
@@ -86,32 +87,39 @@ export default function EventHighlightsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative glass-panel rounded-2xl p-6 border border-[#D4A843]/30 hover:border-[#D4A843] hover:shadow-[0_0_30px_rgba(212,168,67,0.25)] transition-all duration-300 flex flex-col justify-between"
               >
-                <div className="space-y-4">
-                  {/* Icon Badge */}
-                  <div className="w-12 h-12 rounded-xl bg-[#D4A843]/10 border border-[#D4A843]/40 flex items-center justify-center text-[#D4A843] group-hover:scale-110 group-hover:bg-[#D4A843] group-hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(212,168,67,0.2)]">
-                    <Icon className="w-6 h-6" />
+                <CodropsMagneticCard
+                  glowColor="rgba(212, 168, 67, 0.4)"
+                  tiltIntensity={12}
+                  className="h-full"
+                >
+                  <div className="relative glass-panel rounded-2xl p-6 border border-[#D4A843]/30 bg-[#0A0E1A]/80 hover:border-[#D4A843] hover:shadow-[0_0_30px_rgba(212,168,67,0.25)] transition-all duration-300 flex flex-col justify-between h-full">
+                    <div className="space-y-4">
+                      {/* Icon Badge */}
+                      <div className="w-12 h-12 rounded-xl bg-[#D4A843]/10 border border-[#D4A843]/40 flex items-center justify-center text-[#D4A843] group-hover:scale-110 group-hover:bg-[#D4A843] group-hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(212,168,67,0.2)]">
+                        <Icon className="w-6 h-6" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-display font-extrabold text-white tracking-wider uppercase group-hover:text-[#F0C755] transition-colors">
+                          {item.title}
+                        </h3>
+                        <p className="text-[11px] font-mono text-[#D4A843] tracking-widest uppercase mt-0.5">
+                          {item.subtitle}
+                        </p>
+                      </div>
+
+                      <p className="text-xs text-gray-400 leading-relaxed font-sans">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-gray-500">
+                      <span>PILLAR 0{index + 1}</span>
+                      <span className="text-[#D4A843]">⦿ ACTIVE</span>
+                    </div>
                   </div>
-
-                  <div>
-                    <h3 className="text-sm font-display font-extrabold text-white tracking-wider uppercase group-hover:text-[#F0C755] transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-[11px] font-mono text-[#D4A843] tracking-widest uppercase mt-0.5">
-                      {item.subtitle}
-                    </p>
-                  </div>
-
-                  <p className="text-xs text-gray-400 leading-relaxed font-sans">
-                    {item.description}
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-gray-500">
-                  <span>PILLAR 0{index + 1}</span>
-                  <span className="text-[#D4A843]">⦿ ACTIVE</span>
-                </div>
+                </CodropsMagneticCard>
               </motion.div>
             );
           })}

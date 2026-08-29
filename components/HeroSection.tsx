@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, Atom, TrendingUp, MapPin, Calendar, ExternalLink } from "lucide-react";
 import { event } from "@/data/event";
+import CodropsParticleButton from "@/components/CodropsParticleButton";
 
 interface HeroSectionProps {
   onRegisterClick: () => void;
@@ -154,9 +155,9 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
             </div>
           </div>
 
-          {/* Action CTA Buttons */}
+          {/* Action CTA Buttons with Codrops Particle Emitter */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-            <a
+            <CodropsParticleButton
               href={event.registerUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -164,14 +165,14 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
             >
               <span>REGISTER ON UNSTOP</span>
               <ExternalLink className="w-4 h-4" />
-            </a>
+            </CodropsParticleButton>
 
-            <button
+            <CodropsParticleButton
               onClick={onRegisterClick}
               className="w-full sm:w-52 py-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 hover:border-[#D4A843]/60 text-white font-display text-xs font-bold uppercase tracking-wider transition-all duration-300"
             >
-              SCAN QR CODE
-            </button>
+              <span>SCAN QR CODE</span>
+            </CodropsParticleButton>
           </div>
         </motion.div>
       </div>
