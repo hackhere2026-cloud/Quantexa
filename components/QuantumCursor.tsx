@@ -30,17 +30,9 @@ export default function QuantumCursor() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isTouchActive, setIsTouchActive] = useState(false);
 
   useEffect(() => {
-    // Check for touch / mobile device
-    if (typeof window !== "undefined") {
-      if (window.matchMedia("(pointer: coarse)").matches) {
-        setIsTouchDevice(true);
-        return;
-      }
-    }
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -50,16 +42,14 @@ export default function QuantumCursor() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Mouse coordinates
-    let mouse = { x: width / 2, y: height / 2 };
-    let smoothMouse = { x: width / 2, y: height / 2 };
-    let lastMouse = { x: width / 2, y: height / 2 };
+    let mouse = { x: -1000, y: -1000 };
+    let smoothMouse = { x: -1000, y: -1000 };
+    let lastMouse = { x: -1000, y: -1000 };
 
     const particles: Particle[] = [];
     const ripples: Ripple[] = [];
     let orbitAngle = 0;
 
-    // Palette of Quantum Energy colors
     const colors = [
       "#D4A843", // Gold
       "#F0C755", // Light Gold
@@ -74,28 +64,21 @@ export default function QuantumCursor() {
       height = canvas.height = window.innerHeight;
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-
-      // Spawn trail particles based on mouse velocity
-      const dx = mouse.x - lastMouse.x;
-      const dy = mouse.y - lastMouse.y;
+    const spawnParticles = (x: number, y: number, dx: number, dy: number, isTouch = false) => {
       const dist = Math.hypot(dx, dy);
+      const count = isTouch
+        ? Math.min(Math.floor(dist * 0.5) + 2, 10)
+        : Math.min(Math.floor(dist * 0.4) + 1, 8);
 
-      // Spawn particles proportionate to movement speed
-      const count = Math.min(Math.floor(dist * 0.4) + 1, 8);
       for (let i = 0; i < count; i++) {
-        const speed = Math.random() * 1.5 + 0.5;
-        const angle = Math.random() * Math.PI * 2;
-        const life = Math.random() * 25 + 25;
+        const life = Math.random() * 25 + 20;
 
         particles.push({
-          x: mouse.x + (Math.random() - 0.5) * 6,
-          y: mouse.y + (Math.random() - 0.5) * 6,
-          vx: (Math.random() - 0.5) * 1.2 + (dx * 0.08),
-          vy: (Math.random() - 0.5) * 1.2 + (dy * 0.08),
-          size: Math.random() * 3 + 1,
+          x: x + (Math.random() - 0.5) * 8,
+          y: y + (Math.random() - 0.5) * 8,
+          vx: (Math.random() - 0.5) * 1.5 + dx * 0.08,
+          vy: (Math.random() - 0.5) * 1.5 + dy * 0.08,
+          size: Math.random() * (isTouch ? 3.5 : 3) + 1,
           alpha: 1,
           maxLife: life,
           life: life,
@@ -105,59 +88,34 @@ export default function QuantumCursor() {
           waveAmp: Math.random() * 1.5 + 0.5,
         });
       }
-
-      lastMouse.x = mouse.x;
-      lastMouse.y = mouse.y;
-
-      // Check hover interactive elements
-      const target = e.target as HTMLElement | null;
-      if (
-        target &&
-        (target.tagName === "BUTTON" ||
-          target.tagName === "A" ||
-          target.tagName === "INPUT" ||
-          target.closest("button") ||
-          target.closest("a") ||
-          target.getAttribute("role") === "button" ||
-          target.classList.contains("group") ||
-          target.getAttribute("data-hover") === "true")
-      ) {
-        setIsHovered(true);
-      } else {
-        setIsHovered(false);
-      }
     };
 
-    const handleMouseDown = (e: MouseEvent) => {
-      setIsClicking(true);
-
-      // Trigger quantum wave collapse ripple
+    const triggerBurst = (x: number, y: number) => {
       ripples.push({
-        x: e.clientX,
-        y: e.clientY,
+        x,
+        y,
         radius: 4,
         maxRadius: 45,
         alpha: 1,
         color: "#F0C755",
       });
       ripples.push({
-        x: e.clientX,
-        y: e.clientY,
+        x,
+        y,
         radius: 2,
         maxRadius: 30,
         alpha: 0.8,
         color: "#D4A843",
       });
 
-      // Explosion of quantum sparks
-      for (let i = 0; i < 24; i++) {
-        const angle = (i / 24) * Math.PI * 2 + Math.random() * 0.2;
+      for (let i = 0; i < 20; i++) {
+        const angle = (i / 20) * Math.PI * 2 + Math.random() * 0.2;
         const speed = Math.random() * 4 + 2;
         const life = Math.random() * 30 + 20;
 
         particles.push({
-          x: e.clientX,
-          y: e.clientY,
+          x,
+          y,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           size: Math.random() * 4 + 1.5,
@@ -172,6 +130,77 @@ export default function QuantumCursor() {
       }
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+
+      if (lastMouse.x > -500) {
+        const dx = mouse.x - lastMouse.x;
+        const dy = mouse.y - lastMouse.y;
+        spawnParticles(mouse.x, mouse.y, dx, dy, false);
+      }
+
+      lastMouse.x = mouse.x;
+      lastMouse.y = mouse.y;
+
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "BUTTON" ||
+          target.tagName === "A" ||
+          target.tagName === "INPUT" ||
+          target.closest("button") ||
+          target.closest("a") ||
+          target.getAttribute("role") === "button" ||
+          target.classList.contains("group"))
+      ) {
+        setIsHovered(true);
+      } else {
+        setIsHovered(false);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        mouse.x = touch.clientX;
+        mouse.y = touch.clientY;
+        setIsTouchActive(true);
+
+        if (lastMouse.x > -500) {
+          const dx = mouse.x - lastMouse.x;
+          const dy = mouse.y - lastMouse.y;
+          spawnParticles(mouse.x, mouse.y, dx, dy, true);
+        }
+
+        lastMouse.x = mouse.x;
+        lastMouse.y = mouse.y;
+      }
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        mouse.x = touch.clientX;
+        mouse.y = touch.clientY;
+        smoothMouse.x = touch.clientX;
+        smoothMouse.y = touch.clientY;
+        lastMouse.x = touch.clientX;
+        lastMouse.y = touch.clientY;
+        setIsTouchActive(true);
+        triggerBurst(touch.clientX, touch.clientY);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      setIsTouchActive(false);
+    };
+
+    const handleMouseDown = (e: MouseEvent) => {
+      setIsClicking(true);
+      triggerBurst(e.clientX, e.clientY);
+    };
+
     const handleMouseUp = () => {
       setIsClicking(false);
     };
@@ -180,14 +209,21 @@ export default function QuantumCursor() {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     // Animation Loop
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Lerp mouse position for smooth HUD reticle
-      smoothMouse.x += (mouse.x - smoothMouse.x) * 0.2;
-      smoothMouse.y += (mouse.y - smoothMouse.y) * 0.2;
+      if (smoothMouse.x < -500) {
+        smoothMouse.x = mouse.x;
+        smoothMouse.y = mouse.y;
+      } else {
+        smoothMouse.x += (mouse.x - smoothMouse.x) * 0.22;
+        smoothMouse.y += (mouse.y - smoothMouse.y) * 0.22;
+      }
 
       // 1. Draw Quantum Interference Ripples
       for (let i = ripples.length - 1; i >= 0; i--) {
@@ -211,7 +247,7 @@ export default function QuantumCursor() {
         ctx.restore();
       }
 
-      // 2. Render & Update Particles (Probability Wave Motion)
+      // 2. Render & Update Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.life -= 1;
@@ -222,7 +258,6 @@ export default function QuantumCursor() {
           continue;
         }
 
-        // Quantum Wave Oscillations
         p.wavePhase += p.waveFreq;
         const waveX = Math.cos(p.wavePhase) * p.waveAmp;
         const waveY = Math.sin(p.wavePhase) * p.waveAmp;
@@ -243,83 +278,49 @@ export default function QuantumCursor() {
         ctx.restore();
       }
 
-      // 3. Draw Quantum Reticle HUD & Orbital Qubits
-      orbitAngle += isHovered ? 0.08 : 0.03;
-      const targetRadius = isClicking ? 14 : isHovered ? 26 : 18;
-      const coreSize = isHovered ? 4 : 3;
+      // 3. Draw Quantum Reticle HUD (if active on screen)
+      if (mouse.x > 0 && mouse.y > 0) {
+        orbitAngle += isHovered ? 0.08 : 0.03;
+        const targetRadius = isClicking || isTouchActive ? 14 : isHovered ? 26 : 18;
+        const coreSize = isHovered ? 4 : 3;
 
-      ctx.save();
-      ctx.translate(smoothMouse.x, smoothMouse.y);
+        ctx.save();
+        ctx.translate(smoothMouse.x, smoothMouse.y);
 
-      // Core Quantum Point
-      ctx.beginPath();
-      ctx.arc(0, 0, coreSize, 0, Math.PI * 2);
-      ctx.fillStyle = "#FFF5C0";
-      ctx.shadowColor = "#F0C755";
-      ctx.shadowBlur = 12;
-      ctx.fill();
-
-      // Outer Rotating Quantum Orbit Ring (Dashed HUD)
-      ctx.beginPath();
-      ctx.arc(0, 0, targetRadius, 0, Math.PI * 2);
-      ctx.strokeStyle = isHovered ? "#F0C755" : "rgba(212, 168, 67, 0.55)";
-      ctx.lineWidth = isHovered ? 1.8 : 1.2;
-      ctx.setLineDash(isHovered ? [6, 3] : [4, 6]);
-      ctx.stroke();
-
-      // Draw Corner Bracket Crosshairs when Hovered
-      if (isHovered) {
-        const bSize = 6;
-        const bOffset = targetRadius + 4;
-        ctx.strokeStyle = "#FFD700";
-        ctx.lineWidth = 1.5;
-
-        // Top-Left Corner
+        // Core Quantum Point
         ctx.beginPath();
-        ctx.moveTo(-bOffset, -bOffset + bSize);
-        ctx.lineTo(-bOffset, -bOffset);
-        ctx.lineTo(-bOffset + bSize, -bOffset);
-        ctx.stroke();
-
-        // Top-Right Corner
-        ctx.beginPath();
-        ctx.moveTo(bOffset - bSize, -bOffset);
-        ctx.lineTo(bOffset, -bOffset);
-        ctx.lineTo(bOffset, -bOffset + bSize);
-        ctx.stroke();
-
-        // Bottom-Left Corner
-        ctx.beginPath();
-        ctx.moveTo(-bOffset, bOffset - bSize);
-        ctx.lineTo(-bOffset, bOffset);
-        ctx.lineTo(-bOffset + bSize, bOffset);
-        ctx.stroke();
-
-        // Bottom-Right Corner
-        ctx.beginPath();
-        ctx.moveTo(bOffset - bSize, bOffset);
-        ctx.lineTo(bOffset, bOffset);
-        ctx.lineTo(bOffset, bOffset - bSize);
-        ctx.stroke();
-      }
-
-      // 4. Orbiting Quantum Electrons / Sub-particles
-      const numElectrons = 3;
-      for (let e = 0; e < numElectrons; e++) {
-        const eAngle = orbitAngle + (e * (Math.PI * 2)) / numElectrons;
-        const orbitDist = targetRadius + (isHovered ? 8 : 4);
-        const ex = Math.cos(eAngle) * orbitDist;
-        const ey = Math.sin(eAngle) * orbitDist;
-
-        ctx.beginPath();
-        ctx.arc(ex, ey, isHovered ? 2.2 : 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = e % 2 === 0 ? "#F0C755" : "#FFFFFF";
-        ctx.shadowColor = "#D4A843";
-        ctx.shadowBlur = 10;
+        ctx.arc(0, 0, coreSize, 0, Math.PI * 2);
+        ctx.fillStyle = "#FFF5C0";
+        ctx.shadowColor = "#F0C755";
+        ctx.shadowBlur = 12;
         ctx.fill();
-      }
 
-      ctx.restore();
+        // Outer Rotating Quantum Ring
+        ctx.beginPath();
+        ctx.arc(0, 0, targetRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = isHovered ? "#F0C755" : "rgba(212, 168, 67, 0.65)";
+        ctx.lineWidth = isHovered ? 1.8 : 1.2;
+        ctx.setLineDash(isHovered ? [6, 3] : [4, 6]);
+        ctx.stroke();
+
+        // Orbiting Quantum Qubits
+        const numElectrons = 3;
+        for (let e = 0; e < numElectrons; e++) {
+          const eAngle = orbitAngle + (e * (Math.PI * 2)) / numElectrons;
+          const orbitDist = targetRadius + (isHovered ? 8 : 4);
+          const ex = Math.cos(eAngle) * orbitDist;
+          const ey = Math.sin(eAngle) * orbitDist;
+
+          ctx.beginPath();
+          ctx.arc(ex, ey, isHovered ? 2.2 : 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = e % 2 === 0 ? "#F0C755" : "#FFFFFF";
+          ctx.shadowColor = "#D4A843";
+          ctx.shadowBlur = 10;
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -331,11 +332,12 @@ export default function QuantumCursor() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
-
-  if (isTouchDevice) return null;
 
   return (
     <canvas

@@ -5,3 +5,4 @@ node_modules/
 out/
 .env.local
 .env*.local
+scratch_proxy.js

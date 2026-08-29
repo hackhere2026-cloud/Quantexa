@@ -39,14 +39,14 @@ export default function SponsorsMarquee() {
           {marqueeItems.map((sponsor, idx) => (
             <div
               key={idx}
-              className="glass-panel p-4 rounded-2xl flex items-center justify-center min-w-[260px] h-32 hover:border-crimson/60 transition-all group shrink-0 overflow-hidden"
+              className="p-4 rounded-2xl flex items-center justify-center min-w-[260px] h-32 border border-[#D4A843]/30 bg-white/90 hover:bg-white backdrop-blur-md shadow-[0_0_20px_rgba(212,168,67,0.15)] hover:border-[#D4A843] transition-all group shrink-0 overflow-hidden"
             >
-              <div className="relative w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300">
+              <div className="relative w-full h-full transition-all duration-300">
                 <Image
                   src={sponsor.logoPath}
                   alt={sponsor.name}
                   fill
-                  className="object-contain p-1"
+                  className="object-contain p-2"
                 />
               </div>
             </div>

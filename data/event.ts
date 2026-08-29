@@ -69,11 +69,12 @@ export const event: EventInfo = {
 };
 
 export const sponsors: Sponsor[] = [
-  { name: "Featherless", logoPath: "/sponsors/wp_sponsor_1.jpeg" },
-  { name: "ELRO Tech", logoPath: "/sponsors/wp_sponsor_2.jpeg" },
-  { name: "UptoSkills", logoPath: "/sponsors/wp_sponsor_3.jpeg" },
-  { name: "MeDo", logoPath: "/sponsors/wp_sponsor_4.jpeg" },
-  { name: "ELYON", logoPath: "/sponsors/wp_sponsor_5.jpeg" },
+  { name: "Featherless", logoPath: "/sponsors/featherless.png" },
+  { name: "ELRO Tech", logoPath: "/sponsors/elro.jpeg" },
+  { name: "LeSuccess", logoPath: "/sponsors/lesuccess.png" },
+  { name: "DELYON", logoPath: "/sponsors/delyon.png" },
+  { name: "ELYON", logoPath: "/sponsors/elyon.jpeg" },
+  { name: "HackHere", logoPath: "/sponsors/hackhere.png" },
 ];
 
 export const tracks: Track[] = [

@@ -25,13 +25,13 @@ export default function MobileSponsorsMarquee() {
           {marqueeSponsors.map((sponsor, idx) => (
             <div
               key={`${sponsor.name}-${idx}`}
-              className="flex-shrink-0 w-36 h-20 relative bg-white/5 border border-amber-500/30 rounded-xl p-3 flex items-center justify-center backdrop-blur-sm"
+              className="flex-shrink-0 w-36 h-20 relative bg-white/90 border border-amber-500/30 rounded-xl p-3 flex items-center justify-center backdrop-blur-sm"
             >
               <Image
                 src={sponsor.logoPath}
                 alt={sponsor.name}
                 fill
-                className="object-contain p-2 filter brightness-110"
+                className="object-contain p-2"
               />
             </div>
           ))}

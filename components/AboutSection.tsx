@@ -3,12 +3,13 @@
 import { motion } from "framer-motion";
 import { event } from "@/data/event";
 import { Zap, Globe, Trophy, Layers } from "lucide-react";
+import CodropsMagneticCard from "@/components/CodropsMagneticCard";
 
 export default function AboutSection() {
   return (
-    <section id="about" className="py-24 relative overflow-hidden bg-ink border-t border-white/5">
+    <section id="about" className="py-24 relative overflow-hidden bg-[#050503] border-t border-white/5">
       {/* Glow highlight */}
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-crimson/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-[#D4A843]/10 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -20,11 +21,11 @@ export default function AboutSection() {
           transition={{ duration: 0.8 }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <span className="text-xs font-mono uppercase tracking-widest text-crimson-glow">
+          <span className="text-xs font-mono uppercase tracking-[0.25em] text-amber-400">
             [ 01 // OVERVIEW ]
           </span>
-          <h2 className="text-3xl sm:text-5xl font-display font-bold mt-2 mb-6">
-            WELCOME TO <span className="metal-gradient">{event.name}</span>
+          <h2 className="text-3xl sm:text-5xl font-display font-black tracking-wider uppercase mt-2 mb-6">
+            WELCOME TO <span className="bg-gradient-to-r from-white via-[#F0C755] to-[#D4A843] bg-clip-text text-transparent">{event.name}</span>
           </h2>
           <p className="text-base sm:text-lg text-gray-300 leading-relaxed font-sans">
             Hosted by <strong className="text-white">{event.presentedBy}</strong> at{" "}
@@ -32,7 +33,7 @@ export default function AboutSection() {
               href={event.mapUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-crimson-glow hover:underline underline-offset-4 font-semibold"
+              className="text-amber-400 hover:underline underline-offset-4 font-semibold"
             >
               {event.venue}, {event.city} ↗
             </a>
@@ -40,7 +41,7 @@ export default function AboutSection() {
           </p>
         </motion.div>
 
-        {/* Feature Cards Grid */}
+        {/* Feature Cards Grid with Codrops 3D Magnetic Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
@@ -70,17 +71,22 @@ export default function AboutSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="glass-panel p-6 rounded-2xl hover:border-crimson/60 transition-all duration-300 group"
             >
-              <div className="w-12 h-12 rounded-xl bg-crimson/10 border border-crimson/30 flex items-center justify-center text-crimson-glow mb-4 group-hover:scale-110 group-hover:bg-crimson/20 transition-all">
-                <item.icon className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-display font-semibold mb-2 text-white group-hover:text-crimson-glow transition-colors">
-                {item.title}
-              </h3>
-              <p className="text-sm text-gray-400 leading-relaxed font-sans">
-                {item.desc}
-              </p>
+              <CodropsMagneticCard glowColor="rgba(212, 168, 67, 0.35)" tiltIntensity={12} className="h-full">
+                <div className="glass-panel p-6 rounded-2xl border border-amber-500/30 bg-[#0A0E1A]/80 hover:border-amber-400/70 hover:shadow-[0_0_30px_rgba(212,168,67,0.25)] transition-all duration-300 group h-full flex flex-col justify-between">
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 mb-4 group-hover:scale-110 group-hover:bg-amber-400 group-hover:text-black transition-all duration-300">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-xl font-display font-bold mb-2 text-white group-hover:text-amber-400 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-300 leading-relaxed font-sans">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              </CodropsMagneticCard>
             </motion.div>
           ))}
         </div>
