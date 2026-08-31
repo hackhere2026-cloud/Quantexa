@@ -65,7 +65,7 @@ export const event: EventInfo = {
   venue: "SNS IHUB",
   mapUrl: "https://maps.app.goo.gl/5Qv5T9LsVeL58uxd8",
   dateRange: "September 19–20",
-  registerUrl: "https://unstop.com/hackathons/quantexa-hackhere",
+  registerUrl: "https://unstop.com/hackathons/quantexa-hackhere-1745790",
 };
 
 export const sponsors: Sponsor[] = [
