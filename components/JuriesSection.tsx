@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { juries, JuryMember } from "@/data/event";
-import { Linkedin, ShieldCheck, Lock } from "lucide-react";
+import { Linkedin, ShieldCheck, Lock, Crown, Sparkles } from "lucide-react";
 
 export default function JuriesSection() {
   const juryMembers = juries.filter((item) => item.category !== "Chief Guest");
@@ -54,6 +54,88 @@ export default function JuriesSection() {
       );
     }
 
+    // Golden Main Jury Card
+    if (person.isMain) {
+      return (
+        <div className="glass-panel rounded-2xl border-2 border-amber-400/80 hover:border-amber-300 shadow-[0_0_35px_rgba(245,197,66,0.35)] hover:shadow-[0_0_55px_rgba(245,197,66,0.55)] bg-gradient-to-r from-amber-950/50 via-[#151107] to-black flex flex-col sm:flex-row overflow-hidden group relative transition-all duration-300">
+          {/* Subtle decorative radial golden glow */}
+          <div className="absolute -top-16 -right-16 w-48 h-48 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Photo Frame */}
+          <div className="relative w-full sm:w-48 h-56 sm:h-auto bg-gradient-to-b from-black/80 to-amber-950/40 overflow-hidden flex items-center justify-center p-3 shrink-0">
+            <div className="relative w-full h-full rounded-xl overflow-hidden border-2 border-amber-400/80 shadow-[0_0_20px_rgba(245,197,66,0.35)]">
+              <Image
+                src={person.image}
+                alt={person.name}
+                fill
+                className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          </div>
+
+          {/* Body Content */}
+          <div className="p-5 flex flex-col justify-between flex-grow bg-ink/90 backdrop-blur-sm space-y-3 relative z-10">
+            <div className="space-y-2">
+              {/* Top Chief Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500/25 via-amber-400/20 to-amber-500/25 border border-amber-400/60 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest shadow-[0_0_12px_rgba(245,197,66,0.2)]">
+                <Crown className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                <span>{person.badge || "CHIEF JURY & EVALUATOR"}</span>
+              </div>
+
+              <div>
+                <h3 className="text-lg sm:text-xl font-display font-extrabold text-white group-hover:text-amber-300 transition-colors tracking-wide">
+                  {person.name}
+                </h3>
+                {person.degrees && (
+                  <p className="text-xs font-mono font-semibold text-amber-400 tracking-wide mt-0.5">
+                    {person.degrees}
+                  </p>
+                )}
+              </div>
+
+              <div className="pt-0.5">
+                <p className="text-xs sm:text-sm font-mono font-bold text-amber-300 tracking-wide uppercase flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>{person.role}</span>
+                </p>
+                <p className="text-xs text-gray-300 font-sans font-medium pt-0.5">
+                  {person.company}
+                </p>
+              </div>
+
+              <p className="text-xs text-gray-300/90 font-sans leading-relaxed pt-1">
+                {person.bio}
+              </p>
+            </div>
+
+            <div className="pt-3 border-t border-amber-500/25 flex items-center justify-between">
+              <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                // CHIEF EVALUATOR
+              </span>
+              {person.linkedin ? (
+                <a
+                  href={person.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-950/90 border border-amber-500/60 text-amber-300 hover:text-white hover:bg-amber-400 hover:text-black transition-all text-xs font-mono font-bold shadow-[0_0_12px_rgba(245,197,66,0.2)]"
+                  aria-label={`${person.name} LinkedIn`}
+                >
+                  <Linkedin className="w-3.5 h-3.5" />
+                  <span>LinkedIn</span>
+                </a>
+              ) : (
+                <span className="text-[10px] font-mono font-extrabold text-amber-300 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 border border-amber-400/60 shadow-[0_0_15px_rgba(245,197,66,0.3)]">
+                  MAIN JURY
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="glass-panel rounded-2xl border border-amber-500/40 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(212,168,67,0.25)] bg-gradient-to-r from-amber-950/30 via-ink to-black flex flex-col sm:flex-row overflow-hidden group relative">
         {/* Photo Frame */}
@@ -74,6 +156,11 @@ export default function JuriesSection() {
             <h3 className="text-base font-display font-bold text-white group-hover:text-amber-400 transition-colors">
               {person.name}
             </h3>
+            {person.degrees && (
+              <p className="text-[11px] font-mono font-semibold text-amber-400/90">
+                {person.degrees}
+              </p>
+            )}
             <p className="text-xs font-mono font-semibold text-amber-400">
               {person.role}
             </p>
@@ -151,7 +238,7 @@ export default function JuriesSection() {
             {juryMembers.length > 0 && (() => {
               const person = juryMembers[0];
               return (
-                <div className="max-w-xl mx-auto">
+                <div className="max-w-2xl mx-auto">
                   <motion.div
                     key={person.id}
                     initial={{ opacity: 0, y: 20 }}

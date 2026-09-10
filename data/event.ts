@@ -32,6 +32,7 @@ export interface Sponsor {
 export interface JuryMember {
   id: string;
   name: string;
+  degrees?: string;
   role: string;
   company: string;
   category: string;
@@ -40,6 +41,8 @@ export interface JuryMember {
   linkedin?: string;
   twitter?: string;
   isLocked?: boolean;
+  isMain?: boolean;
+  badge?: string;
 }
 
 export interface TeamMember {
@@ -124,13 +127,15 @@ export const phases: EventPhase[] = [
 export const juries: JuryMember[] = [
   {
     id: "jury-1",
-    name: "Position Locked",
-    role: "Senior CISO & Chief Evaluator",
-    company: "To Be Revealed Soon",
+    name: "Dr. M. Saravanakumar",
+    degrees: "MBA., Ms(IT)., M.Phil., Ph.D.",
+    role: "Dean",
+    company: "Anna University Regional Campus Coimbatore",
     category: "Jury Member",
-    bio: "Distinguished industry leader and decision intelligence evaluator. Profile details will be revealed shortly.",
-    image: "/images/hackhere-logo.jpeg",
-    isLocked: true,
+    bio: "Dean at Anna University Regional Campus Coimbatore, driving academic leadership, technological innovation, and empowering the next generation of engineers.",
+    image: "/juries/dr_m_saravanakumar.png",
+    isMain: true,
+    badge: "Chief Jury & Evaluator",
   },
   {
     id: "jury-3",

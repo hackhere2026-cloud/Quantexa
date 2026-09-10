@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { juries, JuryMember } from "@/data/event";
-import { Linkedin, UserCheck, ShieldCheck, Lock } from "lucide-react";
+import { Linkedin, UserCheck, ShieldCheck, Lock, Crown, Sparkles } from "lucide-react";
 
 export default function MobileJuriesSection() {
   const juryMembers = juries.filter((item) => item.category !== "Chief Guest");
@@ -68,6 +68,84 @@ export default function MobileJuriesSection() {
                 );
               }
 
+              // Golden Main Jury Card for Mobile
+              if (jury.isMain) {
+                return (
+                  <motion.div
+                    key={jury.id}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    className="p-4 rounded-xl bg-gradient-to-b from-amber-950/40 via-[#141006] to-black border-2 border-amber-400/80 space-y-3 relative overflow-hidden backdrop-blur-sm shadow-[0_0_25px_rgba(245,197,66,0.3)]"
+                  >
+                    {/* Top Chief Badge */}
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/60 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest">
+                      <Crown className="w-3 h-3 text-amber-400" />
+                      <span>{jury.badge || "CHIEF JURY & EVALUATOR"}</span>
+                    </div>
+
+                    {/* Photo & Identity */}
+                    <div className="flex items-start gap-3.5 pt-1">
+                      <div className="relative w-20 h-24 rounded-xl overflow-hidden border-2 border-amber-400 shrink-0 shadow-[0_0_15px_rgba(245,197,66,0.35)]">
+                        <Image
+                          src={jury.image}
+                          alt={jury.name}
+                          fill
+                          className="object-cover object-top"
+                        />
+                      </div>
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <h4 className="text-sm font-display font-extrabold text-white">
+                          {jury.name}
+                        </h4>
+                        {jury.degrees && (
+                          <p className="text-[10px] font-mono font-bold text-amber-400/90">
+                            {jury.degrees}
+                          </p>
+                        )}
+                        <p className="text-xs font-mono font-bold text-amber-300 flex items-center gap-1 pt-0.5">
+                          <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
+                          <span>{jury.role}</span>
+                        </p>
+                        <p className="text-[10px] text-gray-300 font-sans leading-tight">
+                          {jury.company}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] text-gray-300/90 font-sans leading-relaxed pt-1">
+                      {jury.bio}
+                    </p>
+
+                    <div className="pt-2 border-t border-amber-500/25 flex items-center justify-between">
+                      <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest flex items-center gap-1">
+                        <ShieldCheck className="w-3 h-3 text-amber-400" />
+                        // CHIEF EVALUATOR
+                      </span>
+                      <span className="text-[10px] font-mono font-extrabold text-amber-300 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/50 shadow-[0_0_10px_rgba(245,197,66,0.2)]">
+                        MAIN JURY
+                      </span>
+                    </div>
+
+                    {/* LinkedIn Button */}
+                    {jury.linkedin && (
+                      <div className="pt-1">
+                        <a
+                          href={jury.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2 rounded-xl bg-amber-950/90 hover:bg-amber-400 hover:text-black border border-amber-500/50 text-amber-300 font-display text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-[0_0_12px_rgba(245,197,66,0.2)]"
+                        >
+                          <Linkedin className="w-3.5 h-3.5" />
+                          <span>Connect on LinkedIn</span>
+                        </a>
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              }
+
               return (
                 <motion.div
                   key={jury.id}
@@ -91,6 +169,11 @@ export default function MobileJuriesSection() {
                       <h4 className="text-sm font-display font-extrabold text-white truncate">
                         {jury.name}
                       </h4>
+                      {jury.degrees && (
+                        <p className="text-[10px] font-mono font-semibold text-amber-400/90">
+                          {jury.degrees}
+                        </p>
+                      )}
                       <p className="text-xs font-mono font-semibold text-amber-300 truncate">
                         {jury.role}
                       </p>
