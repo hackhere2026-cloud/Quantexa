@@ -137,21 +137,21 @@ export default function JuriesSection() {
     }
 
     return (
-      <div className="glass-panel rounded-2xl border border-amber-500/40 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(212,168,67,0.25)] bg-gradient-to-r from-amber-950/30 via-ink to-black flex flex-col sm:flex-row overflow-hidden group relative">
+      <div className="glass-panel rounded-2xl border border-amber-500/40 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(212,168,67,0.25)] bg-gradient-to-r from-amber-950/30 via-ink to-black flex flex-col sm:flex-row overflow-hidden group relative h-full w-full">
         {/* Photo Frame */}
-        <div className="relative w-full sm:w-40 h-44 sm:h-auto bg-black/70 overflow-hidden flex items-center justify-center p-2.5 shrink-0">
-          <div className="relative w-full h-full rounded-xl overflow-hidden border border-amber-400/40 shadow-[0_0_15px_rgba(212,168,67,0.2)]">
+        <div className="relative w-full sm:w-44 h-52 sm:h-full bg-black/70 overflow-hidden flex items-center justify-center p-2.5 shrink-0">
+          <div className="relative w-full h-full min-h-[180px] rounded-xl overflow-hidden border border-amber-400/40 shadow-[0_0_15px_rgba(212,168,67,0.2)]">
             <Image
               src={person.image}
               alt={person.name}
               fill
-              className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+              className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
             />
           </div>
         </div>
 
         {/* Body Content */}
-        <div className="p-4 flex flex-col justify-between flex-grow bg-ink/95 space-y-2">
+        <div className="p-4 flex flex-col justify-between flex-grow bg-ink/95 space-y-2 min-w-0">
           <div className="space-y-1">
             <h3 className="text-base font-display font-bold text-white group-hover:text-amber-400 transition-colors">
               {person.name}
@@ -161,9 +161,11 @@ export default function JuriesSection() {
                 {person.degrees}
               </p>
             )}
-            <p className="text-xs font-mono font-semibold text-amber-400 whitespace-pre-line leading-relaxed">
-              {person.role}
-            </p>
+            <div className="min-h-[2.5rem] flex items-center">
+              <p className="text-xs font-mono font-semibold text-amber-400 whitespace-pre-line leading-snug">
+                {person.role}
+              </p>
+            </div>
             <p className="text-[11px] text-gray-400 font-sans">
               {person.company}
             </p>
@@ -265,6 +267,7 @@ export default function JuriesSection() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: (idx + 1) * 0.1 }}
                   whileHover={{ y: -4, scale: 1.01 }}
+                  className="h-full flex flex-col"
                 >
                   {renderJuryCard(person)}
                 </motion.div>
