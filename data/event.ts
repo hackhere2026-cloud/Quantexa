@@ -148,13 +148,13 @@ export const juries: JuryMember[] = [
   },
   {
     id: "jury-2",
-    name: "Position Locked",
-    role: "HR & Talent Evaluator",
-    company: "To Be Revealed Soon",
-    category: "Jury Member",
-    bio: "Senior corporate mentor and talent evaluator. Official profile details will be revealed shortly.",
-    image: "/images/hackhere-logo.jpeg",
-    isLocked: true,
+    name: "Dr. A. Kumar",
+    role: "Dean – Projects & Student Affairs\nHead of Artificial Intelligence & Data Science",
+    company: "RVS College of Engineering and Technology",
+    category: "Chief Guest",
+    bio: "Dean – Projects & Student Affairs and Head of AI & DS at RVS College of Engineering and Technology, fostering academic innovation and advanced AI research.",
+    image: "/juries/dr_a_kumar.jpeg",
+    badge: "Chief Guest",
   },
 ];
 

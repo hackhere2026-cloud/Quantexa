@@ -4,7 +4,7 @@ import { juries, JuryMember } from "@/data/event";
 import { Linkedin, ShieldCheck, Lock, Crown, Sparkles } from "lucide-react";
 
 export default function JuriesSection() {
-  const juryMembers = juries.filter((item) => item.category !== "Chief Guest");
+  const juryMembers = juries;
 
   const renderJuryCard = (person: JuryMember) => {
     if (person.isLocked) {
@@ -161,7 +161,7 @@ export default function JuriesSection() {
                 {person.degrees}
               </p>
             )}
-            <p className="text-xs font-mono font-semibold text-amber-400">
+            <p className="text-xs font-mono font-semibold text-amber-400 whitespace-pre-line leading-relaxed">
               {person.role}
             </p>
             <p className="text-[11px] text-gray-400 font-sans">
@@ -174,7 +174,7 @@ export default function JuriesSection() {
 
           <div className="pt-2 border-t border-white/10 flex items-center justify-between">
             <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">
-              // OFFICIAL JURY
+              {person.badge ? `// ${person.badge.toUpperCase()}` : "// OFFICIAL JURY"}
             </span>
             {person.linkedin ? (
               <a
@@ -188,7 +188,9 @@ export default function JuriesSection() {
                 <span>LinkedIn</span>
               </a>
             ) : (
-              <span className="text-[10px] font-mono text-amber-400/70">EVALUATOR</span>
+              <span className="text-[10px] font-mono text-amber-400/80 px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/30">
+                {person.badge || "EVALUATOR"}
+              </span>
             )}
           </div>
         </div>

@@ -4,7 +4,7 @@ import { juries, JuryMember } from "@/data/event";
 import { Linkedin, UserCheck, ShieldCheck, Lock, Crown, Sparkles } from "lucide-react";
 
 export default function MobileJuriesSection() {
-  const juryMembers = juries.filter((item) => item.category !== "Chief Guest");
+  const juryMembers = juries;
 
   return (
     <section id="juries" className="py-12 px-4 bg-ink relative z-10 border-t border-amber-500/20">
@@ -156,8 +156,8 @@ export default function MobileJuriesSection() {
                   className="p-4 rounded-xl bg-white/5 border border-amber-500/40 space-y-3 relative overflow-hidden backdrop-blur-sm shadow-[0_0_15px_rgba(212,168,67,0.12)]"
                 >
                   {/* Photo & Identity */}
-                  <div className="flex items-center gap-3.5 pt-1">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border-2 border-amber-400/60 shrink-0 shadow-[0_0_12px_rgba(212,168,67,0.25)]">
+                  <div className="flex items-start gap-3.5 pt-1">
+                    <div className="relative w-16 h-20 rounded-xl overflow-hidden border-2 border-amber-400/60 shrink-0 shadow-[0_0_12px_rgba(212,168,67,0.25)]">
                       <Image
                         src={jury.image}
                         alt={jury.name}
@@ -165,8 +165,8 @@ export default function MobileJuriesSection() {
                         className="object-cover object-top"
                       />
                     </div>
-                    <div className="space-y-0.5 min-w-0">
-                      <h4 className="text-sm font-display font-extrabold text-white truncate">
+                    <div className="space-y-0.5 min-w-0 flex-1">
+                      <h4 className="text-sm font-display font-extrabold text-white">
                         {jury.name}
                       </h4>
                       {jury.degrees && (
@@ -174,13 +174,26 @@ export default function MobileJuriesSection() {
                           {jury.degrees}
                         </p>
                       )}
-                      <p className="text-xs font-mono font-semibold text-amber-300 truncate">
+                      <p className="text-xs font-mono font-semibold text-amber-300 whitespace-pre-line leading-snug">
                         {jury.role}
                       </p>
-                      <p className="text-[11px] text-gray-400 truncate">
+                      <p className="text-[11px] text-gray-400 font-sans pt-0.5">
                         {jury.company}
                       </p>
                     </div>
+                  </div>
+
+                  <p className="text-[11px] text-gray-300/90 font-sans leading-relaxed pt-1">
+                    {jury.bio}
+                  </p>
+
+                  <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">
+                      {jury.badge ? `// ${jury.badge.toUpperCase()}` : "// OFFICIAL JURY"}
+                    </span>
+                    <span className="text-[10px] font-mono text-amber-400/80 px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/30">
+                      {jury.badge || "EVALUATOR"}
+                    </span>
                   </div>
 
                   {/* LinkedIn Button */}
