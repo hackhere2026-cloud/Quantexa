@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   Terminal,
   Upload,
+  UploadCloud,
   CheckCircle2,
   Users,
   Key,
@@ -30,8 +31,15 @@ import {
   Eye,
   EyeOff,
   Shield,
+  Phone,
+  RotateCcw,
+  Sparkles,
+  Layers,
+  Radio,
 } from "lucide-react";
 import TrackSpinWheel from "@/components/TrackSpinWheel";
+import AdminEditTeamModal from "@/components/AdminEditTeamModal";
+import AdminAddTeamModal from "@/components/AdminAddTeamModal";
 
 interface TeamMember {
   name: string;
@@ -51,6 +59,7 @@ interface TeamRecord {
   membersCount: number;
   memberList: TeamMember[];
   isRosterLocked?: boolean;
+  isTrackRevealed?: boolean;
   problemStatement: string;
   problemStatementFileUrl?: string;
   score: number;
@@ -68,7 +77,9 @@ interface TeamRecord {
 }
 
 export default function FinalPortalPage() {
+  const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<"team" | "admin">("team");
+  const [loginMode, setLoginMode] = useState<"team" | "admin">("team");
 
   // Auth Inputs
   const [teamInput, setTeamInput] = useState("");
@@ -81,54 +92,179 @@ export default function FinalPortalPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Authenticated State
-  const [currentTeam, setCurrentTeam] = useState<TeamRecord | null>(null);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-  const [adminPasskey, setAdminPasskey] = useState("");
+  // Authenticated State (Synchronously restored from localStorage on reload to prevent state loss or login flash)
+  const [currentTeam, setCurrentTeam] = useState<TeamRecord | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("quantexa_current_team");
+        if (saved) {
+          return JSON.parse(saved);
+        }
+      } catch (e) {}
+    }
+    return null;
+  });
 
-  // Submission Form State (Git Link & File)
-  const [gitRepoUrl, setGitRepoUrl] = useState("");
-  const [projectFileUrl, setProjectFileUrl] = useState("");
-  const [projectFileName, setProjectFileName] = useState("");
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const storedAuth =
+          localStorage.getItem("quantexa_auth") || localStorage.getItem("nexora_auth");
+        if (storedAuth) {
+          const parsed = JSON.parse(storedAuth);
+          if (parsed.type === "admin") return true;
+        }
+      } catch (e) {}
+    }
+    return false;
+  });
 
-  // Team Members Form State (One-Time Add/Edit)
-  const [editingMembers, setEditingMembers] = useState(false);
-  const [leaderName, setLeaderName] = useState("");
-  const [leaderPhone, setLeaderPhone] = useState("");
-  const [leaderEmail, setLeaderEmail] = useState("");
-  const [memberList, setMemberList] = useState<TeamMember[]>([]);
+  const [adminPasskey, setAdminPasskey] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const storedAuth =
+          localStorage.getItem("quantexa_auth") || localStorage.getItem("nexora_auth");
+        if (storedAuth) {
+          const parsed = JSON.parse(storedAuth);
+          if (parsed.type === "admin") return parsed.passkey || "9442777855";
+        }
+      } catch (e) {}
+    }
+    return "";
+  });
+
+  // Submission Form State (Git Link & Presentation Drive Link with draft persistence)
+  const [gitRepoUrl, setGitRepoUrl] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedTeamStr = localStorage.getItem("quantexa_current_team");
+        if (savedTeamStr) {
+          const t = JSON.parse(savedTeamStr);
+          const draft = localStorage.getItem(`quantexa_draft_git_${t.id}`);
+          return draft || t.gitRepoUrl || t.submissionUrl || "";
+        }
+      } catch (e) {}
+    }
+    return "";
+  });
+
+  const [projectFileUrl, setProjectFileUrl] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedTeamStr = localStorage.getItem("quantexa_current_team");
+        if (savedTeamStr) {
+          const t = JSON.parse(savedTeamStr);
+          const draft = localStorage.getItem(`quantexa_draft_ppt_${t.id}`);
+          return draft || t.projectFileUrl || "";
+        }
+      } catch (e) {}
+    }
+    return "";
+  });
+
+  const [projectFileName, setProjectFileName] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedTeamStr = localStorage.getItem("quantexa_current_team");
+        if (savedTeamStr) {
+          const t = JSON.parse(savedTeamStr);
+          return t.projectFileName || (t.projectFileUrl ? "Drive Link" : "");
+        }
+      } catch (e) {}
+    }
+    return "";
+  });
+
+  // Team Details State (Read-only verified roster)
+  const [leaderName, setLeaderName] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedTeamStr = localStorage.getItem("quantexa_current_team");
+        if (savedTeamStr) {
+          const t = JSON.parse(savedTeamStr);
+          return t.leaderName || "Team Leader";
+        }
+      } catch (e) {}
+    }
+    return "";
+  });
+
+  const [leaderPhone, setLeaderPhone] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedTeamStr = localStorage.getItem("quantexa_current_team");
+        if (savedTeamStr) {
+          const t = JSON.parse(savedTeamStr);
+          return t.leaderPhone || "";
+        }
+      } catch (e) {}
+    }
+    return "";
+  });
+
+  const [leaderEmail, setLeaderEmail] = useState<string>("");
+  const [memberList, setMemberList] = useState<TeamMember[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedTeamStr = localStorage.getItem("quantexa_current_team");
+        if (savedTeamStr) {
+          const t = JSON.parse(savedTeamStr);
+          if (Array.isArray(t.memberList) && t.memberList.length > 0) {
+            return t.memberList;
+          }
+        }
+      } catch (e) {}
+    }
+    return [];
+  });
 
   // Admin Data & Search/Filter
   const [adminView, setAdminView] = useState<"database" | "rosters" | "submissions">("database");
   const [teamsList, setTeamsList] = useState<TeamRecord[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [filterTrack, setFilterTrack] = useState("ALL");
+  const [filterReveal, setFilterReveal] = useState("ALL");
+  const [filterSubmissions, setFilterSubmissions] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [lastSyncTime, setLastSyncTime] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Admin Modals
+  // Admin Modals & Editing Full Power
+  const [editingTeam, setEditingTeam] = useState<TeamRecord | null>(null);
+  const [isSavingTeam, setIsSavingTeam] = useState(false);
   const [showAddTeam, setShowAddTeam] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [bulkJsonInput, setBulkJsonInput] = useState("");
-
-  // New Team Modal Form
-  const [newTeamName, setNewTeamName] = useState("");
-  const [newTeamPasscode, setNewTeamPasscode] = useState("");
-  const [newTeamLeader, setNewTeamLeader] = useState("");
-  const [newTeamPhone, setNewTeamPhone] = useState("");
-  const [newTeamProblem, setNewTeamProblem] = useState("");
+  const [parsedPreview, setParsedPreview] = useState<any[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Editing Score State for Admin
   const [editingScoreId, setEditingScoreId] = useState<string | null>(null);
   const [tempScore, setTempScore] = useState<number>(0);
 
+  // Suggested next team ID
+  const suggestedNextId = useMemo(() => {
+    const highest = teamsList.reduce((max, t) => {
+      const match = t.id.match(/\d+/);
+      if (match) {
+        const num = parseInt(match[0], 10);
+        return num > max ? num : max;
+      }
+      return max;
+    }, 0);
+    return `QUAN${String(highest + 1).padStart(3, "0")}`;
+  }, [teamsList]);
+
   // Fetch all teams
   const fetchTeams = async () => {
     try {
-      const res = await fetch("/api/teams");
+      const res = await fetch("/api/teams?t=" + Date.now(), { cache: "no-store" });
       const data = await res.json();
-      if (data.success) {
+      if (data.success && Array.isArray(data.teams)) {
         setTeamsList(data.teams);
+        setLastSyncTime(new Date().toLocaleTimeString());
       }
     } catch (err) {
       console.error("Failed to fetch teams:", err);
@@ -136,41 +272,99 @@ export default function FinalPortalPage() {
   };
 
   useEffect(() => {
+    setIsMounted(true);
     fetchTeams();
   }, []);
 
+  // Real-Time Dynamic Sync Polling for Admin View
+  useEffect(() => {
+    if (!isAdminLoggedIn) return;
+    setLastSyncTime(new Date().toLocaleTimeString());
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/teams?t=" + Date.now(), { cache: "no-store" });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.teams)) {
+          setTeamsList(data.teams);
+          setLastSyncTime(new Date().toLocaleTimeString());
+        }
+      } catch (err) {
+        // silent fail on network hiccups
+      }
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [isAdminLoggedIn]);
+
   const handleLogout = () => {
-    localStorage.removeItem("quantexa_auth");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("quantexa_auth");
+      localStorage.removeItem("nexora_auth");
+      localStorage.removeItem("quantexa_current_team");
+      if (currentTeam?.id) {
+        localStorage.removeItem(`quantexa_draft_git_${currentTeam.id}`);
+        localStorage.removeItem(`quantexa_draft_ppt_${currentTeam.id}`);
+      }
+    }
     setActiveTab("team");
     setIsAdminLoggedIn(false);
     setCurrentTeam(null);
+    setTeamInput("");
+    setTeamPassword("");
+  };
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch("/api/teams?t=" + Date.now(), { cache: "no-store" });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.teams)) {
+        setTeamsList(data.teams);
+        setLastSyncTime(new Date().toLocaleTimeString());
+        setSuccessMsg("Teams database synced dynamically!");
+        setTimeout(() => setSuccessMsg(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem("quantexa_auth");
+    const storedAuth =
+      localStorage.getItem("quantexa_auth") || localStorage.getItem("nexora_auth");
     if (storedAuth) {
       try {
         const parsed = JSON.parse(storedAuth);
         if (parsed.type === "admin") {
           setIsAdminLoggedIn(true);
-          setAdminPasskey(parsed.passkey);
+          setAdminPasskey(parsed.passkey || "9442777855");
           setActiveTab("admin");
         } else if (parsed.type === "team") {
-          setIsLoading(true);
+          // Only show full loading indicator if team wasn't already loaded from localStorage
+          if (!currentTeam) {
+            setIsLoading(true);
+          }
           fetch("/api/auth/team", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ teamId: parsed.teamId, passcode: parsed.passcode }),
           })
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
               if (data.success) {
                 setIsAdminLoggedIn(false);
                 populateTeamState(data.team);
                 setActiveTab("team");
               } else {
                 localStorage.removeItem("quantexa_auth");
+                localStorage.removeItem("nexora_auth");
+                localStorage.removeItem("quantexa_current_team");
+                setCurrentTeam(null);
               }
+            })
+            .catch(() => {
+              // Network blip - keep currentTeam from localStorage so participant never loses view
             })
             .finally(() => setIsLoading(false));
         }
@@ -191,13 +385,35 @@ export default function FinalPortalPage() {
         (t.leaderName && t.leaderName.toLowerCase().includes(q)) ||
         (t.leaderPhone && t.leaderPhone.toLowerCase().includes(q)) ||
         t.passcode.toLowerCase().includes(q) ||
-        t.problemStatement.toLowerCase().includes(q);
+        (t.track && t.track.toLowerCase().includes(q)) ||
+        (t.gitRepoUrl && t.gitRepoUrl.toLowerCase().includes(q)) ||
+        (t.projectFileUrl && t.projectFileUrl.toLowerCase().includes(q)) ||
+        (t.status && t.status.toLowerCase().includes(q)) ||
+        (t.problemStatement && t.problemStatement.toLowerCase().includes(q));
 
       const matchesStatus = filterStatus === "ALL" || t.status === filterStatus;
 
-      return matchesQuery && matchesStatus;
+      const matchesTrack =
+        filterTrack === "ALL" ||
+        (filterTrack === "FinTech Track" && t.track?.includes("FinTech")) ||
+        (filterTrack === "Quantum and Social Welfare Track" &&
+          (t.track?.includes("Quantum") || t.track?.includes("Social")));
+
+      const matchesReveal =
+        filterReveal === "ALL" ||
+        (filterReveal === "Revealed" && t.isTrackRevealed) ||
+        (filterReveal === "Pending" && !t.isTrackRevealed);
+
+      const matchesSubmissions =
+        filterSubmissions === "ALL" ||
+        (filterSubmissions === "Has GitHub" && Boolean(t.gitRepoUrl)) ||
+        (filterSubmissions === "Has PPT" && Boolean(t.projectFileUrl)) ||
+        (filterSubmissions === "Both Submitted" && Boolean(t.gitRepoUrl && t.projectFileUrl)) ||
+        (filterSubmissions === "Missing" && (!t.gitRepoUrl || !t.projectFileUrl));
+
+      return matchesQuery && matchesStatus && matchesTrack && matchesReveal && matchesSubmissions;
     });
-  }, [teamsList, searchQuery, filterStatus]);
+  }, [teamsList, searchQuery, filterStatus, filterTrack, filterReveal, filterSubmissions]);
 
   const totalPages = Math.ceil(filteredTeams.length / pageSize) || 1;
   const paginatedTeams = useMemo(() => {
@@ -205,38 +421,93 @@ export default function FinalPortalPage() {
     return filteredTeams.slice(start, start + pageSize);
   }, [filteredTeams, currentPage, pageSize]);
 
-  // Sync team form states when logged in
+  // Sync team form states when logged in & guard against reload resets
   const populateTeamState = (team: TeamRecord) => {
-    setCurrentTeam(team);
-    setGitRepoUrl(team.gitRepoUrl || team.submissionUrl || "");
-    setProjectFileUrl(team.projectFileUrl || "");
-    setProjectFileName(team.projectFileName || "");
-    setLeaderName(team.leaderName || "Team Leader");
-    setLeaderPhone(team.leaderPhone || "");
-    setLeaderEmail(team.leaderEmail || "");
-
-    const size = team.membersCount || 4;
-    const initialMembers: TeamMember[] = [];
-    
-    for (let i = 0; i < size; i++) {
-      if (i === 0) {
-        initialMembers.push({
-          name: team.leaderName || (team.memberList?.[0]?.name) || "Team Leader",
-          role: "Team Lead",
-          phone: team.leaderPhone || "",
-        });
-      } else {
-        initialMembers.push({
-          name: team.memberList?.[i]?.name || "",
-          role: team.memberList?.[i]?.role || `Member ${i + 1}`,
-        });
+    let isTrackRevealed = Boolean(team.isTrackRevealed);
+    if (!isTrackRevealed && typeof window !== "undefined") {
+      const localRevealed =
+        localStorage.getItem(`quantexa_track_revealed_${team.id}`) === "true" ||
+        localStorage.getItem(`nexora_track_revealed_${team.id}`) === "true";
+      if (localRevealed) {
+        isTrackRevealed = true;
       }
     }
 
+    const mergedTeam: TeamRecord = {
+      ...team,
+      isTrackRevealed,
+    };
+
+    setCurrentTeam(mergedTeam);
+
+    const savedGit = mergedTeam.gitRepoUrl || mergedTeam.submissionUrl || "";
+    const savedPpt = mergedTeam.projectFileUrl || "";
+    const savedPptName = mergedTeam.projectFileName || (savedPpt ? "Presentation File" : "");
+
+    let activeGit = savedGit;
+    let activePpt = savedPpt;
+    if (typeof window !== "undefined") {
+      const draftGit = localStorage.getItem(`quantexa_draft_git_${mergedTeam.id}`);
+      const draftPpt = localStorage.getItem(`quantexa_draft_ppt_${mergedTeam.id}`);
+      if (draftGit && !savedGit) activeGit = draftGit;
+      if (draftPpt && !savedPpt) activePpt = draftPpt;
+    }
+
+    setGitRepoUrl(activeGit);
+    setProjectFileUrl(activePpt);
+    setProjectFileName(savedPptName);
+    setLeaderName(mergedTeam.leaderName || "Team Leader");
+    setLeaderPhone(mergedTeam.leaderPhone || "");
+    setLeaderEmail(mergedTeam.leaderEmail || "");
+
+    const size = mergedTeam.membersCount || mergedTeam.memberList?.length || 4;
+    const initialMembers: TeamMember[] = [];
+
+    if (mergedTeam.memberList && Array.isArray(mergedTeam.memberList) && mergedTeam.memberList.length > 0) {
+      mergedTeam.memberList.forEach((m, i) => {
+        initialMembers.push({
+          name: m.name || (i === 0 ? mergedTeam.leaderName || "" : ""),
+          role: m.role || (i === 0 ? "Team Lead" : `Team Member ${i}`),
+          phone: i === 0 ? (m.phone || mergedTeam.leaderPhone || "") : (m.phone || ""),
+        });
+      });
+    } else {
+      initialMembers.push({
+        name: mergedTeam.leaderName || "Team Leader",
+        role: "Team Lead",
+        phone: mergedTeam.leaderPhone || "",
+      });
+    }
+
+    while (initialMembers.length < size) {
+      initialMembers.push({
+        name: "",
+        role: `Team Member ${initialMembers.length}`,
+      });
+    }
+
     setMemberList(initialMembers);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("quantexa_current_team", JSON.stringify(mergedTeam));
+      if (isTrackRevealed) {
+        localStorage.setItem(`quantexa_track_revealed_${mergedTeam.id}`, "true");
+      }
+    }
   };
 
-  // Login Handler (Supports Team Logins AND Admin Access via admin123 passkey)
+  const handleTrackRevealed = () => {
+    if (currentTeam) {
+      const updated: TeamRecord = { ...currentTeam, isTrackRevealed: true };
+      setCurrentTeam(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("quantexa_current_team", JSON.stringify(updated));
+        localStorage.setItem(`quantexa_track_revealed_${currentTeam.id}`, "true");
+      }
+    }
+  };
+
+  // Login Handler (Supports Team Logins AND Admin Access via ID: guru, Pass: 9442777855)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
@@ -246,17 +517,26 @@ export default function FinalPortalPage() {
     const inputLower = teamInput.trim().toLowerCase();
     const passTrim = teamPassword.trim();
 
-    // Check if logging in as Admin (ID must be explicitly "guru" or "admin")
+    // Check if logging in as Admin (loginMode === "admin" or ID: "guru" / "admin")
     if (
-      (inputLower === "guru" || inputLower === "admin") &&
-      (passTrim === "9442777855" || passTrim === "admin123")
+      loginMode === "admin" ||
+      inputLower === "guru" ||
+      inputLower === "admin"
     ) {
       try {
-        const passkeyToUse = passTrim || "9442777855";
+        const passkeyToUse = passTrim;
+        const userToUse = inputLower;
+
+        if (!userToUse || !passkeyToUse) {
+          setErrorMsg("Please enter both Admin ID and Password.");
+          setIsLoading(false);
+          return;
+        }
+
         const res = await fetch("/api/auth/admin", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ passkey: passkeyToUse }),
+          body: JSON.stringify({ passkey: passkeyToUse, username: userToUse }),
         });
         const data = await res.json();
 
@@ -265,40 +545,76 @@ export default function FinalPortalPage() {
           setAdminPasskey(passkeyToUse);
           setTeamsList(data.teams);
           setActiveTab("admin");
-          setSuccessMsg(`Master Admin Authenticated! Managing ${data.teams.length} team accounts.`);
-          localStorage.setItem("quantexa_auth", JSON.stringify({ type: "admin", passkey: passkeyToUse }));
+          setSuccessMsg(`Master Admin Authenticated! Managing ${data.teams.length} teams.`);
+          localStorage.setItem(
+            "quantexa_auth",
+            JSON.stringify({ type: "admin", passkey: passkeyToUse, username: userToUse })
+          );
+          setIsLoading(false);
+          return;
+        } else {
+          setErrorMsg(data.message || "Invalid Admin Credentials.");
           setIsLoading(false);
           return;
         }
       } catch (err) {
-        // Fallback to normal team auth
+        setErrorMsg("Failed to connect to Admin authentication server.");
+        setIsLoading(false);
+        return;
       }
     }
 
-    // Standard Team Authentication
-    try {
-      const res = await fetch("/api/auth/team", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teamId: teamInput, passcode: teamPassword }),
-      });
-      const data = await res.json();
+    // Standard Team Authentication with Vercel Cold-Start Resilience & Auto-Retry
+    let attempts = 0;
+    const maxAttempts = 2;
+    while (attempts < maxAttempts) {
+      attempts++;
+      try {
+        const res = await fetch("/api/auth/team", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ teamId: teamInput, passcode: teamPassword }),
+        });
+        const data = await res.json().catch(() => null);
 
-      if (data.success) {
-        setIsAdminLoggedIn(false);
-        populateTeamState(data.team);
-        setActiveTab("team");
-        setErrorMsg("");
-        setSuccessMsg("");
-        localStorage.setItem("quantexa_auth", JSON.stringify({ type: "team", teamId: teamInput, passcode: teamPassword }));
-      } else {
-        setErrorMsg(data.message || "Invalid Team ID or Passcode.");
+        if (res.ok && data?.success) {
+          setIsAdminLoggedIn(false);
+          populateTeamState(data.team);
+          setActiveTab("team");
+          setErrorMsg("");
+          setSuccessMsg("");
+          if (typeof window !== "undefined") {
+            localStorage.setItem(
+              "quantexa_auth",
+              JSON.stringify({ type: "team", teamId: teamInput, passcode: teamPassword })
+            );
+            localStorage.setItem("quantexa_current_team", JSON.stringify(data.team));
+          }
+          setIsLoading(false);
+          return;
+        } else if (res.status === 401 || data?.message?.toLowerCase().includes("invalid") || data?.message?.toLowerCase().includes("required")) {
+          // Explicit invalid credentials - no need to retry
+          setErrorMsg(data?.message || "Invalid Team ID or Passcode.");
+          setIsLoading(false);
+          return;
+        } else if (attempts < maxAttempts) {
+          // Wait 400ms and retry once if server had a brief cold-start glitch
+          await new Promise((r) => setTimeout(r, 400));
+          continue;
+        } else {
+          setErrorMsg(data?.message || "Authentication error. Please check your credentials or try again.");
+          setIsLoading(false);
+          return;
+        }
+      } catch (err) {
+        if (attempts < maxAttempts) {
+          await new Promise((r) => setTimeout(r, 400));
+          continue;
+        }
+        setErrorMsg("Unable to reach server. Please check your internet connection or try again.");
       }
-    } catch (err) {
-      setErrorMsg("Network error connecting to system.");
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   // Upload File handler
@@ -324,24 +640,40 @@ export default function FinalPortalPage() {
       if (data.success) {
         setProjectFileUrl(data.fileUrl);
         setProjectFileName(data.fileName);
-        setSuccessMsg(`File "${data.fileName}" uploaded! Click "Save Submissions" below to complete.`);
+        if (typeof window !== "undefined" && currentTeam) {
+          localStorage.setItem(`quantexa_draft_ppt_${currentTeam.id}`, data.fileUrl);
+          const updated = {
+            ...currentTeam,
+            projectFileUrl: data.fileUrl,
+            projectFileName: data.fileName,
+          };
+          localStorage.setItem("quantexa_current_team", JSON.stringify(updated));
+        }
+        setSuccessMsg("Presentation file uploaded successfully!");
       } else {
         setErrorMsg(data.message || "File upload failed.");
       }
     } catch (err) {
-      setErrorMsg("Error uploading file.");
+      setErrorMsg("Error uploading presentation file.");
     } finally {
       setIsUploading(false);
     }
   };
 
-  // Save All Team Submissions (Git Link + Presentation File)
+  // Save Final Submissions (Git Link + File)
   const handleSaveSubmission = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentTeam) return;
+
+    setIsLoading(true);
     setErrorMsg("");
     setSuccessMsg("");
-    setIsLoading(true);
+
+    const isRevealed =
+      Boolean(currentTeam.isTrackRevealed) ||
+      (typeof window !== "undefined" &&
+        (localStorage.getItem(`quantexa_track_revealed_${currentTeam.id}`) === "true" ||
+          localStorage.getItem(`nexora_track_revealed_${currentTeam.id}`) === "true"));
 
     try {
       const res = await fetch("/api/teams/submit", {
@@ -349,22 +681,25 @@ export default function FinalPortalPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teamId: currentTeam.id,
+          passcode: currentTeam.passcode,
           gitRepoUrl,
           projectFileUrl,
-          projectFileName,
-          memberList,
-          leaderName,
-          leaderEmail,
+          projectFileName: projectFileName || "Presentation File",
+          isTrackRevealed: isRevealed,
         }),
       });
       const data = await res.json();
 
       if (data.success) {
         populateTeamState(data.team);
-        setSuccessMsg("Git repository link and presentation file saved successfully!");
+        if (typeof window !== "undefined") {
+          localStorage.removeItem(`quantexa_draft_git_${currentTeam.id}`);
+          localStorage.removeItem(`quantexa_draft_ppt_${currentTeam.id}`);
+        }
+        setSuccessMsg("Submissions updated successfully!");
         fetchTeams();
       } else {
-        setErrorMsg(data.message || "Failed to save submission.");
+        setErrorMsg(data.message || "Failed to update submissions.");
       }
     } catch (err) {
       setErrorMsg("Submission error.");
@@ -373,88 +708,17 @@ export default function FinalPortalPage() {
     }
   };
 
-  // Save Team Members ONE TIME (Finalize & Lock)
-  const handleSaveMembersOneTime = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentTeam) return;
-    if (currentTeam.isRosterLocked) {
-      setErrorMsg("Team roster has already been finalized and locked.");
-      return;
-    }
-
+  // Save Team Changes by Admin (Full Power)
+  const handleAdminSaveTeam = async (teamId: string, updates: Partial<TeamRecord>) => {
+    setIsSavingTeam(true);
     setErrorMsg("");
-    setSuccessMsg("");
-    setIsLoading(true);
-
-    try {
-      const res = await fetch("/api/teams/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          teamId: currentTeam.id,
-          memberList,
-          leaderName,
-          leaderEmail,
-          gitRepoUrl,
-          projectFileUrl,
-          projectFileName,
-          isRosterLocked: false,
-        }),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        populateTeamState(data.team);
-        setEditingMembers(false);
-        setSuccessMsg("Team members saved successfully!");
-        fetchTeams();
-      } else {
-        setErrorMsg(data.message || "Failed to save team roster.");
-      }
-    } catch (err) {
-      setErrorMsg("Roster save error.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Member Management helpers (Up to team size limit)
-  const handleAddMember = () => {
-    const maxAllowed = currentTeam?.membersCount || 4;
-    if (memberList.length >= maxAllowed) {
-      setErrorMsg(`Maximum allowed team size is ${maxAllowed} members.`);
-      return;
-    }
-    setMemberList((prev) => [
-      ...prev,
-      { name: `Member ${prev.length + 1}`, role: "Developer" },
-    ]);
-  };
-
-  const handleRemoveMember = (index: number) => {
-    if (index === 0) {
-      setErrorMsg("Team Leader cannot be removed.");
-      return;
-    }
-    setMemberList((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleUpdateMember = (index: number, key: keyof TeamMember, val: string) => {
-    setMemberList((prev) => {
-      const copy = [...prev];
-      copy[index] = { ...copy[index], [key]: val };
-      return copy;
-    });
-  };
-
-  // Update Team by Admin
-  const handleAdminUpdateTeam = async (teamId: string, updates: Partial<TeamRecord>) => {
     try {
       const res = await fetch("/api/admin/update-team", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          passkey: adminPasskey,
+          passkey: adminPasskey || "9442777855",
+          username: "guru",
           teamId,
           ...updates,
         }),
@@ -462,50 +726,226 @@ export default function FinalPortalPage() {
       const data = await res.json();
       if (data.success) {
         setTeamsList(data.allTeams);
-        if (currentTeam && currentTeam.id === teamId) {
-          populateTeamState(data.team);
-        }
+        setEditingTeam(null);
+        setSuccessMsg(`Team "${updates.name || teamId}" details updated successfully!`);
+        setTimeout(() => setSuccessMsg(""), 4000);
+      } else {
+        setErrorMsg(data.message || "Failed to update team.");
       }
     } catch (err) {
-      console.error("Failed to update team:", err);
+      setErrorMsg("Error updating team details.");
+    } finally {
+      setIsSavingTeam(false);
     }
   };
 
-  // Create New Single Team
-  const handleCreateTeam = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Delete Team by Admin
+  const handleAdminDeleteTeam = async (teamId: string) => {
     setIsLoading(true);
+    setErrorMsg("");
     try {
-      const res = await fetch("/api/teams", {
+      const res = await fetch("/api/admin/delete-team", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: newTeamName,
-          passcode: newTeamPasscode || newTeamPhone || "pass123",
-          leaderName: newTeamLeader,
-          leaderPhone: newTeamPhone,
-          problemStatement: newTeamProblem,
+          passkey: adminPasskey || "9442777855",
+          username: "guru",
+          teamId,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        setTeamsList((prev) => [...prev, data.team]);
-        setShowAddTeam(false);
-        setNewTeamName("");
-        setNewTeamPasscode("");
-        setNewTeamLeader("");
-        setNewTeamPhone("");
-        setNewTeamProblem("");
-        setSuccessMsg(`Team "${data.team.name}" created!`);
+        setTeamsList(data.allTeams);
+        setEditingTeam(null);
+        setSuccessMsg(`Team ${teamId} has been successfully deleted.`);
+        setTimeout(() => setSuccessMsg(""), 4000);
+      } else {
+        setErrorMsg(data.message || "Failed to delete team.");
       }
     } catch (err) {
-      setErrorMsg("Failed to create team.");
+      setErrorMsg("Error deleting team.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Bulk Import Teams from JSON / CSV data
+  // Add New Team by Admin (Full Power)
+  const handleAdminAddTeam = async (teamData: any) => {
+    setIsLoading(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/admin/add-team", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          passkey: adminPasskey || "9442777855",
+          username: "guru",
+          team: teamData,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTeamsList(data.allTeams);
+        setShowAddTeam(false);
+        setSuccessMsg(data.message || "Team created and added to database!");
+        setTimeout(() => setSuccessMsg(""), 4000);
+      } else {
+        setErrorMsg(data.message || "Failed to add team.");
+      }
+    } catch (err) {
+      setErrorMsg("Error creating team.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reset all 145 reveals to superposed card state
+  const handleResetAllReveals = async () => {
+    if (!confirm("Are you sure you want to reset all team track reveals back to superposed moving cards?")) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/admin/reset-reveals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          passkey: adminPasskey || "9442777855",
+          username: "guru",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTeamsList(data.teams);
+        setSuccessMsg("All 145 team cards reset to unrevealed state!");
+        setTimeout(() => setSuccessMsg(""), 4000);
+      } else {
+        setErrorMsg(data.message || "Reset failed.");
+      }
+    } catch (err) {
+      setErrorMsg("Error resetting team reveals.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Helper to parse 10-Column Row (Columns A to J)
+  const parse10ColumnRow = (parts: string[], idx: number) => {
+    let offset = 0;
+    // If parts[0] is numeric Sno (e.g. 1, 2) and parts.length >= 6, then Col B is TEAM ID
+    if (/^\d+$/.test(parts[0]) && parts.length >= 6) {
+      offset = 1;
+    }
+
+    const id = parts[offset] ? parts[offset].toUpperCase().trim() : `QTX-${idx + 101}`;
+    const name = parts[offset + 1] ? parts[offset + 1].trim() : `Team ${id}`;
+    const teamSize = parseInt(parts[offset + 2], 10) || 4;
+    const leaderName = parts[offset + 3] ? parts[offset + 3].trim() : "Team Leader";
+    const leaderPhone = parts[offset + 4] ? parts[offset + 4].trim() : "";
+    const passcode = leaderPhone || `pass${idx + 1}`;
+
+    const rawM1 = parts[offset + 5] ? parts[offset + 5].trim() : "";
+    const rawM2 = parts[offset + 6] ? parts[offset + 6].trim() : "";
+    const rawM3 = parts[offset + 7] ? parts[offset + 7].trim() : "";
+    const rawM4 = parts[offset + 8] ? parts[offset + 8].trim() : "";
+
+    const memberList: TeamMember[] = [
+      {
+        name: leaderName,
+        role: "Team Lead",
+        phone: leaderPhone,
+      },
+    ];
+
+    const otherMembers = [rawM1, rawM2, rawM3, rawM4].filter(
+      (m) => m && m !== "-" && m !== "N/A" && m.toLowerCase() !== leaderName.toLowerCase()
+    );
+
+    otherMembers.forEach((memName, mIdx) => {
+      if (memberList.length < teamSize) {
+        memberList.push({
+          name: memName,
+          role: memberList.length === 1 ? "Member" : `Member ${memberList.length + 1}`,
+        });
+      }
+    });
+
+    while (memberList.length < teamSize) {
+      memberList.push({
+        name: "",
+        role: memberList.length === 1 ? "Member" : `Member ${memberList.length + 1}`,
+      });
+    }
+
+    return {
+      id,
+      name,
+      membersCount: teamSize,
+      leaderName,
+      leaderPhone,
+      passcode,
+      memberList,
+    };
+  };
+
+  // Upload and parse Excel (.xlsx, .xls) or CSV files directly
+  const handleExcelUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setErrorMsg("");
+    setSuccessMsg("");
+    setIsLoading(true);
+
+    try {
+      const XLSX = await import("xlsx");
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const rawRows: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      const parsed: any[] = [];
+      rawRows.forEach((row, rIdx) => {
+        if (!row || !Array.isArray(row) || row.length < 3) return;
+        const parts = row.map((c) => (c !== undefined && c !== null ? String(c).trim() : ""));
+        const first = parts[0]?.toLowerCase() || "";
+        const second = parts[1]?.toLowerCase() || "";
+        if (
+          first === "sno" ||
+          first === "s.no" ||
+          first === "sl no" ||
+          first === "sl.no" ||
+          first === "column" ||
+          first === "#" ||
+          second === "team id" ||
+          second === "teamid"
+        ) {
+          return;
+        }
+
+        const teamObj = parse10ColumnRow(parts, rIdx);
+        if (teamObj.id) {
+          parsed.push(teamObj);
+        }
+      });
+
+      if (parsed.length > 0) {
+        setParsedPreview(parsed);
+        setSuccessMsg(`Extracted ${parsed.length} teams from ${file.name}! Click "Import All Teams" below to save to DB.`);
+      } else {
+        setErrorMsg("No valid team records found in uploaded file.");
+      }
+    } catch (err: any) {
+      setErrorMsg("Failed to parse file: " + (err?.message || "Unknown error"));
+    } finally {
+      setIsLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  // Bulk Import Teams from 10-Column Excel / CSV / TSV / Markdown data
   const handleBulkImport = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
@@ -513,21 +953,72 @@ export default function FinalPortalPage() {
     setIsLoading(true);
 
     try {
-      let parsedData = [];
-      try {
-        parsedData = JSON.parse(bulkJsonInput);
-      } catch (err) {
-        const lines = bulkJsonInput.trim().split("\n");
-        parsedData = lines.map((line, idx) => {
-          const parts = line.split(",").map((p) => p.trim());
-          return {
-            id: parts[0] || `NX-${idx + 101}`,
-            name: parts[1] || `Team ${parts[0]}`,
-            leaderName: parts[2] || "Team Leader",
-            leaderPhone: parts[3] || "",
-            passcode: parts[4] || parts[3] || `pass${idx + 1}`,
-          };
-        });
+      let parsedData: any[] = [];
+
+      // If user uploaded an Excel file and has parsedPreview ready
+      if (parsedPreview.length > 0 && !bulkJsonInput.trim()) {
+        parsedData = parsedPreview;
+      } else {
+        try {
+          parsedData = JSON.parse(bulkJsonInput);
+        } catch (err) {
+          const lines = bulkJsonInput.trim().split(/\r?\n/);
+
+          for (let idx = 0; idx < lines.length; idx++) {
+            const rawLine = lines[idx].trim();
+            if (!rawLine) continue;
+
+            // Detect separator: Pipe | (Markdown), Tab \t, Semicolon ;, or Comma ,
+            let parts: string[] = [];
+            if (rawLine.includes("|")) {
+              parts = rawLine.split("|").map((p) => p.trim());
+              if (parts.length > 0 && parts[0] === "") parts.shift();
+              if (parts.length > 0 && parts[parts.length - 1] === "") parts.pop();
+              if (parts.every((p) => /^-+$/.test(p) || p === "")) continue;
+            } else if (rawLine.includes("\t")) {
+              parts = rawLine.split("\t").map((p) => p.trim());
+            } else if (rawLine.includes(";") && !rawLine.includes(",")) {
+              parts = rawLine
+                .split(";")
+                .map((p) => p.replace(/^["']|["']$/g, "").trim());
+            } else {
+              parts = rawLine
+                .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+                .map((p) => p.replace(/^["']|["']$/g, "").trim());
+            }
+
+            // Skip header row if present
+            const firstCol = (parts[0] || "").toLowerCase().trim();
+            const secondCol = (parts[1] || "").toLowerCase().trim();
+            if (
+              firstCol === "sno" ||
+              firstCol === "s.no" ||
+              firstCol === "sl no" ||
+              firstCol === "sl.no" ||
+              firstCol === "column" ||
+              firstCol === "#" ||
+              secondCol === "team id" ||
+              secondCol === "teamid" ||
+              secondCol.includes("team name") ||
+              secondCol.includes("team")
+            ) {
+              continue;
+            }
+
+            if (parts.length >= 3) {
+              const teamObj = parse10ColumnRow(parts, idx);
+              if (teamObj.id) {
+                parsedData.push(teamObj);
+              }
+            }
+          }
+        }
+      }
+
+      if (parsedData.length === 0) {
+        setErrorMsg("No valid team data rows found. Please check format.");
+        setIsLoading(false);
+        return;
       }
 
       const res = await fetch("/api/admin/import-teams", {
@@ -544,7 +1035,8 @@ export default function FinalPortalPage() {
         setTeamsList(data.teams);
         setShowBulkImport(false);
         setBulkJsonInput("");
-        setSuccessMsg(data.message);
+        setParsedPreview([]);
+        setSuccessMsg(data.message || `Imported ${parsedData.length} teams successfully!`);
       } else {
         setErrorMsg(data.message || "Bulk import failed.");
       }
@@ -555,31 +1047,38 @@ export default function FinalPortalPage() {
     }
   };
 
+  if (!isMounted) {
+    return (
+      <main className="min-h-screen bg-[#08090C] text-white relative overflow-hidden flex flex-col items-center justify-center font-sans">
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#D4A843]/10 rounded-full blur-[190px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[550px] h-[550px] bg-[#C9952E]/10 rounded-full blur-[190px] pointer-events-none" />
+        <div className="flex flex-col items-center gap-4 relative z-10">
+          <div className="w-10 h-10 rounded-full border-2 border-amber-400/30 border-t-amber-400 animate-spin" />
+          <span className="text-xs font-mono text-amber-300 tracking-widest uppercase">QUANTEXA PORTAL INITIALIZING...</span>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="min-h-screen bg-ink text-white relative overflow-hidden flex flex-col font-sans">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#D4A843]/10 rounded-full blur-[180px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-crimson/10 rounded-full blur-[180px] pointer-events-none" />
+    <main className="min-h-screen bg-[#08090C] text-white relative overflow-hidden flex flex-col font-sans selection:bg-[#D4A843] selection:text-black">
+      {/* Background Ambient Glows - Quantexa Warm Gold & Crimson */}
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#D4A843]/10 rounded-full blur-[190px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[550px] h-[550px] bg-[#C9952E]/10 rounded-full blur-[190px] pointer-events-none" />
 
       {/* Top Header Bar */}
-      <header className="sticky top-0 z-50 bg-ink/90 backdrop-blur-xl border-b border-amber-500/30 px-4 sm:px-8 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-[#08090C]/90 backdrop-blur-xl border-b border-amber-500/30 px-4 sm:px-8 py-4 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-amber-500/30 hover:border-amber-400 text-xs font-mono text-amber-300 transition-all shadow-[0_0_15px_rgba(0,229,255,0.15)]"
+          className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-amber-500/40 hover:border-amber-400 text-xs font-mono text-amber-300 transition-all shadow-[0_0_15px_rgba(212,168,67,0.2)]"
         >
           <ArrowLeft className="w-4 h-4 text-amber-400" />
-          <span>Back to Quantexa</span>
+          <span className="font-semibold">Back to Quantexa</span>
         </Link>
 
         {(isAdminLoggedIn || currentTeam) && (
           <button
-            onClick={() => {
-              localStorage.removeItem("quantexa_auth");
-              setIsAdminLoggedIn(false);
-              setCurrentTeam(null);
-              setSuccessMsg("");
-              setErrorMsg("");
-            }}
+            onClick={handleLogout}
             className="px-4 py-2 rounded-xl bg-red-950/60 border border-red-500/40 hover:border-red-400 text-red-300 text-xs font-mono transition-all flex items-center gap-1.5"
           >
             <span>Log Out</span>
@@ -589,7 +1088,6 @@ export default function FinalPortalPage() {
 
       {/* Main Portal Area */}
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-grow space-y-8 relative z-10">
-
         {/* Global Notifications */}
         {errorMsg && (
           <div className="p-4 rounded-2xl bg-red-950/80 border border-red-500/50 text-red-300 text-xs font-mono flex items-center gap-3 shadow-[0_0_20px_rgba(255,0,0,0.2)]">
@@ -608,66 +1106,115 @@ export default function FinalPortalPage() {
         {/* Dynamic Content Views */}
         <AnimatePresence mode="wait">
           {!currentTeam && !isAdminLoggedIn ? (
-            /* ================= SINGLE UNIFIED LOGIN FORM ================= */
+            /* ================= DUAL AUTHENTICATION CARD (PARTICIPANT & MASTER ADMIN) ================= */
             <motion.div
               key="portal-login"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="max-w-md mx-auto space-y-4"
+              className="max-w-xl sm:max-w-2xl mx-auto pt-4 sm:pt-8"
             >
-              <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/40 bg-gradient-to-b from-amber-950/20 via-ink to-black space-y-6 shadow-[0_0_30px_rgba(0,229,255,0.15)]">
-                <div className="text-center space-y-2">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-950/80 border border-amber-500/40 mx-auto flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-                    <Key className="w-6 h-6" />
+              <div className="glass-panel p-8 sm:p-12 rounded-[2.5rem] border-2 border-amber-500/40 bg-gradient-to-b from-amber-950/25 via-[#0c0d12] to-black space-y-8 shadow-[0_0_50px_rgba(212,168,67,0.2)]">
+                {/* Mode Selector Tabs */}
+                <div className="flex bg-black/60 p-1.5 rounded-2xl border border-white/10 w-fit mx-auto font-mono text-xs">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginMode("team");
+                      setTeamInput("");
+                      setTeamPassword("");
+                      setErrorMsg("");
+                    }}
+                    className={`px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 ${
+                      loginMode === "team"
+                        ? "bg-amber-400 text-black shadow-[0_0_15px_rgba(212,168,67,0.4)]"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>Participant Portal</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginMode("admin");
+                      setTeamInput("");
+                      setTeamPassword("");
+                      setErrorMsg("");
+                    }}
+                    className={`px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 ${
+                      loginMode === "admin"
+                        ? "bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-[0_0_15px_rgba(255,100,0,0.4)]"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    <ShieldCheck className="w-4 h-4 text-amber-400" />
+                    <span>Master Admin Console</span>
+                  </button>
+                </div>
+
+                <div className="text-center space-y-3">
+                  <div className={`w-16 h-16 rounded-2xl mx-auto flex items-center justify-center shadow-lg transition-all ${
+                    loginMode === "admin"
+                      ? "bg-red-950/90 border-2 border-red-500/50 text-amber-400 shadow-[0_0_25px_rgba(255,50,0,0.35)]"
+                      : "bg-amber-950/90 border-2 border-amber-500/50 text-amber-400 shadow-[0_0_25px_rgba(212,168,67,0.35)]"
+                  }`}>
+                    {loginMode === "admin" ? <Shield className="w-8 h-8 text-amber-400" /> : <Key className="w-8 h-8" />}
                   </div>
-                  <h2 className="text-xl font-display font-extrabold text-white tracking-wide">
-                    TEAM <span className="text-amber-400">AUTHENTICATION</span>
+                  <h2 className="text-2xl sm:text-3xl font-display font-black text-white tracking-wide">
+                    {loginMode === "admin" ? (
+                      <>MASTER <span className="text-amber-400">ADMIN LOGIN</span></>
+                    ) : (
+                      <>TEAM <span className="text-amber-400">AUTHENTICATION</span></>
+                    )}
                   </h2>
-                  <p className="text-xs text-gray-400 font-sans">
-                    Connect to your team account, manage members, and submit your project files.
+                  <p className="text-xs sm:text-sm text-gray-300 font-sans max-w-md mx-auto">
+                    {loginMode === "admin"
+                      ? "Master Administrator access for complete database control, team roster editing, and real-time live monitoring."
+                      : "Connect to your team account to access official tracks, guidelines, and submission links."}
                   </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-4 font-mono text-xs">
-                  <div className="space-y-1.5">
-                    <label className="text-amber-400 uppercase tracking-widest text-[10px]">
-                      Team ID / Name
+                <form onSubmit={handleLogin} className="space-y-6 font-mono text-xs sm:text-sm">
+                  <div className="space-y-2">
+                    <label className="text-amber-400 uppercase tracking-widest text-xs font-bold block">
+                      {loginMode === "admin" ? "Admin ID" : "ID (Team ID)"}
                     </label>
                     <div className="relative">
-                      <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
+                      <User className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                       <input
                         type="text"
                         required
                         value={teamInput}
                         onChange={(e) => setTeamInput(e.target.value)}
-                        placeholder="e.g. QTX0001 or Team Name"
-                        className="w-full bg-black/60 border border-white/10 focus:border-amber-400 rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
+                        placeholder={loginMode === "admin" ? "Enter Admin ID" : "e.g. QUAN001"}
+                        className="w-full bg-black/70 border border-white/15 focus:border-amber-400 rounded-2xl pl-12 pr-4 py-4 sm:py-4.5 text-white text-sm sm:text-base placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400/30 transition-all shadow-inner"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-amber-400 uppercase tracking-widest text-[10px]">
-                      Passcode / Password
+                  <div className="space-y-2">
+                    <label className="text-amber-400 uppercase tracking-widest text-xs font-bold block">
+                      {loginMode === "admin" ? "Master Password" : "Password (Team Lead Number)"}
                     </label>
                     <div className="relative">
-                      <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
+                      <Lock className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                       <input
                         type={showPassword ? "text" : "password"}
                         required
                         value={teamPassword}
                         onChange={(e) => setTeamPassword(e.target.value)}
-                        placeholder="••••••••"
-                        className="w-full bg-black/60 border border-white/10 focus:border-amber-400 rounded-xl pl-10 pr-10 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
+                        placeholder={loginMode === "admin" ? "••••••••••••" : "e.g. 9342141436"}
+                        className="w-full bg-black/70 border border-white/15 focus:border-amber-400 rounded-2xl pl-12 pr-12 py-4 sm:py-4.5 text-white text-sm sm:text-base placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400/30 transition-all shadow-inner"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-400 transition-colors p-1"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-400 transition-colors p-1"
                         title={showPassword ? "Hide Password" : "Show Password"}
                       >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
                     </div>
                   </div>
@@ -675,24 +1222,27 @@ export default function FinalPortalPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-3.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-display text-xs font-extrabold uppercase tracking-wider shadow-[0_0_20px_rgba(0,229,255,0.6)] transition-all flex items-center justify-center gap-2"
+                    className={`w-full py-4 sm:py-5 rounded-2xl font-display text-sm sm:text-base font-black uppercase tracking-wider shadow-[0_0_30px_rgba(212,168,67,0.55)] transition-all flex items-center justify-center gap-2.5 mt-2 ${
+                      loginMode === "admin"
+                        ? "bg-gradient-to-r from-amber-400 via-amber-300 to-[#F0C755] text-black hover:brightness-110"
+                        : "bg-gradient-to-r from-amber-400 via-[#F0C755] to-amber-500 hover:brightness-110 text-black"
+                    }`}
                   >
-                    {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Connect Team Portal"}
+                    {isLoading ? (
+                      <RefreshCw className="w-5 h-5 animate-spin" />
+                    ) : loginMode === "admin" ? (
+                      "Authenticate Administrator"
+                    ) : (
+                      "Connect Team Portal"
+                    )}
                   </button>
                 </form>
               </div>
-
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs font-mono space-y-2">
-                <div className="flex justify-between items-center text-[10px] text-amber-400 uppercase tracking-widest font-bold">
-                  <span>🔑 LOGIN CREDENTIALS INFO:</span>
-                </div>
-                <div className="space-y-1.5 text-[11px] text-gray-300">
-                  <div>• <strong className="text-emerald-400">Team Login:</strong> ID: <code className="text-amber-300 font-bold">TEAM ID</code> (e.g. QTX0001) | Password: <code className="text-amber-300 font-bold">TEAM LEAD NUMBER</code></div>
-                </div>
-              </div>
             </motion.div>
           ) : currentTeam ? (
-            /* ================= TEAM DASHBOARD ================= */
+            /* ========================================================================= */
+            /* TEAM DASHBOARD (QUANTEXA BRAND COLOR THEME - GOLD AMBER + EMERALD)        */
+            /* ========================================================================= */
             <motion.div
               key="team-dashboard"
               initial={{ opacity: 0, y: 15 }}
@@ -700,139 +1250,123 @@ export default function FinalPortalPage() {
               exit={{ opacity: 0, y: -15 }}
               className="space-y-6"
             >
-              {/* Team Header Banner */}
-              <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-950/40 via-ink to-black border border-amber-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              {/* Team Header Banner (NO SCORE - QUANTEXA GOLD AMBER) */}
+              <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-950/30 via-ink to-black border border-amber-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
                 <div className="space-y-1">
-                  <span className="text-xs font-mono text-amber-400 font-bold">// TEAM ID: {currentTeam.id}</span>
+                  <span className="text-xs font-mono text-amber-400 font-bold">
+                    // TEAM ID: {currentTeam.id}
+                  </span>
                   <h1 className="text-2xl font-display font-extrabold text-white">
-                    Welcome, <span className="text-amber-400">{currentTeam.name}</span>
+                    Welcome,{" "}
+                    <span className="bg-gradient-to-r from-white via-[#F0C755] to-[#D4A843] bg-clip-text text-transparent">
+                      {currentTeam.name}
+                    </span>
                   </h1>
                 </div>
 
                 {/* Roster Lock Status Badge */}
                 <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
-                  {currentTeam.isRosterLocked ? (
-                    <div className="px-3.5 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-300 text-xs font-mono flex items-center gap-2">
-                      <Lock className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Roster Locked</span>
-                    </div>
-                  ) : (
-                    <div className="px-3.5 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-mono flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Roster Edit Available</span>
-                    </div>
-                  )}
-                  <button onClick={handleLogout} className="px-3.5 py-1.5 rounded-xl bg-red-950/60 border border-red-500/40 hover:bg-red-900/60 text-red-300 text-xs font-mono transition-all">
+                  <div className="px-3.5 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-300 text-xs font-mono flex items-center gap-2 shadow-[0_0_15px_rgba(212,168,67,0.15)]">
+                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Official Roster (Verified)</span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="px-3.5 py-1.5 rounded-xl bg-red-950/60 border border-red-500/40 hover:bg-red-900/60 text-red-300 text-xs font-mono transition-all"
+                  >
                     Logout
                   </button>
                 </div>
               </div>
 
-              {/* Team Members Details Section (One-Time Edit & Lock) */}
+              {/* Section 1: Team Details (Strictly Non-Editable Verified Roster) */}
               <div className="glass-panel p-6 rounded-3xl border border-amber-500/30 bg-black/40 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400">
+                    <div className="p-2.5 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400 shadow-[0_0_15px_rgba(212,168,67,0.25)]">
                       <Users className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-display font-bold text-base text-white">Team Details</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-display font-bold text-base text-white">Team Details</h3>
+                        <span className="text-[10px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-500/30 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          Verified
+                        </span>
+                      </div>
                       <p className="text-xs text-gray-400 font-sans">
-                        {currentTeam.isRosterLocked
-                          ? "Your team roster is finalized. Contact admin if you need updates."
-                          : `Add your team members once (Allowed team size: max ${currentTeam.membersCount || 4} members).`}
+                        Official verified participant roster for Quantexa 2026.
                       </p>
                     </div>
                   </div>
 
-                  {!currentTeam.isRosterLocked && (
-                    <button
-                      onClick={() => setEditingMembers(!editingMembers)}
-                      className="px-3.5 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500/40 hover:border-amber-400 text-amber-300 text-xs font-mono flex items-center gap-1.5"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      <span>{editingMembers ? "Cancel Edit" : "Add/Edit Team Members"}</span>
-                    </button>
-                  )}
+                  <div className="text-[11px] font-mono text-amber-400/80 bg-amber-950/40 px-3 py-1.5 rounded-xl border border-amber-500/30">
+                    Team Size: <strong className="text-white">{memberList.length} Members</strong>
+                  </div>
                 </div>
 
-                {editingMembers && !currentTeam.isRosterLocked ? (
-                  /* Edit Members Form (One-Time Add) */
-                  <form onSubmit={handleSaveMembersOneTime} className="space-y-4 font-mono text-xs pt-2">
-                    <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-[11px]">
-                      ✅ <strong>INFO:</strong> Please ensure all team member names are spelled correctly before saving.
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold">
-                        Team Roster ({currentTeam.membersCount || 4} Total Members Allowed)
-                      </div>
-
-                      {memberList.map((m, idx) => (
-                        <div key={idx} className="flex flex-col sm:flex-row items-center gap-3 p-3 rounded-xl bg-black/60 border border-white/10">
-                          <div className="w-full sm:w-1/3 text-amber-400 font-bold flex items-center gap-2">
-                            <User className="w-4 h-4 text-amber-400 shrink-0" />
-                            <span>{idx === 0 ? "1. Team Leader" : `${idx + 1}. Member ${idx + 1}`}</span>
-                          </div>
-
-                          <input
-                            type="text"
-                            required={idx === 0}
-                            readOnly={idx === 0}
-                            placeholder={idx === 0 ? "Team Leader Name" : `Enter Member ${idx + 1} Name`}
-                            value={m.name}
-                            onChange={(e) => handleUpdateMember(idx, "name", e.target.value)}
-                            className={`w-full sm:w-2/3 border rounded-xl px-3.5 py-2.5 text-white transition-all ${
-                              idx === 0
-                                ? "bg-amber-950/40 border-amber-500/40 text-amber-200 cursor-not-allowed font-semibold"
-                                : "bg-black/80 border-white/10 focus:border-amber-400"
-                            }`}
-                          />
-                        </div>
-                      ))}
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-display font-extrabold text-xs uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all"
-                    >
-                      {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Save Team Members"}
-                    </button>
-                  </form>
-                ) : (
-                  /* Display Member Cards (Read-only after lock) */
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
-                    {memberList.map((m, idx) => (
+                {/* Display Member Cards (Strictly Non-Editable) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs pt-1">
+                  {memberList.map((m, idx) => {
+                    const isLead = idx === 0;
+                    return (
                       <div
                         key={idx}
-                        className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between space-y-1"
+                        className={`p-4 rounded-2xl flex flex-col justify-between space-y-3 transition-all ${
+                          isLead
+                            ? "bg-amber-950/30 border-2 border-amber-500/50 shadow-[0_0_20px_rgba(212,168,67,0.15)]"
+                            : "bg-white/5 border border-white/10 hover:border-amber-500/40"
+                        }`}
                       >
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-amber-400 shrink-0" />
-                          <span className="font-bold text-white truncate">{m.name}</span>
+                        <div className="flex items-center justify-between gap-2">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold tracking-wider uppercase border ${
+                              isLead
+                                ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                                : "bg-white/10 text-gray-300 border-white/10"
+                            }`}
+                          >
+                            {isLead ? "★ Team Leader" : `Team Member ${idx}`}
+                          </span>
+                          <User className={`w-4 h-4 ${isLead ? "text-amber-400" : "text-gray-500"}`} />
                         </div>
-                        <span className="text-[10px] text-amber-300/80 uppercase tracking-wider">
-                          {m.role || (idx === 0 ? "Team Lead" : "Member")}
-                        </span>
+
+                        <div>
+                          <div
+                            className={`text-sm sm:text-base font-bold tracking-wide truncate ${
+                              m.name ? (isLead ? "text-amber-200" : "text-white") : "text-gray-500 italic text-xs"
+                            }`}
+                          >
+                            {m.name || "(Unassigned)"}
+                          </div>
+
+                          {isLead && (m.phone || currentTeam.leaderPhone) && (
+                            <div className="text-[11px] text-amber-400/80 flex items-center gap-1.5 mt-1.5 font-sans">
+                              <Phone className="w-3 h-3 text-amber-400" />
+                              <span>{m.phone || currentTeam.leaderPhone}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Interactive Spin Wheel Domain Track & Problem Statement Card */}
+              {/* Section 2: Interactive Domain Track & Problem Statement Card */}
               <TrackSpinWheel
                 track={currentTeam.track || "Quantum Technology"}
                 problemStatement={currentTeam.problemStatement}
                 problemStatementFileUrl={currentTeam.problemStatementFileUrl}
                 teamId={currentTeam.id}
+                isTrackRevealed={currentTeam.isTrackRevealed}
+                onReveal={handleTrackRevealed}
               />
 
-              {/* Submissions Section: Git Link + Presentation File Upload */}
+              {/* Section 3: Submissions Section: Git Link + Presentation File (Quantexa Gold Theme) */}
               <div className="glass-panel p-6 rounded-3xl border border-amber-500/40 bg-gradient-to-r from-amber-950/20 via-ink to-black space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400">
+                  <div className="p-2 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400 shadow-[0_0_15px_rgba(212,168,67,0.25)]">
                     <Upload className="w-5 h-5" />
                   </div>
                   <div>
@@ -856,7 +1390,7 @@ export default function FinalPortalPage() {
                           href={gitRepoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-amber-300 hover:underline flex items-center gap-1"
+                          className="text-xs text-amber-300 hover:text-amber-200 hover:underline flex items-center gap-1"
                         >
                           <span>Open Repository</span>
                           <ExternalLink className="w-3 h-3" />
@@ -868,9 +1402,14 @@ export default function FinalPortalPage() {
                       type="url"
                       required
                       value={gitRepoUrl}
-                      onChange={(e) => setGitRepoUrl(e.target.value)}
+                      onChange={(e) => {
+                        setGitRepoUrl(e.target.value);
+                        if (typeof window !== "undefined" && currentTeam?.id) {
+                          localStorage.setItem(`quantexa_draft_git_${currentTeam.id}`, e.target.value);
+                        }
+                      }}
                       placeholder="https://github.com/your-team-name/quantexa-project"
-                      className="w-full bg-black/80 border border-white/10 focus:border-amber-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none"
+                      className="w-full bg-black/80 border border-white/10 focus:border-amber-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
                     />
                   </div>
 
@@ -901,25 +1440,28 @@ export default function FinalPortalPage() {
                       onChange={(e) => {
                         setProjectFileUrl(e.target.value);
                         setProjectFileName("Drive Link");
+                        if (typeof window !== "undefined" && currentTeam?.id) {
+                          localStorage.setItem(`quantexa_draft_ppt_${currentTeam.id}`, e.target.value);
+                        }
                       }}
                       placeholder="https://docs.google.com/presentation/d/... or Google Drive URL"
-                      className="w-full bg-black/80 border border-white/10 focus:border-amber-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none"
+                      className="w-full bg-black/80 border border-white/10 focus:border-amber-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
                     />
                   </div>
 
-                  {/* Submit All Changes Button */}
+                  {/* Submit Links Button */}
                   <button
                     type="submit"
                     disabled={isLoading || isUploading}
-                    className="w-full py-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-display text-sm font-extrabold uppercase tracking-wider shrink-0 transition-all shadow-[0_0_25px_rgba(0,229,255,0.5)] flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-400 via-[#F0C755] to-amber-500 hover:brightness-110 text-black font-display text-sm font-extrabold uppercase tracking-wider shrink-0 transition-all shadow-[0_0_25px_rgba(212,168,67,0.4)] flex items-center justify-center gap-2"
                   >
-                    {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Save All Submissions & Details"}
+                    {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Submit Project Links (Git & Presentation)"}
                   </button>
                 </form>
               </div>
             </motion.div>
           ) : (
-            /* ================= ADMIN CONTROL CENTER ================= */
+            /* ================= MASTER ADMIN CONTROL CENTER ================= */
             <motion.div
               key="admin-dashboard"
               initial={{ opacity: 0, y: 15 }}
@@ -927,58 +1469,130 @@ export default function FinalPortalPage() {
               exit={{ opacity: 0, y: -15 }}
               className="space-y-6"
             >
-              {/* Admin Header Banner */}
-              <div className="p-6 rounded-3xl bg-gradient-to-r from-red-950/40 via-ink to-black border border-crimson/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded bg-crimson/20 border border-crimson/40 text-crimson font-mono text-[10px]">
+              {/* Top Admin Header Banner */}
+              <div className="p-6 rounded-3xl bg-gradient-to-r from-red-950/40 via-[#0e0f16] to-black border border-amber-500/40 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-[0_0_40px_rgba(212,168,67,0.15)]">
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="px-3 py-1 rounded-lg bg-gradient-to-r from-red-900/80 to-amber-900/80 border border-amber-500/50 text-amber-300 font-mono text-xs font-black tracking-wider flex items-center gap-1.5 shadow-sm">
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
                       MASTER ADMIN CONSOLE
                     </span>
-                    <span className="text-xs font-mono text-gray-400">
-                      // TOTAL TEAMS IN DB: {teamsList.length}
-                    </span>
+
+                    {/* Live Real-Time Polling Beacon */}
+                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 font-mono text-[11px] shadow-[0_0_15px_rgba(0,255,150,0.25)]">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                      </span>
+                      <span className="font-bold tracking-wide">LIVE DYNAMIC SYNC ACTIVE</span>
+                      <span className="text-gray-400">({lastSyncTime || "polling..."})</span>
+                    </div>
                   </div>
-                  <h1 className="text-2xl font-display font-extrabold text-white">
-                    QUANTEXA <span className="text-crimson">200+ Team Database Control</span>
+
+                  <h1 className="text-2xl sm:text-3xl font-display font-black text-white">
+                    QUANTEXA <span className="text-amber-400">Master Database & Live Control</span>
                   </h1>
-                  <p className="text-xs text-gray-400 font-sans">
-                    Manage participant logins, inspect Git links & presentation files, and update jury scores.
+                  <p className="text-xs text-gray-300 font-sans max-w-2xl">
+                    Full administrator control to view, add, and change all team details, track assignments, and live participant Git & Presentation updates.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <button
-                    onClick={() => setShowBulkImport(!showBulkImport)}
-                    className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-display font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,255,150,0.4)]"
+                    onClick={handleManualRefresh}
+                    disabled={isRefreshing}
+                    title="Force immediate dynamic refresh"
+                    className="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/40 text-gray-300 hover:text-white text-xs font-mono transition-all flex items-center gap-1.5"
                   >
-                    <FileSpreadsheet className="w-4 h-4" />
-                    <span>Bulk Excel/CSV Import</span>
+                    <RefreshCw className={`w-3.5 h-3.5 text-amber-400 ${isRefreshing ? "animate-spin" : ""}`} />
+                    <span>Sync Now</span>
                   </button>
 
                   <button
-                    onClick={() => setShowAddTeam(!showAddTeam)}
-                    className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-xs font-display font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,255,0.4)]"
+                    onClick={handleResetAllReveals}
+                    disabled={isLoading}
+                    title="Reset all 145 teams back to unrevealed state"
+                    className="px-3.5 py-2 rounded-xl bg-purple-950/40 border border-purple-500/40 hover:bg-purple-900/50 text-purple-300 text-xs font-mono transition-all flex items-center gap-1.5"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Reset All Cards</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowAddTeam(true)}
+                    className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-xs font-display font-black uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_20px_rgba(212,168,67,0.5)] transition-all"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>Single Team DB</span>
+                    <span>+ Add New Team</span>
                   </button>
 
                   <button
-                    onClick={() => {
-                      setIsAdminLoggedIn(false);
-                      setActiveTab("team");
-                      setSuccessMsg("");
-                      setErrorMsg("");
-                    }}
-                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-red-500/40 text-gray-400 hover:text-red-400 text-xs font-mono transition-all flex items-center gap-1.5"
+                    onClick={() => setShowBulkImport(!showBulkImport)}
+                    className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-display font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,255,150,0.4)]"
                   >
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Admin Logout</span>
+                    <FileSpreadsheet className="w-4 h-4" />
+                    <span>Bulk Import</span>
+                  </button>
+
+                  <button
+                    onClick={handleLogout}
+                    className="px-3.5 py-2 rounded-xl bg-red-950/60 border border-red-500/40 hover:bg-red-900/60 text-red-300 text-xs font-mono transition-all flex items-center gap-1.5"
+                  >
+                    <span>Logout</span>
                   </button>
                 </div>
               </div>
 
-              {/* Bulk Excel/CSV Import Modal */}
+              {/* KPI Metrics Summary Bar */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono text-xs">
+                <div className="p-3.5 rounded-2xl bg-black/50 border border-white/10 space-y-1">
+                  <span className="text-[10px] text-gray-400 uppercase tracking-wider block">Total Teams</span>
+                  <div className="text-xl font-bold text-white flex items-center gap-2">
+                    <span>{teamsList.length}</span>
+                    <span className="text-[10px] text-amber-400 font-normal">Active</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 space-y-1">
+                  <span className="text-[10px] text-emerald-400 uppercase tracking-wider block">FinTech Track</span>
+                  <div className="text-xl font-bold text-emerald-300">
+                    {teamsList.filter((t) => t.track?.includes("FinTech")).length}
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-purple-950/20 border border-purple-500/30 space-y-1">
+                  <span className="text-[10px] text-purple-400 uppercase tracking-wider block">Quantum & Social</span>
+                  <div className="text-xl font-bold text-purple-300">
+                    {teamsList.filter((t) => t.track?.includes("Quantum") || t.track?.includes("Social")).length}
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-amber-950/20 border border-amber-500/30 space-y-1">
+                  <span className="text-[10px] text-amber-400 uppercase tracking-wider block">Cards Revealed</span>
+                  <div className="text-xl font-bold text-amber-300 flex items-center gap-1.5">
+                    <span>{teamsList.filter((t) => t.isTrackRevealed).length}</span>
+                    <span className="text-[10px] text-gray-400 font-normal">/ {teamsList.length}</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-blue-950/20 border border-blue-500/30 space-y-1">
+                  <span className="text-[10px] text-blue-400 uppercase tracking-wider block">GitHub Repos</span>
+                  <div className="text-xl font-bold text-blue-300 flex items-center gap-1.5">
+                    <span>{teamsList.filter((t) => Boolean(t.gitRepoUrl)).length}</span>
+                    <span className="text-[10px] text-emerald-400 font-normal">Submitted</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-teal-950/20 border border-teal-500/30 space-y-1">
+                  <span className="text-[10px] text-teal-400 uppercase tracking-wider block">Presentation PPT</span>
+                  <div className="text-xl font-bold text-teal-300 flex items-center gap-1.5">
+                    <span>{teamsList.filter((t) => Boolean(t.projectFileUrl)).length}</span>
+                    <span className="text-[10px] text-emerald-400 font-normal">Uploaded</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bulk Excel/CSV Import Box */}
               {showBulkImport && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
@@ -986,27 +1600,70 @@ export default function FinalPortalPage() {
                   exit={{ opacity: 0, height: 0 }}
                   className="p-6 rounded-3xl bg-emerald-950/30 border border-emerald-500/40 space-y-4"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <h3 className="font-display font-bold text-sm text-emerald-300 uppercase tracking-wider flex items-center gap-2">
                       <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
-                      Bulk Upload Excel/CSV Participant Accounts
+                      Bulk Upload Excel / CSV / Sheets (10-Column Format)
                     </h3>
-                    <span className="text-[10px] font-mono text-gray-400">FORMAT: CSV (TeamID, TeamName, LeaderName, LeaderPhone)</span>
+                    <span className="text-[10px] font-mono text-emerald-300/80 bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-500/30">
+                      Standard Input Specification
+                    </span>
+                  </div>
+
+                  {/* File Upload Bar */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-black/40 rounded-2xl border border-white/5">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept=".xlsx, .xls, .csv"
+                        onChange={handleExcelUpload}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-mono text-xs flex items-center gap-2 border border-white/10 transition-all"
+                      >
+                        <UploadCloud className="w-4 h-4 text-emerald-400" />
+                        Choose Excel (.xlsx / .csv) File
+                      </button>
+                      <span className="text-[11px] text-gray-400 font-sans">
+                        or paste rows into the box below
+                      </span>
+                    </div>
+
+                    {parsedPreview.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-emerald-300 font-mono">
+                          ✓ {parsedPreview.length} teams extracted
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setParsedPreview([])}
+                          className="text-[11px] text-gray-400 hover:text-white underline font-mono"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <form onSubmit={handleBulkImport} className="space-y-3 font-mono text-xs">
                     <textarea
                       rows={6}
-                      required
                       value={bulkJsonInput}
                       onChange={(e) => setBulkJsonInput(e.target.value)}
-                      placeholder={`Paste CSV lines like:\nNX-101, CyberPulse, Alex Vance, +919876543210\nNX-102, BlockFoundry, Siddharth Rao, +919876543211`}
-                      className="w-full bg-black/70 border border-white/10 rounded-2xl p-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-400 text-xs font-mono"
+                      placeholder={`Paste Excel/Sheets rows (Header row is automatically ignored):\n1\tQUAN001\tBEYONDLOOP\t4\tSandhya.S\t9342141436\tAmutha Nila.A.R\tAkshara Nethra.N.P\tShree Varsha.M\n2\tQUAN002\tTechforge\t4\tAslam J\t7305373188\tSanjay S\tDharshn M.S\tYogesh S`}
+                      className="w-full bg-black/70 border border-white/10 rounded-2xl p-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-400 text-xs font-mono leading-relaxed"
                     />
                     <div className="flex justify-end gap-3">
                       <button
                         type="button"
-                        onClick={() => setShowBulkImport(false)}
+                        onClick={() => {
+                          setShowBulkImport(false);
+                          setParsedPreview([]);
+                        }}
                         className="px-4 py-2 rounded-xl bg-white/5 text-gray-300 hover:text-white"
                       >
                         Cancel
@@ -1016,82 +1673,38 @@ export default function FinalPortalPage() {
                         disabled={isLoading}
                         className="px-6 py-2 rounded-xl bg-emerald-400 text-black font-display font-bold text-xs uppercase flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,150,0.5)]"
                       >
-                        {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Import All Teams into Database"}
+                        {isLoading ? (
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                        ) : parsedPreview.length > 0 ? (
+                          `Confirm & Import ${parsedPreview.length} Teams`
+                        ) : (
+                          "Import All Teams into Database"
+                        )}
                       </button>
                     </div>
                   </form>
                 </motion.div>
               )}
 
-              {/* Provision Single Team Form */}
-              {showAddTeam && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="p-6 rounded-3xl bg-amber-950/30 border border-amber-500/40 space-y-4"
-                >
-                  <h3 className="font-display font-bold text-sm text-amber-300 uppercase tracking-wider flex items-center gap-2">
-                    <Server className="w-4 h-4 text-amber-400" />
-                    Provision Single Team & Account
-                  </h3>
-
-                  <form onSubmit={handleCreateTeam} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
-                    <input
-                      type="text"
-                      required
-                      value={newTeamName}
-                      onChange={(e) => setNewTeamName(e.target.value)}
-                      placeholder="Team Name (e.g. ApexDevs)"
-                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-amber-400"
-                    />
-                    <input
-                      type="text"
-                      required
-                      value={newTeamLeader}
-                      onChange={(e) => setNewTeamLeader(e.target.value)}
-                      placeholder="Team Leader Name"
-                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-amber-400"
-                    />
-                    <input
-                      type="text"
-                      required
-                      value={newTeamPhone}
-                      onChange={(e) => setNewTeamPhone(e.target.value)}
-                      placeholder="Leader Phone / Passcode"
-                      className="bg-black/60 border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-amber-400"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="bg-amber-400 text-black font-display text-xs font-bold uppercase py-2.5 rounded-xl hover:bg-amber-300 transition-all flex items-center justify-center gap-2"
-                    >
-                      {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Create Team"}
-                    </button>
-                  </form>
-                </motion.div>
-              )}
-
-              {/* Team Database Search & Control Center */}
+              {/* Team Database Search & Multi-Filter Control Center */}
               <div className="glass-panel p-6 rounded-3xl border border-white/10 bg-black/40 space-y-6">
-                
                 {/* Admin View Toggle */}
-                <div className="flex bg-black/50 p-1 rounded-xl border border-white/10 w-fit font-display text-xs uppercase tracking-wider font-bold">
+                <div className="flex bg-black/50 p-1.5 rounded-2xl border border-white/10 w-fit font-display text-xs uppercase tracking-wider font-bold overflow-x-auto">
                   <button
                     onClick={() => setAdminView("database")}
-                    className={`px-4 py-2 rounded-lg transition-all ${
+                    className={`px-4 py-2 rounded-xl transition-all ${
                       adminView === "database"
-                        ? "bg-amber-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
+                        ? "bg-amber-400 text-black shadow-[0_0_12px_rgba(212,168,67,0.4)]"
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
-                    Main Database View
+                    Main Database View ({teamsList.length})
                   </button>
                   <button
                     onClick={() => setAdminView("rosters")}
-                    className={`px-4 py-2 rounded-lg transition-all ${
+                    className={`px-4 py-2 rounded-xl transition-all ${
                       adminView === "rosters"
-                        ? "bg-amber-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
+                        ? "bg-amber-400 text-black shadow-[0_0_12px_rgba(212,168,67,0.4)]"
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
@@ -1099,336 +1712,512 @@ export default function FinalPortalPage() {
                   </button>
                   <button
                     onClick={() => setAdminView("submissions")}
-                    className={`px-4 py-2 rounded-lg transition-all ${
+                    className={`px-4 py-2 rounded-xl transition-all ${
                       adminView === "submissions"
-                        ? "bg-amber-400 text-black shadow-[0_0_10px_rgba(0,229,255,0.4)]"
+                        ? "bg-amber-400 text-black shadow-[0_0_12px_rgba(212,168,67,0.4)]"
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
-                    Project Submissions View
+                    Live Git & PPT Submissions ({teamsList.filter((t) => t.gitRepoUrl || t.projectFileUrl).length})
                   </button>
                 </div>
 
-                {/* Search Bar */}
-                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 font-mono text-xs">
-                  <div className="relative flex-grow max-w-md">
-                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => {
-                        setSearchQuery(e.target.value);
-                        setCurrentPage(1);
-                      }}
-                      placeholder="Search teams by ID, Name, Leader, Phone..."
-                      className="w-full bg-black/60 border border-white/10 focus:border-amber-400 rounded-xl pl-10 pr-4 py-2.5 text-white placeholder:text-gray-500 focus:outline-none"
-                    />
+                {/* Filter and Search Bar with Full Multi-Filters */}
+                <div className="space-y-3 font-mono text-xs">
+                  <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                    <div className="relative flex-grow max-w-md">
+                      <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        placeholder="Search ID, name, leader, phone, track, git, ppt..."
+                        className="w-full bg-black/70 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      {/* Track Filter */}
+                      <select
+                        value={filterTrack}
+                        onChange={(e) => {
+                          setFilterTrack(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                      >
+                        <option value="ALL">All Tracks</option>
+                        <option value="FinTech Track">FinTech Track</option>
+                        <option value="Quantum and Social Welfare Track">Quantum & Social Track</option>
+                      </select>
+
+                      {/* Reveal Filter */}
+                      <select
+                        value={filterReveal}
+                        onChange={(e) => {
+                          setFilterReveal(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                      >
+                        <option value="ALL">All Card States</option>
+                        <option value="Revealed">Revealed (Card Picked)</option>
+                        <option value="Pending">Pending Superposition</option>
+                      </select>
+
+                      {/* Submission Filter */}
+                      <select
+                        value={filterSubmissions}
+                        onChange={(e) => {
+                          setFilterSubmissions(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                      >
+                        <option value="ALL">All Submissions</option>
+                        <option value="Has GitHub">Has GitHub Repo</option>
+                        <option value="Has PPT">Has PPT Link</option>
+                        <option value="Both Submitted">Both Submitted</option>
+                        <option value="Missing">Pending Submissions</option>
+                      </select>
+
+                      {/* Status Filter */}
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => {
+                          setFilterStatus(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                      >
+                        <option value="ALL">All Statuses</option>
+                        <option value="Submitted">Submitted</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Pending">Pending</option>
+                      </select>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-gray-400">
-                    <span>Per Page:</span>
-                    <select
-                      value={pageSize}
-                      onChange={(e) => {
-                        setPageSize(Number(e.target.value));
-                        setCurrentPage(1);
-                      }}
-                      className="bg-black border border-white/10 rounded-lg px-2 py-1.5 text-white focus:outline-none focus:border-amber-400 text-xs"
-                    >
-                      <option value={10}>10</option>
-                      <option value={25}>25</option>
-                      <option value={50}>50</option>
-                      <option value={200}>200</option>
-                    </select>
+                  <div className="flex items-center justify-between text-[11px] text-gray-400 pt-1">
+                    <span>
+                      Showing {filteredTeams.length} of {teamsList.length} teams
+                    </span>
+                    {(searchQuery || filterTrack !== "ALL" || filterReveal !== "ALL" || filterSubmissions !== "ALL" || filterStatus !== "ALL") && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchQuery("");
+                          setFilterTrack("ALL");
+                          setFilterReveal("ALL");
+                          setFilterSubmissions("ALL");
+                          setFilterStatus("ALL");
+                          setCurrentPage(1);
+                        }}
+                        className="text-amber-400 hover:underline"
+                      >
+                        Reset All Filters
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                {/* Results Count & Table */}
-                <div className="overflow-x-auto">
-                  {adminView === "rosters" ? (
-                    <table className="w-full text-left border-collapse font-mono text-xs">
+                {/* VIEW 1: Main Comprehensive Database View (All Details) */}
+                {adminView === "database" && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left font-mono text-xs border-collapse">
                       <thead>
-                        <tr className="border-b border-white/10 text-gray-400 uppercase text-[10px]">
-                          <th className="py-3 px-4">Team ID</th>
-                          <th className="py-3 px-4">Team Name</th>
-                          <th className="py-3 px-4">Leader (Member 1)</th>
-                          <th className="py-3 px-4">Member 2</th>
-                          <th className="py-3 px-4">Member 3</th>
-                          <th className="py-3 px-4">Member 4</th>
+                        <tr className="border-b border-white/10 text-gray-400 text-[10px] uppercase tracking-wider bg-white/[0.02]">
+                          <th className="py-3.5 px-3">Team ID</th>
+                          <th className="py-3.5 px-3">Team Name</th>
+                          <th className="py-3.5 px-3">Track Chosen</th>
+                          <th className="py-3.5 px-3">Card State</th>
+                          <th className="py-3.5 px-3">Leader & Phone</th>
+                          <th className="py-3.5 px-3">Passcode</th>
+                          <th className="py-3.5 px-3">GitHub Link</th>
+                          <th className="py-3.5 px-3">PPT / Drive Link</th>
+                          <th className="py-3.5 px-3">Status</th>
+                          <th className="py-3.5 px-3">Score</th>
+                          <th className="py-3.5 px-3 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
-                        {paginatedTeams.length > 0 ? (
-                          paginatedTeams.map((t) => {
-                            const members = t.memberList || [{ name: t.leaderName, role: "Team Lead", phone: t.leaderPhone }];
-                            return (
-                              <tr key={t.id} className="hover:bg-white/5 transition-colors">
-                                <td className="py-3.5 px-4 font-bold text-amber-400">{t.id}</td>
-                                <td className="py-3.5 px-4 font-sans font-semibold text-white">{t.name}</td>
-                                <td className="py-3.5 px-4">
-                                  <div className="font-sans font-semibold text-emerald-300">{members[0]?.name || t.leaderName || "-"}</div>
-                                  <div className="text-[10px] text-gray-400">{members[0]?.phone || t.leaderPhone || ""}</div>
-                                </td>
-                                <td className="py-3.5 px-4 text-white font-sans">{members[1]?.name || "-"}</td>
-                                <td className="py-3.5 px-4 text-white font-sans">{members[2]?.name || "-"}</td>
-                                <td className="py-3.5 px-4 text-white font-sans">{members[3]?.name || "-"}</td>
-                              </tr>
-                            );
-                          })
-                        ) : (
-                          <tr>
-                            <td colSpan={6} className="py-8 text-center text-gray-500 italic">
-                              No team rosters match your filter criteria.
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  ) : adminView === "submissions" ? (
-                    <table className="w-full text-left border-collapse font-mono text-xs">
-                      <thead>
-                        <tr className="border-b border-white/10 text-gray-400 uppercase text-[10px]">
-                          <th className="py-3 px-4">Team ID</th>
-                          <th className="py-3 px-4">Team Name</th>
-                          <th className="py-3 px-4">Assigned Track</th>
-                          <th className="py-3 px-4">Git Repo / Code Link</th>
-                          <th className="py-3 px-4">Presentation / Drive Link</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-white/5">
-                        {paginatedTeams.length > 0 ? (
-                          paginatedTeams.map((t) => (
-                            <tr key={t.id} className="hover:bg-white/5 transition-colors">
-                              <td className="py-3.5 px-4 font-bold text-amber-400">{t.id}</td>
-                              <td className="py-3.5 px-4 font-sans font-semibold text-white">{t.name}</td>
-                              <td className="py-3.5 px-4">
-                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
-                                  t.track === "Quantum Technology"
-                                    ? "bg-purple-950/80 border-purple-500/40 text-purple-300"
-                                    : "bg-emerald-950/80 border-emerald-500/40 text-emerald-300"
-                                }`}>
-                                  {t.track || "Unassigned"}
+                        {paginatedTeams.map((team) => {
+                          const isFinTech = team.track?.includes("FinTech");
+                          return (
+                            <tr key={team.id} className="hover:bg-white/[0.03] transition-colors">
+                              {/* Team ID */}
+                              <td className="py-3.5 px-3 text-amber-400 font-bold whitespace-nowrap">
+                                {team.id}
+                              </td>
+
+                              {/* Team Name */}
+                              <td className="py-3.5 px-3 font-semibold text-white whitespace-nowrap">
+                                {team.name}
+                              </td>
+
+                              {/* Track Chosen */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                <span
+                                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border ${
+                                    isFinTech
+                                      ? "bg-emerald-950/50 text-emerald-300 border-emerald-500/40"
+                                      : "bg-purple-950/50 text-purple-300 border-purple-500/40"
+                                  }`}
+                                >
+                                  {team.track || "FinTech Track"}
                                 </span>
                               </td>
-                              <td className="py-3.5 px-4">
-                                {t.gitRepoUrl || t.submissionUrl ? (
-                                  <a
-                                    href={t.gitRepoUrl || t.submissionUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-amber-400 underline hover:text-amber-300 text-xs flex items-center gap-1"
-                                  >
-                                    <Github className="w-4 h-4" />
-                                    <span className="truncate max-w-[200px] block">{t.gitRepoUrl || t.submissionUrl}</span>
-                                  </a>
+
+                              {/* Card Reveal Status */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                {team.isTrackRevealed ? (
+                                  <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                    Revealed
+                                  </span>
                                 ) : (
-                                  <span className="text-gray-500 italic text-[10px]">No Link Submitted</span>
+                                  <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                    Pending Choice
+                                  </span>
                                 )}
                               </td>
-                              <td className="py-3.5 px-4">
-                                {t.projectFileUrl ? (
+
+                              {/* Leader & Phone */}
+                              <td className="py-3.5 px-3 text-gray-300 whitespace-nowrap">
+                                <div className="text-white font-medium">{team.leaderName}</div>
+                                <div className="text-[10px] text-gray-400 font-mono flex items-center gap-1">
+                                  <Phone className="w-2.5 h-2.5 text-amber-400" />
+                                  <span>{team.leaderPhone}</span>
+                                </div>
+                              </td>
+
+                              {/* Passcode */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                <code className="text-amber-300 font-bold bg-amber-950/40 px-2 py-0.5 rounded border border-amber-500/20 text-xs">
+                                  {team.passcode}
+                                </code>
+                              </td>
+
+                              {/* GitHub Link */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                {team.gitRepoUrl ? (
                                   <a
-                                    href={t.projectFileUrl}
+                                    href={team.gitRepoUrl}
                                     target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-emerald-400 underline hover:text-emerald-300 text-xs flex items-center gap-1"
+                                    rel="noreferrer"
+                                    className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] border border-white/10 inline-flex items-center gap-1.5 transition-all"
                                   >
-                                    <FileText className="w-4 h-4" />
-                                    <span className="truncate max-w-[200px] block">{t.projectFileUrl}</span>
+                                    <Github className="w-3.5 h-3.5 text-white" />
+                                    <span>Repo</span>
+                                    <ExternalLink className="w-2.5 h-2.5 text-amber-400" />
                                   </a>
                                 ) : (
-                                  <span className="text-gray-500 italic text-[10px]">No File Submitted</span>
+                                  <span className="text-[10px] text-gray-500 italic">Pending</span>
                                 )}
                               </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={5} className="py-8 text-center text-gray-500 italic">
-                              No project submissions match your filter criteria.
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <table className="w-full text-left border-collapse font-mono text-xs">
-                      <thead>
-                      <tr className="border-b border-white/10 text-gray-400 uppercase text-[10px]">
-                        <th className="py-3 px-4">Team ID</th>
-                        <th className="py-3 px-4">Team Name</th>
-                        <th className="py-3 px-4">Leader & Phone</th>
-                        <th className="py-3 px-4">Passcode</th>
-                        <th className="py-3 px-4">Assigned Track</th>
-                        <th className="py-3 px-4">Roster Lock</th>
-                        <th className="py-3 px-4">Git Repo Link</th>
-                        <th className="py-3 px-4">Presentation File</th>
-                        <th className="py-3 px-4">Score</th>
-                        <th className="py-3 px-4 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                      {paginatedTeams.length > 0 ? (
-                        paginatedTeams.map((t) => (
-                          <tr key={t.id} className="hover:bg-white/5 transition-colors">
-                            <td className="py-3.5 px-4 font-bold text-amber-400">{t.id}</td>
-                            <td className="py-3.5 px-4 font-sans font-semibold text-white">{t.name}</td>
-                            <td className="py-3.5 px-4">
-                              <div className="font-sans font-semibold text-white">{t.leaderName || "Leader N/A"}</div>
-                              <div className="text-[10px] text-gray-400">{t.leaderPhone || "No Phone"}</div>
-                            </td>
-                            <td className="py-3.5 px-4 text-amber-300 font-mono">{t.passcode}</td>
-                            <td className="py-3.5 px-4">
-                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
-                                t.track === "Quantum Technology"
-                                  ? "bg-purple-950/80 border-purple-500/40 text-purple-300"
-                                  : "bg-emerald-950/80 border-emerald-500/40 text-emerald-300"
-                              }`}>
-                                {t.track || "Unassigned"}
-                              </span>
-                            </td>
-                            <td className="py-3.5 px-4">
-                              {t.isRosterLocked ? (
-                                <span className="px-2 py-0.5 rounded bg-amber-950/80 border border-amber-500/40 text-amber-400 text-[10px]">
-                                  🔒 Locked
-                                </span>
-                              ) : (
-                                <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 text-[10px]">
-                                  Open
-                                </span>
-                              )}
-                            </td>
-                            <td className="py-3.5 px-4">
-                              {t.gitRepoUrl || t.submissionUrl ? (
-                                <a
-                                  href={t.gitRepoUrl || t.submissionUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-amber-400 underline hover:text-amber-300 text-[11px] flex items-center gap-1"
+
+                              {/* PPT Link */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                {team.projectFileUrl ? (
+                                  <a
+                                    href={team.projectFileUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="px-2.5 py-1 rounded-lg bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-300 text-[11px] border border-emerald-500/30 inline-flex items-center gap-1.5 transition-all"
+                                  >
+                                    <FileText className="w-3.5 h-3.5 text-emerald-400" />
+                                    <span>Drive</span>
+                                    <ExternalLink className="w-2.5 h-2.5 text-amber-400" />
+                                  </a>
+                                ) : (
+                                  <span className="text-[10px] text-gray-500 italic">Pending</span>
+                                )}
+                              </td>
+
+                              {/* Status */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                <span
+                                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                    team.status === "Submitted"
+                                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                      : team.status === "In Progress"
+                                      ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                                      : "bg-gray-500/20 text-gray-400 border border-gray-500/30"
+                                  }`}
                                 >
-                                  <Github className="w-3 h-3" />
-                                  <span>Git Repo ↗</span>
-                                </a>
-                              ) : (
-                                <span className="text-gray-500 italic text-[10px]">Missing</span>
-                              )}
-                            </td>
-                            <td className="py-3.5 px-4">
-                              {t.projectFileUrl ? (
-                                <a
-                                  href={t.projectFileUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-emerald-400 underline hover:text-emerald-300 text-[11px] flex items-center gap-1"
-                                >
-                                  <FileText className="w-3 h-3" />
-                                  <span>{t.projectFileName || "File"} ↗</span>
-                                </a>
-                              ) : (
-                                <span className="text-gray-500 italic text-[10px]">No File</span>
-                              )}
-                            </td>
-                            <td className="py-3.5 px-4 font-bold text-amber-400">
-                              {editingScoreId === t.id ? (
-                                <div className="flex items-center gap-1">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={tempScore}
-                                    onChange={(e) => setTempScore(Number(e.target.value))}
-                                    className="w-16 bg-black border border-amber-400 rounded px-1.5 py-0.5 text-amber-300 text-xs"
-                                  />
+                                  {team.status}
+                                </span>
+                              </td>
+
+                              {/* Score */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                {editingScoreId === team.id ? (
+                                  <div className="flex items-center gap-1">
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      max={100}
+                                      value={tempScore}
+                                      onChange={(e) => setTempScore(Number(e.target.value))}
+                                      className="w-14 bg-black border border-amber-400 rounded px-1.5 py-0.5 text-center text-white"
+                                    />
+                                    <button
+                                      onClick={async () => {
+                                        await handleAdminSaveTeam(team.id, { score: tempScore });
+                                        setEditingScoreId(null);
+                                      }}
+                                      className="px-2 py-0.5 rounded bg-amber-400 text-black font-bold text-[10px]"
+                                    >
+                                      Save
+                                    </button>
+                                    <button
+                                      onClick={() => setEditingScoreId(null)}
+                                      className="px-1.5 py-0.5 rounded bg-white/5 text-gray-400 text-[10px]"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ) : (
                                   <button
                                     onClick={() => {
-                                      handleAdminUpdateTeam(t.id, { score: tempScore });
-                                      setEditingScoreId(null);
+                                      setEditingScoreId(team.id);
+                                      setTempScore(team.score || 0);
                                     }}
-                                    className="px-2 py-0.5 rounded bg-emerald-500 text-black text-[10px] font-bold"
+                                    className="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-white font-bold text-xs inline-flex items-center gap-1.5"
                                   >
-                                    Save
+                                    <span>{team.score || 0} pts</span>
+                                    <Edit3 className="w-3 h-3 text-amber-400" />
+                                  </button>
+                                )}
+                              </td>
+
+                              {/* Actions: Edit & Delete */}
+                              <td className="py-3.5 px-3 text-right whitespace-nowrap">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => setEditingTeam(team)}
+                                    className="px-3 py-1.5 rounded-xl bg-amber-400/15 hover:bg-amber-400 text-amber-300 hover:text-black text-[11px] font-bold border border-amber-500/40 transition-all inline-flex items-center gap-1"
+                                    title="Edit all team details"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5" />
+                                    <span>Edit</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => {
+                                      if (confirm(`Are you sure you want to permanently delete team "${team.name}" (${team.id})?`)) {
+                                        handleAdminDeleteTeam(team.id);
+                                      }
+                                    }}
+                                    className="p-1.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 transition-all"
+                                    title="Delete Team"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
                                   </button>
                                 </div>
-                              ) : (
-                                <span
-                                  onClick={() => {
-                                    setEditingScoreId(t.id);
-                                    setTempScore(t.score);
-                                  }}
-                                  className="cursor-pointer hover:underline"
-                                  title="Click to edit score"
-                                >
-                                  {t.score} / 100
-                                </span>
-                              )}
-                            </td>
-                            <td className="py-3.5 px-4 text-right flex items-center justify-end gap-1.5">
-                              {t.isRosterLocked && (
-                                <button
-                                  onClick={() => handleAdminUpdateTeam(t.id, { isRosterLocked: false })}
-                                  className="px-2 py-1 rounded bg-amber-950/80 border border-amber-500/40 text-[10px] text-amber-300 hover:text-amber-200"
-                                  title="Unlock team roster for re-editing"
-                                >
-                                  Unlock
-                                </button>
-                              )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* VIEW 2: Rosters View */}
+                {adminView === "rosters" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-mono text-xs">
+                    {paginatedTeams.map((team) => (
+                      <div
+                        key={team.id}
+                        className="p-5 rounded-3xl bg-black/60 border border-white/10 space-y-3 relative group hover:border-amber-500/40 transition-all"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-amber-400 font-bold text-sm">{team.id}</span>
+                          <span
+                            className={`text-[10px] px-2 py-0.5 rounded-md font-bold border ${
+                              team.track?.includes("FinTech")
+                                ? "bg-emerald-950/60 text-emerald-300 border-emerald-500/30"
+                                : "bg-purple-950/60 text-purple-300 border-purple-500/30"
+                            }`}
+                          >
+                            {team.track || "FinTech Track"}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="font-bold text-white text-base">{team.name}</div>
+                          <button
+                            onClick={() => setEditingTeam(team)}
+                            className="text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-bold"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            <span>Edit</span>
+                          </button>
+                        </div>
+
+                        <div className="text-gray-300 text-xs">
+                          Lead: <span className="text-white font-semibold">{team.leaderName}</span> ({team.leaderPhone})
+                        </div>
+
+                        <div className="pt-2 border-t border-white/5 space-y-1.5">
+                          <span className="text-[10px] text-gray-500 uppercase tracking-wider block">
+                            Roster Members ({team.memberList?.filter((m: any) => m.name).length || 1} / {team.membersCount || 4})
+                          </span>
+                          {team.memberList?.map((m, i) => (
+                            <div key={i} className="text-gray-300 flex items-center justify-between text-xs py-0.5">
+                              <span className={i === 0 ? "text-amber-300 font-bold" : m.name ? "text-white" : "text-gray-500 italic"}>
+                                {i === 0 ? "★ " : "• "}
+                                {m.name || "(Slot Open)"}
+                              </span>
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded ${i === 0 ? "bg-amber-950/60 text-amber-400 border border-amber-500/30" : "bg-white/5 text-gray-400"}`}>
+                                {i === 0 ? "Lead" : `Member ${i}`}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[10px] text-gray-400">
+                          <span>Passcode: <strong className="text-amber-300">{team.passcode}</strong></span>
+                          <span>Score: <strong className="text-white">{team.score || 0} pts</strong></span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* VIEW 3: Live Submissions & PPT View */}
+                {adminView === "submissions" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+                    {paginatedTeams
+                      .filter((t) => t.gitRepoUrl || t.projectFileUrl)
+                      .map((team) => (
+                        <div
+                          key={team.id}
+                          className="p-5 rounded-3xl bg-black/60 border border-white/10 space-y-3.5 hover:border-amber-500/40 transition-all"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="text-amber-400 font-bold">{team.id}</span> •{" "}
+                              <span className="text-white font-bold text-sm">{team.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                {team.status}
+                              </span>
                               <button
-                                onClick={() => {
-                                  setEditingScoreId(t.id);
-                                  setTempScore(t.score);
-                                }}
-                                className="px-2.5 py-1 rounded bg-white/5 hover:bg-amber-950/80 border border-white/10 hover:border-amber-500/40 text-[10px] text-gray-300 hover:text-amber-300 transition-all"
+                                onClick={() => setEditingTeam(team)}
+                                className="text-amber-400 hover:text-amber-300 p-1"
+                                title="Edit Team"
                               >
-                                Score
+                                <Edit3 className="w-3.5 h-3.5" />
                               </button>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={9} className="py-8 text-center text-gray-500 italic">
-                            No team records match your filter criteria.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                  )}
-                </div>
+                            </div>
+                          </div>
 
-                {/* Pagination Controls */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/10 font-mono text-xs">
-                  <div className="text-gray-400 text-[11px]">
-                    Showing <strong className="text-white">{filteredTeams.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}</strong> to{" "}
-                    <strong className="text-white">{Math.min(currentPage * pageSize, filteredTeams.length)}</strong> of{" "}
-                    <strong className="text-amber-400">{filteredTeams.length}</strong> teams
+                          <div className="text-[11px] text-gray-400">
+                            Track: <span className="text-amber-300 font-bold">{team.track}</span>
+                          </div>
+
+                          <div className="space-y-2">
+                            {team.gitRepoUrl ? (
+                              <a
+                                href={team.gitRepoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-all border border-white/10"
+                              >
+                                <div className="flex items-center gap-2 truncate">
+                                  <Github className="w-4 h-4 text-white shrink-0" />
+                                  <span className="truncate">{team.gitRepoUrl}</span>
+                                </div>
+                                <ExternalLink className="w-3.5 h-3.5 text-amber-400 shrink-0 ml-2" />
+                              </a>
+                            ) : (
+                              <div className="p-2 rounded-xl bg-black/40 border border-white/5 text-gray-500 text-[11px]">
+                                No GitHub URL submitted yet
+                              </div>
+                            )}
+
+                            {team.projectFileUrl ? (
+                              <a
+                                href={team.projectFileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-300 transition-all border border-emerald-500/30"
+                              >
+                                <div className="flex items-center gap-2 truncate">
+                                  <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+                                  <span className="truncate">{team.projectFileUrl}</span>
+                                </div>
+                                <ExternalLink className="w-3.5 h-3.5 text-amber-400 shrink-0 ml-2" />
+                              </a>
+                            ) : (
+                              <div className="p-2 rounded-xl bg-black/40 border border-white/5 text-gray-500 text-[11px]">
+                                No Presentation Drive link submitted yet
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[11px] text-gray-400">
+                            <span>Score: <strong className="text-white">{team.score || 0} / 100</strong></span>
+                            <span>Lead: <strong className="text-gray-300">{team.leaderName}</strong> ({team.leaderPhone})</span>
+                          </div>
+                        </div>
+                      ))}
                   </div>
+                )}
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                      disabled={currentPage === 1}
-                      className="p-1.5 rounded-lg bg-white/5 border border-white/10 disabled:opacity-30 text-gray-300 hover:text-white"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <span className="text-gray-300">
-                      Page {currentPage} of {totalPages}
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between pt-4 border-t border-white/10 font-mono text-xs">
+                    <span className="text-gray-400 text-[11px]">
+                      Page {currentPage} of {totalPages} ({filteredTeams.length} teams)
                     </span>
-                    <button
-                      onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                      disabled={currentPage === totalPages}
-                      className="p-1.5 rounded-lg bg-white/5 border border-white/10 disabled:opacity-30 text-gray-300 hover:text-white"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        disabled={currentPage <= 1}
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 text-white"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        disabled={currentPage >= totalPages}
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 text-white"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
+
+              {/* Edit Team Modal (Full Power) */}
+              <AdminEditTeamModal
+                isOpen={editingTeam !== null}
+                team={editingTeam}
+                onClose={() => setEditingTeam(null)}
+                onSave={handleAdminSaveTeam}
+                onDelete={handleAdminDeleteTeam}
+                isSaving={isSavingTeam}
+              />
+
+              {/* Add Team Modal (Full Power) */}
+              <AdminAddTeamModal
+                isOpen={showAddTeam}
+                onClose={() => setShowAddTeam(false)}
+                onAdd={handleAdminAddTeam}
+                isSubmitting={isLoading}
+                suggestedId={suggestedNextId}
+              />
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </main>
   );

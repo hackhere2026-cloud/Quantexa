@@ -78,16 +78,14 @@ export default function Navbar({ onRegisterClick }: NavbarProps) {
           </Link>
         </div>
 
-        {/* CTA Register Button */}
-        <a
-          href={event.registerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative group overflow-hidden px-5 py-2.5 rounded-full bg-crimson text-black font-display text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(0,229,255,0.5)] hover:shadow-[0_0_30px_rgba(0,240,255,0.8)] transition-all duration-300 inline-flex items-center justify-center"
+        {/* CTA Portal Button */}
+        <Link
+          href="/final"
+          className="relative group overflow-hidden px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-[#F0C755] to-amber-500 text-black font-display text-xs font-black uppercase tracking-wider shadow-[0_0_25px_rgba(212,168,67,0.6)] hover:shadow-[0_0_35px_rgba(240,199,85,0.9)] transition-all duration-300 inline-flex items-center justify-center gap-1.5"
         >
-          <span className="relative z-10">Register Now</span>
-          <div className="absolute inset-0 bg-gradient-to-r from-crimson-glow to-crimson opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </a>
+          <span className="w-2 h-2 rounded-full bg-black animate-ping" />
+          <span className="relative z-10">PORTAL LOGIN</span>
+        </Link>
       </div>
     </motion.header>
   );

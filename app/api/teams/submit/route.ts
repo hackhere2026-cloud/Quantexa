@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { updateTeamSubmission } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -11,10 +14,7 @@ export async function POST(request: Request) {
       projectFileName,
       demoVideoUrl,
       submissionUrl,
-      memberList,
-      leaderName,
-      leaderEmail,
-      isRosterLocked,
+      isTrackRevealed,
     } = body;
 
     if (!teamId) {
@@ -32,10 +32,7 @@ export async function POST(request: Request) {
         projectFileName,
         demoVideoUrl,
         submissionUrl,
-        memberList,
-        leaderName,
-        leaderEmail,
-        isRosterLocked,
+        isTrackRevealed,
       });
     } catch (err: any) {
       return NextResponse.json(
@@ -53,7 +50,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Team details, Git link, and project file submission saved to database!",
+      message: "Git repository link and project presentation saved successfully!",
       team: updatedTeam,
     });
   } catch (error: any) {

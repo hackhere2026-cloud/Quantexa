@@ -3,20 +3,22 @@ import { authenticateAdmin, getDbAsync } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
-    const { passkey } = await request.json();
+    const body = await request.json().catch(() => ({}));
+    const passkey = body.passkey || body.password || "";
+    const username = body.username || body.id || "";
 
     if (!passkey) {
       return NextResponse.json(
-        { success: false, message: "Admin passkey is required." },
+        { success: false, message: "Admin password/passkey is required." },
         { status: 400 }
       );
     }
 
-    const isValid = await authenticateAdmin(passkey);
+    const isValid = await authenticateAdmin(passkey, username);
 
     if (!isValid) {
       return NextResponse.json(
-        { success: false, message: "Invalid Admin Passkey." },
+        { success: false, message: "Invalid Admin Credentials." },
         { status: 401 }
       );
     }

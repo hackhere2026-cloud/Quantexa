@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { QrCode, Sparkles, ChevronDown, Trophy, MapPin, Calendar } from "lucide-react";
+import Link from "next/link";
+import { QrCode, Sparkles, ChevronDown, Trophy, MapPin, Calendar, Zap } from "lucide-react";
 import { event } from "@/data/event";
 
 interface MobileHeroSectionProps {
@@ -67,15 +68,13 @@ export default function MobileHeroSection({ onRegisterClick }: MobileHeroSection
 
         {/* Mobile CTA Buttons */}
         <div className="w-full space-y-3 pt-2">
-          <a
-            href={event.registerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-4 rounded-full bg-[#D4A843] text-black font-display font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(212,168,67,0.6)] active:scale-95 transition-transform"
+          <Link
+            href="/final"
+            className="w-full py-4 rounded-full bg-gradient-to-r from-amber-400 via-[#F0C755] to-amber-500 text-black font-display font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(212,168,67,0.6)] active:scale-95 transition-transform"
           >
-            <QrCode className="w-4 h-4" />
-            <span>CLAIM ACCESS PASS</span>
-          </a>
+            <Zap className="w-4 h-4 text-black fill-black" />
+            <span>ENTER FINAL PORTAL</span>
+          </Link>
 
           <a
             href="#tracks"

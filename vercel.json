@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "cleanUrls": true,
+  "functions": {
+    "app/api/**/*": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  }
+}

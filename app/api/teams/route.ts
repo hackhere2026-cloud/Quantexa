@@ -2,14 +2,22 @@ import { NextResponse } from "next/server";
 import { getDbAsync, createTeam } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 export async function GET() {
   try {
     const db = await getDbAsync();
-    return NextResponse.json({
-      success: true,
-      teams: db.teams,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        teams: db.teams,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Fetch Teams Error:", error);
     return NextResponse.json(

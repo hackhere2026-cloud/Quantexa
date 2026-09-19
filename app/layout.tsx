@@ -42,8 +42,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${orbitron.variable} ${playfair.variable} ${inter.variable} bg-ink text-white antialiased selection:bg-amber-500 selection:text-black`}>
+    <html lang="en" className="scroll-smooth" style={{ backgroundColor: "#08090C", color: "#FFFFFF" }}>
+      <body
+        style={{ backgroundColor: "#08090C", color: "#FFFFFF" }}
+        className={`${orbitron.variable} ${playfair.variable} ${inter.variable} bg-ink text-white antialiased selection:bg-amber-500 selection:text-black`}
+      >
         <QuantumCursor />
         {children}
       </body>

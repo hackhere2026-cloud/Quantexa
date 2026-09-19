@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { updateTeamByAdmin, getDbAsync, authenticateAdmin } from "@/lib/db";
+import { deleteTeamByAdmin, getDbAsync, authenticateAdmin } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { passkey, teamId, username, ...updates } = body;
+    const { passkey, username, teamId } = await request.json();
 
     const isValidAdmin = await authenticateAdmin(passkey || "", username || "");
     if (!isValidAdmin && passkey !== "admin123" && passkey !== "9442777855") {
@@ -21,11 +20,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const updatedTeam = await updateTeamByAdmin(teamId, updates);
-
-    if (!updatedTeam) {
+    const success = await deleteTeamByAdmin(teamId);
+    if (!success) {
       return NextResponse.json(
-        { success: false, message: "Team not found." },
+        { success: false, message: "Team not found or could not be deleted." },
         { status: 404 }
       );
     }
@@ -34,14 +32,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Team database record updated successfully.",
-      team: updatedTeam,
+      message: `Team ${teamId} has been successfully deleted.`,
       allTeams: db.teams,
     });
   } catch (error) {
-    console.error("Admin Update Error:", error);
+    console.error("Admin Delete Error:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to update team record." },
+      { success: false, message: "Failed to delete team." },
       { status: 500 }
     );
   }

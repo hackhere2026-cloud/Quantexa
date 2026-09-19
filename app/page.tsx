@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 import EventHighlightsSection from "@/components/EventHighlightsSection";
 import MobileEventHighlightsSection from "@/components/mobile/MobileEventHighlightsSection";
@@ -59,6 +60,17 @@ export default function Home() {
 
       {/* Main Website Flow */}
       <div className={!loaderComplete ? "opacity-0 pointer-events-none" : "opacity-100 transition-opacity duration-700"}>
+        {/* Live Hackathon Banner */}
+        <div className="w-full bg-gradient-to-r from-amber-500/20 via-amber-400/25 to-amber-500/20 border-b border-amber-500/30 px-3 py-2 text-center text-xs font-mono text-amber-200 flex flex-wrap items-center justify-center gap-2 relative z-50">
+          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+          <span>⚡ <strong>QUANTEXA 2026 IS LIVE!</strong> Evaluation & Track Submission Portal is open.</span>
+          <Link
+            href="/final"
+            className="px-3 py-1 rounded-full bg-amber-400 text-black font-bold text-[11px] uppercase tracking-wider hover:brightness-110 shadow-[0_0_15px_rgba(212,168,67,0.5)] transition-all"
+          >
+            Enter Portal →
+          </Link>
+        </div>
 
         {/* ========================================== */}
         {/* DESKTOP VIEW (100% ORIGINAL & UNTOUCHED)   */}

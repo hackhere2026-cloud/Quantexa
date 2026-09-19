@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, MouseEvent, TouchEvent } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Atom, ExternalLink, Award, Clock, Zap } from "lucide-react";
 import { event } from "@/data/event";
 import CodropsParticleButton from "@/components/CodropsParticleButton";
@@ -321,22 +322,28 @@ export default function HeroSection({ onRegisterClick }: HeroSectionProps) {
             </div>
           </motion.div>
 
-          {/* Action CTA Button */}
+          {/* Action CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
-            className="relative z-20 flex items-center justify-center w-full"
+            className="relative z-20 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full max-w-lg"
           >
-            <CodropsParticleButton
-              href={event.registerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-64 py-3.5 sm:py-4 rounded-full bg-[#D4A843] hover:bg-[#F0C755] text-black font-display text-xs sm:text-sm font-black uppercase tracking-widest shadow-[0_0_30px_rgba(212,168,67,0.6)] hover:shadow-[0_0_50px_rgba(240,199,85,0.9)] transition-all duration-300 text-center flex items-center justify-center gap-2"
+            <Link
+              href="/final"
+              className="w-full sm:w-auto flex-1 py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-amber-400 via-[#F0C755] to-amber-500 text-black font-display text-xs sm:text-sm font-black uppercase tracking-widest shadow-[0_0_35px_rgba(212,168,67,0.7)] hover:shadow-[0_0_55px_rgba(240,199,85,0.95)] hover:scale-105 transition-all duration-300 text-center flex items-center justify-center gap-2"
             >
-              <span>REGISTER NOW</span>
-              <ExternalLink className="w-4 h-4" />
-            </CodropsParticleButton>
+              <Zap className="w-4 h-4 text-black fill-black" />
+              <span>ENTER FINAL PORTAL</span>
+            </Link>
+
+            <a
+              href="#tracks"
+              className="w-full sm:w-auto py-3.5 sm:py-4 px-6 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white font-display text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 text-center flex items-center justify-center gap-2"
+            >
+              <Atom className="w-4 h-4 text-[#D4A843]" />
+              <span>EXPLORE TRACKS</span>
+            </a>
           </motion.div>
         </motion.div>
       </div>

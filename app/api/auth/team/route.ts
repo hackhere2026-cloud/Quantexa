@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { authenticateTeam } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
 export async function POST(request: Request) {
   try {
     const { teamId, passcode } = await request.json();

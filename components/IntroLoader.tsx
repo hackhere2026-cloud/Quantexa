@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { Zap } from "lucide-react";
 
 interface IntroLoaderProps {
   onComplete: () => void;
@@ -245,8 +247,20 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
               <span className="text-[#D4A843]">SEPT 19–20, 2026</span>
             </div>
 
+            {/* Direct Portal Launch Button */}
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <Link
+                href="/final"
+                onClick={(e) => e.stopPropagation()}
+                className="px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 via-[#F0C755] to-amber-500 text-black text-xs font-mono font-bold tracking-wider uppercase shadow-[0_0_30px_rgba(212,168,67,0.7)] hover:brightness-110 flex items-center gap-2 transition-transform hover:scale-105"
+              >
+                <Zap className="w-4 h-4 text-black fill-black" />
+                <span>Launch Participant Portal →</span>
+              </Link>
+            </div>
+
             {/* Skip hint */}
-            <div className="mt-8 text-[10px] font-mono text-white/40 uppercase tracking-widest">
+            <div className="mt-4 text-[10px] font-mono text-white/40 uppercase tracking-widest">
               [ CLICK OR PRESS SPACE TO SKIP ]
             </div>
 
