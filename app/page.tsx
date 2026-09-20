@@ -40,7 +40,12 @@ import MobileRegisterCTASection from "@/components/mobile/MobileRegisterCTASecti
 import MobileFooter from "@/components/mobile/MobileFooter";
 
 export default function Home() {
-  const [loaderComplete, setLoaderComplete] = useState(false);
+  const [loaderComplete, setLoaderComplete] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("quantexa_intro_seen") === "true";
+    }
+    return false;
+  });
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
 
   const handleOpenQRModal = () => {

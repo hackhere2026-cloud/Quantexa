@@ -15,11 +15,21 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
   const [displayText, setDisplayText] = useState("QUANTEXA");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // Check if user already saw the intro loader in this session
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("quantexa_intro_seen") === "true") {
+      onComplete();
+    }
+  }, [onComplete]);
+
   const handleFinish = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("quantexa_intro_seen", "true");
+    }
     setIsVisible(false);
     setTimeout(() => {
       onComplete();
-    }, 600); // smooth cinematic fade exit
+    }, 400); // smooth cinematic fade exit
   };
 
   // Matrix / Cyber Glitch Decoding effect for QUANTEXA
@@ -45,15 +55,15 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
         clearInterval(glitchInterval);
       }
       iteration += 1 / 3;
-    }, 40);
+    }, 30);
 
     return () => clearInterval(glitchInterval);
   }, []);
 
-  // 5-Second Timer Logic (0% to 100% over 5000ms)
+  // Snappy 1.8-Second Timer Logic (0% to 100% over 1800ms)
   useEffect(() => {
     const startTime = Date.now();
-    const duration = 4800; // ~4.8 seconds + 200ms pause = 5 seconds
+    const duration = 1800;
 
     const timer = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -62,9 +72,9 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
 
       if (pct >= 100) {
         clearInterval(timer);
-        setTimeout(handleFinish, 300);
+        setTimeout(handleFinish, 150);
       }
-    }, 30);
+    }, 20);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {

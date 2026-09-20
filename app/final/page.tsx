@@ -36,6 +36,10 @@ import {
   Sparkles,
   Layers,
   Radio,
+  Instagram,
+  Linkedin,
+  Globe,
+  Twitter,
 } from "lucide-react";
 import TrackSpinWheel from "@/components/TrackSpinWheel";
 import AdminEditTeamModal from "@/components/AdminEditTeamModal";
@@ -1240,16 +1244,262 @@ export default function FinalPortalPage() {
               </div>
             </motion.div>
           ) : currentTeam ? (
-            /* ========================================================================= */
-            /* TEAM DASHBOARD (QUANTEXA BRAND COLOR THEME - GOLD AMBER + EMERALD)        */
-            /* ========================================================================= */
-            <motion.div
-              key="team-dashboard"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              className="space-y-6"
-            >
+            (currentTeam.status === "Submitted" || currentTeam.gitRepoUrl) ? (
+              /* ========================================================================= */
+              /* FULL PAGE THANK YOU & OFFICIAL HACKHERE HANDLES SCREEN                   */
+              /* ========================================================================= */
+              <motion.div
+                key="thank-you-full-page"
+                initial={{ opacity: 0, scale: 0.97, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97, y: -15 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="space-y-8 max-w-5xl mx-auto w-full pb-16"
+              >
+                {/* Top Status Bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-black to-amber-950/30 border border-amber-500/40 font-mono text-xs shadow-md">
+                  <div className="flex items-center gap-2.5">
+                    <Lock className="w-4 h-4 text-emerald-400" />
+                    <span className="text-emerald-400 font-bold uppercase tracking-wider">FINAL SUBMISSION RECORDED & LOCKED</span>
+                    <span className="text-gray-500 hidden sm:inline">|</span>
+                    <span className="text-gray-400 hidden sm:inline">Team ID: <strong className="text-amber-300">{currentTeam.id}</strong></span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={handleLogout}
+                      className="px-3.5 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900/60 border border-red-500/40 text-red-300 text-xs font-mono transition-all"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+
+                {/* Main Hero Celebration Card */}
+                <div className="relative p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-[#121624] via-[#0A0E1A] to-[#08090C] border border-amber-500/50 shadow-[0_0_80px_rgba(212,168,67,0.25)] overflow-hidden text-center">
+                  {/* Background Radial Glow */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-64 bg-amber-500/20 rounded-full blur-[120px] pointer-events-none" />
+
+                  {/* Celebration Icon */}
+                  <div className="relative z-10 w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-500/20 via-amber-400/30 to-amber-300/20 border border-amber-400/50 flex items-center justify-center text-amber-300 shadow-[0_0_40px_rgba(212,168,67,0.6)] mb-6">
+                    <CheckCircle2 className="w-11 h-11 text-amber-400" />
+                  </div>
+
+                  {/* Super Title Pill */}
+                  <div className="relative z-10 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-400 text-xs font-mono uppercase tracking-[0.2em] mb-4 shadow-[0_0_20px_rgba(212,168,67,0.2)]">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>HACKHERE • QUANTEXA 2026</span>
+                    <Sparkles className="w-3.5 h-3.5" />
+                  </div>
+
+                  {/* Giant Headline */}
+                  <h1 className="relative z-10 text-3xl sm:text-5xl lg:text-6xl font-display font-black text-white uppercase tracking-wider mb-4 drop-shadow-[0_0_35px_rgba(212,168,67,0.6)]">
+                    Thank You For Participating!
+                  </h1>
+
+                  {/* Team Callout */}
+                  <p className="relative z-10 text-base sm:text-xl font-mono text-amber-300 font-bold mb-3">
+                    Team: <span className="text-white underline decoration-amber-400 underline-offset-4">{currentTeam.name}</span>{" "}
+                    <span className="text-gray-400 text-sm">({currentTeam.id})</span>
+                  </p>
+
+                  <p className="relative z-10 text-xs sm:text-sm text-gray-300 font-sans leading-relaxed max-w-2xl mx-auto mb-8">
+                    Congratulations on completing your 24-hour sprint at <strong className="text-amber-300">SNS iHub, Coimbatore</strong>! 
+                    Your project submission for the <strong className="text-white">{currentTeam.track || "Quantexa 2026"}</strong> track has been officially recorded and queued for jury evaluation.
+                  </p>
+
+                  {/* Challenge Statement Banner */}
+                  {currentTeam.problemStatement && (
+                    <div className="relative z-10 max-w-2xl mx-auto p-4 rounded-2xl bg-black/60 border border-amber-500/30 text-left mb-8 font-mono text-xs">
+                      <span className="text-amber-400 font-bold uppercase text-[10px] block mb-1">
+                        // ASSIGNED CHALLENGE TRACK
+                      </span>
+                      <p className="text-white font-semibold">{currentTeam.problemStatement}</p>
+                    </div>
+                  )}
+
+                  {/* Verified Links Cards */}
+                  <div className="relative z-10 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left font-mono text-xs mb-8">
+                    {/* GitHub Link Card */}
+                    <div className="p-4 rounded-2xl bg-black/70 border border-white/15 space-y-2 hover:border-amber-400/50 transition-all">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400 text-[11px] flex items-center gap-1.5 uppercase font-bold">
+                          <Github className="w-4 h-4 text-white" /> Git Repository
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 text-[10px]">
+                          Required ✓
+                        </span>
+                      </div>
+                      <div className="truncate text-amber-300 font-semibold text-xs">
+                        {currentTeam.gitRepoUrl || gitRepoUrl || "Not Provided"}
+                      </div>
+                      {(currentTeam.gitRepoUrl || gitRepoUrl) && (
+                        <a
+                          href={currentTeam.gitRepoUrl || gitRepoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] text-amber-400 hover:text-white hover:underline pt-1"
+                        >
+                          <span>Open Repository</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Presentation Link Card */}
+                    <div className="p-4 rounded-2xl bg-black/70 border border-white/15 space-y-2 hover:border-emerald-400/50 transition-all">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400 text-[11px] flex items-center gap-1.5 uppercase font-bold">
+                          <FileText className="w-4 h-4 text-emerald-400" /> Presentation Link
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400 text-[10px]">
+                          Optional
+                        </span>
+                      </div>
+                      <div className="truncate text-emerald-300 font-semibold text-xs">
+                        {currentTeam.projectFileUrl || projectFileUrl || "Not Provided"}
+                      </div>
+                      {(currentTeam.projectFileUrl || projectFileUrl) && (
+                        <a
+                          href={currentTeam.projectFileUrl || projectFileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-white hover:underline pt-1"
+                        >
+                          <span>Open Drive Link</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Locked Submission Status (No updation allowed) */}
+                  <div className="relative z-10 flex items-center justify-center">
+                    <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 font-mono text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(0,255,150,0.25)]">
+                      <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Final Submission Locked • No Further Updates Permitted</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2: Official Handles of HackHere (Full Width High-Impact Showcase) */}
+                <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-amber-950/20 via-black to-purple-950/20 border border-amber-500/40 space-y-6 shadow-[0_0_50px_rgba(212,168,67,0.15)]">
+                  <div className="text-center space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>STAY CONNECTED WITH THE BUILDER COMMUNITY</span>
+                      <Sparkles className="w-3.5 h-3.5" />
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-display font-black text-white uppercase tracking-wider">
+                      Official Handles of <span className="bg-gradient-to-r from-white via-[#F0C755] to-[#D4A843] bg-clip-text text-transparent">HackHere</span>
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-400 font-sans max-w-xl mx-auto">
+                      Follow our official channels for live event photos, winner announcements, certificates, and future nationwide hackathons!
+                    </p>
+                  </div>
+
+                  {/* 4 Social Cards Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                    {/* Instagram */}
+                    <a
+                      href="https://www.instagram.com/hackhere_connect?stkn=MW9tZjZ5ZmhiOXV4ag=="
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-5 rounded-2xl bg-gradient-to-b from-purple-950/40 via-pink-950/30 to-black border border-pink-500/30 hover:border-pink-400 transition-all hover:scale-105 group shadow-lg hover:shadow-[0_0_25px_rgba(236,72,153,0.35)] flex flex-col justify-between space-y-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="p-3 rounded-xl bg-pink-500/10 border border-pink-500/30 text-pink-400 group-hover:scale-110 transition-transform">
+                          <Instagram className="w-6 h-6" />
+                        </div>
+                        <ExternalLink className="w-4 h-4 text-pink-400 opacity-60 group-hover:opacity-100" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-[11px] text-pink-300 font-bold uppercase tracking-wider">Instagram</div>
+                        <div className="text-sm font-bold text-white group-hover:text-pink-200 truncate">@hackhere_connect</div>
+                        <p className="text-[11px] text-gray-400 font-sans leading-snug">
+                          Live event stories, photos & winner reveals.
+                        </p>
+                      </div>
+                    </a>
+
+                    {/* LinkedIn */}
+                    <a
+                      href="https://www.linkedin.com/in/hackhere/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-5 rounded-2xl bg-gradient-to-b from-blue-950/40 via-[#0B1528] to-black border border-blue-500/30 hover:border-blue-400 transition-all hover:scale-105 group shadow-lg hover:shadow-[0_0_25px_rgba(59,130,246,0.35)] flex flex-col justify-between space-y-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 group-hover:scale-110 transition-transform">
+                          <Linkedin className="w-6 h-6" />
+                        </div>
+                        <ExternalLink className="w-4 h-4 text-blue-400 opacity-60 group-hover:opacity-100" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-[11px] text-blue-300 font-bold uppercase tracking-wider">LinkedIn</div>
+                        <div className="text-sm font-bold text-white group-hover:text-blue-200 truncate">HackHere</div>
+                        <p className="text-[11px] text-gray-400 font-sans leading-snug">
+                          Networking, hiring partners & certificates.
+                        </p>
+                      </div>
+                    </a>
+
+                    {/* Website */}
+                    <a
+                      href="https://hackhere.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-5 rounded-2xl bg-gradient-to-b from-amber-950/40 via-[#1A1308] to-black border border-amber-500/30 hover:border-amber-400 transition-all hover:scale-105 group shadow-lg hover:shadow-[0_0_25px_rgba(212,168,67,0.35)] flex flex-col justify-between space-y-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 group-hover:scale-110 transition-transform">
+                          <Globe className="w-6 h-6" />
+                        </div>
+                        <ExternalLink className="w-4 h-4 text-amber-400 opacity-60 group-hover:opacity-100" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-[11px] text-amber-300 font-bold uppercase tracking-wider">Official Portal</div>
+                        <div className="text-sm font-bold text-white group-hover:text-amber-200 truncate">hackhere.in</div>
+                        <p className="text-[11px] text-gray-400 font-sans leading-snug">
+                          Upcoming hackathons & community hub.
+                        </p>
+                      </div>
+                    </a>
+
+                    {/* Twitter / X */}
+                    <a
+                      href="https://x.com/hackhere"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-5 rounded-2xl bg-gradient-to-b from-gray-900/60 via-black to-black border border-white/20 hover:border-white/50 transition-all hover:scale-105 group shadow-lg hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] flex flex-col justify-between space-y-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="p-3 rounded-xl bg-white/5 border border-white/20 text-white group-hover:scale-110 transition-transform">
+                          <Twitter className="w-6 h-6" />
+                        </div>
+                        <ExternalLink className="w-4 h-4 text-gray-400 opacity-60 group-hover:opacity-100" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-[11px] text-gray-300 font-bold uppercase tracking-wider">Twitter / X</div>
+                        <div className="text-sm font-bold text-white group-hover:text-gray-200 truncate">@hackhere</div>
+                        <p className="text-[11px] text-gray-400 font-sans leading-snug">
+                          Tweet your project with #Quantexa2026.
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              /* ========================================================================= */
+              /* TEAM DASHBOARD (QUANTEXA BRAND COLOR THEME - GOLD AMBER + EMERALD)        */
+              /* ========================================================================= */
+              <motion.div
+                key="team-dashboard"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                className="space-y-6"
+              >
               {/* Team Header Banner (NO SCORE - QUANTEXA GOLD AMBER) */}
               <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-950/30 via-ink to-black border border-amber-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
                 <div className="space-y-1">
@@ -1413,12 +1663,12 @@ export default function FinalPortalPage() {
                     />
                   </div>
 
-                  {/* 2. Presentation Drive Link */}
+                  {/* 2. Presentation Drive Link (Optional) */}
                   <div className="p-5 rounded-2xl bg-black/60 border border-white/10 space-y-3">
                     <div className="flex items-center justify-between">
                       <label className="text-amber-400 font-bold uppercase text-[11px] flex items-center gap-2">
                         <FileText className="w-4 h-4 text-emerald-400" />
-                        2. Project Presentation Drive Link (Required)
+                        2. Project Presentation Drive Link <span className="text-gray-400 font-normal lowercase">(optional)</span>
                       </label>
                       {projectFileUrl && (
                         <a
@@ -1435,18 +1685,20 @@ export default function FinalPortalPage() {
 
                     <input
                       type="url"
-                      required
                       value={projectFileUrl}
                       onChange={(e) => {
                         setProjectFileUrl(e.target.value);
-                        setProjectFileName("Drive Link");
+                        setProjectFileName(e.target.value ? "Drive Link" : "");
                         if (typeof window !== "undefined" && currentTeam?.id) {
                           localStorage.setItem(`quantexa_draft_ppt_${currentTeam.id}`, e.target.value);
                         }
                       }}
-                      placeholder="https://docs.google.com/presentation/d/... or Google Drive URL"
+                      placeholder="https://docs.google.com/presentation/d/... or Google Drive URL (Optional)"
                       className="w-full bg-black/80 border border-white/10 focus:border-amber-400 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none transition-all"
                     />
+                    <p className="text-[10px] text-gray-400 font-sans">
+                      💡 Tip: If submitting a Google Drive / Slide link, make sure sharing is set to <span className="text-amber-300">&ldquo;Anyone with the link can view&rdquo;</span>.
+                    </p>
                   </div>
 
                   {/* Submit Links Button */}
@@ -1455,12 +1707,71 @@ export default function FinalPortalPage() {
                     disabled={isLoading || isUploading}
                     className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-400 via-[#F0C755] to-amber-500 hover:brightness-110 text-black font-display text-sm font-extrabold uppercase tracking-wider shrink-0 transition-all shadow-[0_0_25px_rgba(212,168,67,0.4)] flex items-center justify-center gap-2"
                   >
-                    {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Submit Project Links (Git & Presentation)"}
+                    {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Submit Project Links"}
                   </button>
                 </form>
+
+                {/* Official Handles Ribbon */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#0A0E1A] to-amber-950/30 border border-amber-500/40 space-y-3 shadow-[0_0_30px_rgba(212,168,67,0.15)]">
+                  <div className="text-[11px] font-mono text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Official Handles of HackHere</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
+                    <a
+                      href="https://www.instagram.com/hackhere_connect?stkn=MW9tZjZ5ZmhiOXV4ag=="
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-950/40 border border-pink-500/30 hover:border-pink-400 text-pink-300 hover:text-white transition-all group shadow-sm hover:shadow-[0_0_15px_rgba(236,72,153,0.3)]"
+                    >
+                      <Instagram className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform shrink-0" />
+                      <div className="truncate">
+                        <div className="text-[9px] text-gray-400 font-sans">Instagram</div>
+                        <span className="text-[10px] font-bold">@hackhere_connect</span>
+                      </div>
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/hackhere/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-2.5 rounded-xl bg-blue-950/40 border border-blue-500/30 hover:border-blue-400 text-blue-300 hover:text-white transition-all group shadow-sm hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                    >
+                      <Linkedin className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform shrink-0" />
+                      <div className="truncate">
+                        <div className="text-[9px] text-gray-400 font-sans">LinkedIn</div>
+                        <span className="text-[10px] font-bold">HackHere</span>
+                      </div>
+                    </a>
+                    <a
+                      href="https://hackhere.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white transition-all group shadow-sm hover:shadow-[0_0_15px_rgba(212,168,67,0.3)]"
+                    >
+                      <Globe className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
+                      <div className="truncate">
+                        <div className="text-[9px] text-gray-400 font-sans">Website</div>
+                        <span className="text-[10px] font-bold">hackhere.in</span>
+                      </div>
+                    </a>
+                    <a
+                      href="https://x.com/hackhere"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-2.5 rounded-xl bg-white/5 border border-white/15 hover:border-white/40 text-gray-200 hover:text-white transition-all group shadow-sm hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                    >
+                      <Twitter className="w-4 h-4 text-gray-300 group-hover:scale-110 transition-transform shrink-0" />
+                      <div className="truncate">
+                        <div className="text-[9px] text-gray-400 font-sans">Twitter / X</div>
+                        <span className="text-[10px] font-bold">@hackhere</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
               </div>
             </motion.div>
-          ) : (
+          )
+        ) : (
             /* ================= MASTER ADMIN CONTROL CENTER ================= */
             <motion.div
               key="admin-dashboard"
