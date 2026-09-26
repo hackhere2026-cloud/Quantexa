@@ -86,14 +86,14 @@ export const tracks: Track[] = [
     title: "Quantum Technology", 
     description: "Quantum Computing, Quantum Information Processing & Decision Intelligence - Build quantum-inspired algorithms, quantum cryptography, decision intelligence frameworks, and deep tech quantum simulations.", 
     icon: "atom",
-    prize: "₹15K Track Pool + Internships"
+    prize: "Internships"
   },
   { 
     id: "finance-technology", 
     title: "Finance Technology", 
     description: "FinTech Innovation & Risk Telemetry - Build automated financial risk scoring, fraud detection algorithms, algorithmic trading tools, and secure decentralized financial telemetry.", 
     icon: "trending-up",
-    prize: "₹15K Track Pool + Internships"
+    prize: "Internships"
   },
 ];
 
